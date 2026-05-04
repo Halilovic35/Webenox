@@ -42,7 +42,13 @@ const MIME = {
 function safeJoin(base, urlPath) {
   const cleaned = urlPath.replace(/\0/g, '')
   const withoutQuery = cleaned.split('?')[0].split('#')[0]
-  const rel = withoutQuery.replace(/^\/+/, '')
+  let decoded = withoutQuery
+  try {
+    decoded = decodeURIComponent(withoutQuery)
+  } catch {
+    // keep undecoded if malformed
+  }
+  const rel = decoded.replace(/^\/+/, '')
   const full = path.join(base, rel)
   if (!full.startsWith(base)) return null
   return full
