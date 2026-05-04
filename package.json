@@ -9,7 +9,7 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "gen:shop": "node scripts/generate-webenox-shop-data.mjs",
     "preview": "vite preview",
-    "start": "node server.mjs"
+    "start": "node -e \"console.log('[railway] starting, PORT=' + (process.env.PORT || ''));\" && node server.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
