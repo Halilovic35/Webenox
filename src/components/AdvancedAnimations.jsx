@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 // Parallax Background Component
 const ParallaxBackground = () => {
@@ -38,29 +38,56 @@ const ScrollProgressIndicator = () => {
   )
 }
 
-// Floating Elements Component
+// Seeded random for stable dot paths (no teleport on repeat)
+const seededRandom = (seed) => {
+  const x = Math.sin(seed * 9999) * 10000
+  return x - Math.floor(x)
+}
+
+// Floating Elements: smooth drift, no teleporting (closed-loop paths)
 const FloatingElements = () => {
+  const dots = useMemo(() => [...Array(18)].map((_, i) => {
+    const s = i * 1.1
+    // Closed path: start at 0, drift smoothly, return to 0 (no jump on repeat)
+    const x1 = (seededRandom(s) - 0.5) * 60
+    const y1 = (seededRandom(s + 1) - 0.5) * 60
+    const x2 = (seededRandom(s + 2) - 0.5) * 80
+    const y2 = (seededRandom(s + 3) - 0.5) * 80
+    return {
+      left: seededRandom(s + 4) * 100,
+      top: seededRandom(s + 5) * 100,
+      xPath: [0, x1, x2, 0],
+      yPath: [0, y1, y2, 0],
+      duration: 14 + seededRandom(s + 6) * 12,
+      delay: seededRandom(s + 7) * 4,
+      size: 1.5 + seededRandom(s + 8) * 1,
+      opacity: 0.15 + seededRandom(s + 9) * 0.15,
+    }
+  }), [])
+
   return (
     <div className="fixed inset-0 pointer-events-none z-10">
-      {[...Array(15)].map((_, i) => (
+      {dots.map((dot, i) => (
         <motion.div
           key={i}
+          initial={{ opacity: dot.opacity }}
           animate={{
-            x: [0, Math.random() * 100 - 50],
-            y: [0, Math.random() * 100 - 50],
-            rotate: [0, 360],
-            scale: [1, 1.2, 1],
+            x: dot.xPath,
+            y: dot.yPath,
+            opacity: [dot.opacity, dot.opacity * 1.4, dot.opacity],
           }}
           transition={{
-            duration: 10 + Math.random() * 10,
+            duration: dot.duration,
             repeat: Infinity,
-            ease: "linear",
-            delay: Math.random() * 5,
+            ease: "easeInOut",
+            delay: dot.delay,
           }}
-          className="absolute w-2 h-2 bg-accent/20 rounded-full"
+          className="absolute rounded-full bg-accent"
           style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            left: `${dot.left}%`,
+            top: `${dot.top}%`,
+            width: `${dot.size}px`,
+            height: `${dot.size}px`,
           }}
         />
       ))}

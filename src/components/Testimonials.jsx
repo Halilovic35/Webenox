@@ -111,21 +111,22 @@ const Testimonials = () => {
     )
   }
 
+  const scrollViewport = { once: true, amount: 0.15, margin: "-50px" }
+
   return (
     <section id="testimonials" className="section-padding relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 right-10 w-64 h-64 bg-accent/8 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-80 h-80 bg-purple/5 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-purple/6 rounded-full blur-2xl"></div>
+      {/* Background: soft corners, intimate */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[550px] h-[550px] bg-purple/3 rounded-full blur-[110px]"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/3 rounded-full blur-[100px]"></div>
       </div>
 
       <div className="container-custom relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+          viewport={scrollViewport}
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
@@ -141,7 +142,7 @@ const Testimonials = () => {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true }}
+          viewport={scrollViewport}
           className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16"
         >
           {stats.map((stat, index) => (
@@ -158,9 +159,10 @@ const Testimonials = () => {
                 className="glass-card p-6 relative overflow-hidden group"
               >
                 <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.55, delay: index * 0.1, ease: [0.2, 0.7, 0.2, 1] }}
+                  viewport={scrollViewport}
                   className="text-3xl md:text-4xl font-bold text-accent mb-2"
                 >
                   {stat.number}
@@ -179,10 +181,10 @@ const Testimonials = () => {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Featured Testimonial */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.2, 0.7, 0.2, 1] }}
+            viewport={scrollViewport}
             className="lg:col-span-2"
           >
             <div className="glass-card p-8 relative overflow-hidden">
@@ -250,10 +252,10 @@ const Testimonials = () => {
 
           {/* Enhanced Testimonial Navigation */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.2, 0.7, 0.2, 1] }}
+            viewport={scrollViewport}
             className="space-y-4"
           >
             {testimonials.map((testimonial, index) => (
@@ -300,10 +302,10 @@ const Testimonials = () => {
 
         {/* Call to Action */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.65, delay: 0.3, ease: [0.2, 0.7, 0.2, 1] }}
+          viewport={scrollViewport}
           className="text-center mt-16"
         >
           <motion.button

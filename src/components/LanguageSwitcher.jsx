@@ -28,7 +28,7 @@ const LanguageSwitcher = () => {
         onClick={() => setIsOpen(!isOpen)}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center space-x-2 px-3 py-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-text hover:bg-white/10 transition-all duration-200"
+        className="flex items-center space-x-2 px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg text-slate-50 hover:bg-white/15 transition-all duration-200"
       >
         <span className="text-lg">{currentLang?.flag}</span>
         <span className="text-sm font-medium">{currentLang?.code}</span>
@@ -52,7 +52,7 @@ const LanguageSwitcher = () => {
           scale: isOpen ? 1 : 0.95
         }}
         transition={{ duration: 0.2 }}
-        className={`absolute top-full right-0 mt-2 bg-background/95 backdrop-blur-md border border-white/10 rounded-lg shadow-lg overflow-hidden ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        className={`absolute top-full right-0 mt-2 bg-background/98 backdrop-blur-xl border border-white/20 rounded-lg shadow-xl overflow-hidden min-w-[10rem] ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
       >
         {languages.map((lang, index) => (
           <motion.button

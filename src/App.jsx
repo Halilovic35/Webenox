@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LanguageProvider } from './context/LanguageContext'
+import { PortfolioConfigProvider } from './context/PortfolioConfigContext'
 import ErrorBoundary from './components/ErrorBoundary'
 import Navigation from './components/Navigation'
 import Hero from './components/Hero'
@@ -16,7 +17,6 @@ import DataProtection from './components/DataProtection'
 
 // Lazy load optional sections
 const TryOurDesigns = lazy(() => import('./components/Portfolio'))
-const Testimonials = lazy(() => import('./components/Testimonials'))
 
 // Loading component for lazy-loaded sections
 const SectionLoader = () => (
@@ -40,23 +40,20 @@ function App() {
             
             <Routes>
               <Route path="/" element={
-                <>
+                <PortfolioConfigProvider>
                   <Navigation />
-                  <main>
+                  <main className="home-content">
                     <Hero />
                     <About />
                     <Services />
                     <Suspense fallback={<SectionLoader />}>
                       <TryOurDesigns />
                     </Suspense>
-                    <Suspense fallback={<SectionLoader />}>
-                      <Testimonials />
-                    </Suspense>
                     <Contact />
                   </main>
                   <Footer />
                   <ScrollToTop />
-                </>
+                </PortfolioConfigProvider>
               } />
               
               <Route path="/imprint" element={<Imprint />} />

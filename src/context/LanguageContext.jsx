@@ -16,7 +16,7 @@ const translations = {
     home: 'Home',
     about: 'About',
     services: 'Services',
-    portfolio: 'Portfolio',
+    portfolio: 'Concepts',
     testimonials: 'Testimonials',
     contact: 'Contact',
     getStarted: 'Get Started',
@@ -49,16 +49,60 @@ const translations = {
     yearsExperience: "Years Experience",
     
     // Services Section
-    webDevelopment: "Web Development",
-    webDevelopmentDesc: "Modern, responsive websites built with the latest technologies.",
-    uiuxDesign: "UI/UX Design",
-    uiuxDesignDesc: "Beautiful, intuitive interfaces that users love to interact with.",
+    servicesSectionLead:
+      "Websites, web and mobile apps, backends, APIs, and long-term care, built as full digital products with the right stack for each project.",
+    coreServiceBadge: "Core service",
+    webDevelopment: "Web & App Development",
+    webDevelopmentDesc:
+      "Custom websites and applications tailored to your business, from simple landing pages to complex web and mobile platforms.",
+    webDevFeatures: [
+      "Custom Web & Mobile Apps",
+      "Scalable Backend Systems",
+      "API Integrations & Automation",
+      "Performance & SEO Optimization",
+      "Responsive & Cross-Platform Design",
+      "Database & Architecture Design"
+    ],
+    webDevelopmentTooltip:
+      "End-to-end builds: we pick proven tools and patterns that fit your goals, timeline, and budget.",
+    uiuxDesign: "UI/UX & Product Design",
+    uiuxDesignDesc:
+      "Clear, conversion-focused interfaces designed to feel intuitive, modern, and easy to use across every device. Built to reduce friction and guide users to action.",
+    uiuxFeatures: [
+      "User Flow Planning",
+      "Wireframes & Prototypes",
+      "Conversion-Focused Layouts",
+      "Design Systems",
+      "Responsive Interface Design",
+      "Handoff-Ready UI"
+    ],
+    uiuxTooltip: "Product-minded design from structure to polished UI, ready for your team or ours to ship.",
     mobileApps: "Mobile Apps",
     mobileAppsDesc: "Native and cross-platform mobile applications for iOS and Android.",
-    branding: "Branding",
-    brandingDesc: "Complete brand identity design that tells your unique story.",
-    maintenancePlans: "Maintenance Plans",
-    maintenancePlansDesc: "Ongoing support and updates to keep your digital presence fresh.",
+    branding: "Brand Identity",
+    brandingDesc:
+      "Visual systems that make your business look professional, memorable, and consistent across every digital touchpoint. So every page and message feels unmistakably you.",
+    brandingFeatures: [
+      "Logo & Visual Identity",
+      "Color & Typography Systems",
+      "Brand Guidelines",
+      "Social Media Assets",
+      "Website Brand Direction",
+      "Content Style Support"
+    ],
+    brandingTooltip: "Identity work that scales from pitch decks to your live site and campaigns.",
+    maintenancePlans: "Care & Maintenance",
+    maintenancePlansDesc:
+      "Ongoing support, monitoring, and updates to keep your digital presence secure and performing well. A steady partnership after launch, without the hassle.",
+    maintenanceFeatures: [
+      "Website & App Updates",
+      "Security Monitoring",
+      "Performance Optimization",
+      "Content Updates",
+      "Bug Fixes & Improvements",
+      "Long-Term Technical Support"
+    ],
+    maintenanceTooltip: "A steady partnership: we stay close after launch so your product keeps pace with your business.",
     
     // Contact Section
     getInTouch: "Get in Touch",
@@ -93,7 +137,7 @@ const translations = {
     home: 'Startseite',
     about: 'Über uns',
     services: 'Dienstleistungen',
-    portfolio: 'Portfolio',
+    portfolio: 'Konzepte',
     testimonials: 'Referenzen',
     contact: 'Kontakt',
     getStarted: 'Loslegen',
@@ -126,16 +170,60 @@ const translations = {
     yearsExperience: "Jahre Erfahrung",
     
     // Services Section
-    webDevelopment: "Webentwicklung",
-    webDevelopmentDesc: "Moderne, responsive Websites, gebaut mit den neuesten Technologien.",
-    uiuxDesign: "UI/UX Design",
-    uiuxDesignDesc: "Schöne, intuitive Benutzeroberflächen, mit denen Benutzer gerne interagieren.",
+    servicesSectionLead:
+      "Websites, Web- und Mobile-Apps, Backends, APIs und langfristige Betreuung: wir liefern digitale Produkte end-to-end und wählen Stack und Vorgehen passend zu Zielen, Zeit und Budget.",
+    coreServiceBadge: "Kernleistung",
+    webDevelopment: "Web- & App-Entwicklung",
+    webDevelopmentDesc:
+      "Maßgeschneiderte Websites und Anwendungen für Ihr Unternehmen, von schlanken Landing Pages bis zu komplexen Web- und Mobile-Plattformen.",
+    webDevFeatures: [
+      "Individuelle Web- & Mobile-Apps",
+      "Skalierbare Backend-Systeme",
+      "API-Integrationen & Automatisierung",
+      "Performance- & SEO-Optimierung",
+      "Responsives & plattformübergreifendes Design",
+      "Datenbank- & Architekturdesign"
+    ],
+    webDevelopmentTooltip:
+      "End-to-end: bewährte Tools und Muster, die zu Zielen, Zeitplan und Budget passen.",
+    uiuxDesign: "UI/UX & Produktdesign",
+    uiuxDesignDesc:
+      "Klare, konversionsstarke Oberflächen, die sich intuitiv, modern und auf jedem Gerät leicht bedienen lassen. Für weniger Reibung und klare nächste Schritte.",
+    uiuxFeatures: [
+      "Nutzerfluss-Planung",
+      "Wireframes & Prototypen",
+      "Konversionsstarke Layouts",
+      "Design-Systeme",
+      "Responsives Interface-Design",
+      "Übergabefertiges UI"
+    ],
+    uiuxTooltip: "Produktorientiertes Design von der Struktur bis zum fertigen UI, bereit für Ihr Team oder unseres.",
     mobileApps: "Mobile Apps",
     mobileAppsDesc: "Native und plattformübergreifende mobile Anwendungen für iOS und Android.",
-    branding: "Branding",
-    brandingDesc: "Komplettes Markenidentitätsdesign, das Ihre einzigartige Geschichte erzählt.",
-    maintenancePlans: "Wartungspläne",
-    maintenancePlansDesc: "Laufende Unterstützung und Updates, um Ihre digitale Präsenz frisch zu halten.",
+    branding: "Markenidentität",
+    brandingDesc:
+      "Visuelle Systeme, die Ihr Unternehmen professionell, wiedererkennbar und konsistent über alle digitalen Kontaktpunkte hinweg präsentieren. Damit alles aus einem Guss wirkt.",
+    brandingFeatures: [
+      "Logo & visuelle Identität",
+      "Farb- & Typografie-Systeme",
+      "Markenrichtlinien",
+      "Social-Media-Assets",
+      "Markenrichtung für die Website",
+      "Unterstützung beim Content-Stil"
+    ],
+    brandingTooltip: "Identität, die von Pitchdeck bis Live-Site und Kampagnen skaliert.",
+    maintenancePlans: "Betreuung & Wartung",
+    maintenancePlansDesc:
+      "Laufender Support, Monitoring und Updates, damit Ihre digitale Präsenz sicher bleibt und gut performt. Verlässlich nach dem Launch, ohne Stress.",
+    maintenanceFeatures: [
+      "Website- & App-Updates",
+      "Sicherheits-Monitoring",
+      "Performance-Optimierung",
+      "Content-Updates",
+      "Bugfixes & Verbesserungen",
+      "Langfristiger technischer Support"
+    ],
+    maintenanceTooltip: "Partnerschaft nach Launch: wir bleiben dran, damit Ihr Produkt mit dem Business Schritt hält.",
     
     // Contact Section
     getInTouch: "Kontakt aufnehmen",

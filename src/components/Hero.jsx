@@ -39,15 +39,11 @@ const Hero = () => {
   }, [currentText, currentIndex, isDeleting, typewriterTexts])
 
   const scrollToContact = () => {
-    document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const scrollToAbout = () => {
-    document.getElementById('about').scrollIntoView({ behavior: 'smooth' })
+    document.getElementById('site-contact')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16 lg:pt-20">
+    <section id="hero" className="main-hero min-h-screen flex items-center justify-center relative overflow-hidden pt-20 sm:pt-24 lg:pt-28">
       {/* Interactive Particle Background */}
       <div className="absolute inset-0">
         {/* Main animated gradient background */}
@@ -80,7 +76,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mb-12"
+          className="mb-10 sm:mb-12"
         >
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
@@ -98,14 +94,14 @@ const Hero = () => {
             {/* Enhanced glowing background behind logo */}
             <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-accent/40 to-purple/40 rounded-full blur-2xl scale-150 animate-pulse-slow"></div>
             
-            <motion.img 
+            <motion.img
               src="/images/wlogo.png" 
               alt="Webenox Logo" 
               className="relative z-10 w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 mx-auto drop-shadow-2xl"
               loading="eager"
               initial={{ rotateY: 0 }}
-              animate={{ rotateY: 360 }}
-              transition={{ duration: 2, delay: 0.6, ease: "linear" }}
+              animate={{ rotateY: 720 }}
+              transition={{ duration: 2.4, delay: 0.6, ease: "linear" }}
             />
           </motion.div>
         </motion.div>
@@ -115,7 +111,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-          className="heading-1 text-text mb-4 tracking-tight"
+          className="heading-1 text-text mb-3 sm:mb-4 tracking-tight"
         >
           <span className="gradient-text">Webenox</span>
         </motion.h1>
@@ -124,7 +120,7 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
-          className="text-2xl sm:text-3xl lg:text-4xl text-secondary mb-8 font-light"
+          className="text-xl sm:text-3xl lg:text-4xl text-secondary mb-6 sm:mb-8 font-light"
         >
           {t('premiumDigitalAgency')}
         </motion.h2>
@@ -134,9 +130,9 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="mb-16"
+          className="mb-10 sm:mb-16"
         >
-          <div className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-secondary max-w-4xl mx-auto leading-relaxed font-light min-h-[4rem] flex items-center justify-center">
+          <div className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl text-secondary max-w-4xl mx-auto leading-relaxed font-light min-h-[3.5rem] sm:min-h-[4rem] flex items-center justify-center">
             <span className="text-accent">{currentText}</span>
             <motion.span
               animate={{ opacity: [1, 0] }}
@@ -153,35 +149,16 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className="mb-20"
+          className="mb-14 sm:mb-20"
         >
-          <motion.button
+          <button
             onClick={scrollToContact}
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 25px 50px rgba(0, 201, 255, 0.4)"
-            }}
-            whileTap={{ scale: 0.95 }}
-            animate={{
-              boxShadow: [
-                "0 0 0 0 rgba(0, 201, 255, 0.7)",
-                "0 0 0 20px rgba(0, 201, 255, 0)",
-                "0 0 0 0 rgba(0, 201, 255, 0)"
-              ]
-            }}
-            transition={{
-              boxShadow: {
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeOut"
-              }
-            }}
-            className="cta-button glow-effect bg-gradient-to-r from-accent to-purple text-background font-bold text-lg sm:text-xl px-12 py-4 sm:px-16 sm:py-5 rounded-xl hover:from-accent/90 hover:to-purple/90 transition-all duration-200 shadow-lg hover:shadow-glow-lg relative overflow-hidden group"
+            className="hero-cta-btn cta-button glow-effect bg-gradient-to-r from-accent to-purple text-background font-bold text-base sm:text-lg px-9 py-3 sm:px-12 sm:py-4 rounded-xl hover:from-accent/90 hover:to-purple/90 relative overflow-visible group transition-all duration-100 hover:scale-105 active:scale-95"
           >
             <span className="relative z-10">{t('letsWorkTogether')}</span>
-            {/* Enhanced glowing effect on hover */}
-            <div className="absolute inset-0 bg-gradient-to-r from-accent to-purple opacity-0 group-hover:opacity-20 transition-opacity duration-200 rounded-xl"></div>
-          </motion.button>
+            {/* Shine overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-r from-accent to-purple opacity-0 group-hover:opacity-25 rounded-xl transition-opacity duration-100" style={{ willChange: 'opacity' }}></div>
+          </button>
         </motion.div>
 
         {/* Services showcase */}
@@ -189,10 +166,10 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.0 }}
-          className="mb-16"
+          className="mb-10 sm:mb-16"
         >
-          <p className="text-secondary text-sm mb-6">{t('ourCoreServices')}</p>
-          <div className="flex justify-center items-center space-x-6 opacity-70">
+          <p className="text-secondary text-xs sm:text-sm mb-4 sm:mb-6">{t('ourCoreServices')}</p>
+          <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 opacity-70">
             {['Web Development', 'UI/UX Design', 'Mobile Apps', 'Branding', 'SEO'].map((service, index) => (
               <motion.div
                 key={service}
@@ -200,48 +177,12 @@ const Hero = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: 1.2 + index * 0.1 }}
                 whileHover={{ scale: 1.1, opacity: 1 }}
-                className="text-secondary font-semibold text-lg"
+                className="text-secondary font-semibold text-sm sm:text-base"
               >
                 {service}
               </motion.div>
             ))}
           </div>
-        </motion.div>
-      </div>
-
-      {/* Perfectly centered scroll down arrow with proper spacing - FASTER */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.0 }}
-        >
-          <motion.button
-            onClick={scrollToAbout}
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            whileHover={{ 
-              scale: 1.1,
-              y: 0,
-              transition: { duration: 0.15 }
-            }}
-            className="text-accent hover:text-purple transition-colors duration-200 p-2 rounded-full hover:bg-white/5"
-            aria-label="Scroll to about section"
-          >
-            <svg 
-              className="w-8 h-8" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M19 14l-7 7m0 0l-7-7m7 7V3" 
-              />
-            </svg>
-          </motion.button>
         </motion.div>
       </div>
     </section>

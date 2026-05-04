@@ -37,8 +37,7 @@ const Navigation = () => {
     { name: t('about'), action: () => scrollToSection('about') },
     { name: t('services'), action: () => scrollToSection('services') },
     { name: t('portfolio'), action: () => scrollToSection('portfolio') },
-    { name: t('testimonials'), action: () => scrollToSection('testimonials') },
-    { name: t('contact'), action: () => scrollToSection('contact') }
+    { name: t('contact'), action: () => scrollToSection('site-contact') }
   ]
 
   return (
@@ -53,12 +52,11 @@ const Navigation = () => {
       }`}
     >
       <div className="container-custom mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-            className="flex items-center space-x-3"
+        <div className="flex items-center justify-between lg:justify-start h-16 lg:h-20 w-full">
+          {/* Left: logo */}
+          <div 
+            className="flex items-center space-x-3 transition-transform duration-150 hover:scale-105 cursor-pointer flex-shrink-0 lg:w-48 lg:min-w-[12rem]" 
+            onClick={() => scrollToSection('hero')}
           >
             <img 
               src="/images/wlogo.png" 
@@ -66,10 +64,11 @@ const Navigation = () => {
               className="w-8 h-8 lg:w-10 lg:h-10"
             />
             <span className="text-lg lg:text-xl font-bold text-text">Webenox</span>
-          </motion.div>
+          </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          {/* Center: nav links (truly centered) */}
+          <div className="hidden lg:flex flex-1 justify-center">
+            <div className="flex items-center space-x-8">
             {navItems.map((item, index) => (
               <motion.button
                 key={item.name}
@@ -77,46 +76,35 @@ const Navigation = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 + index * 0.05 }}
-                whileHover={{ 
-                  y: -2,
-                  color: '#00C9FF',
-                  transition: { duration: 0.15 }
-                }}
-                className="text-secondary hover:text-accent transition-all duration-200 font-medium text-sm lg:text-base relative group"
+                className="text-secondary hover:text-accent transition-colors duration-150 font-medium text-sm lg:text-base relative group hover:-translate-y-0.5"
               >
                 {item.name}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-accent to-purple transition-all duration-200 group-hover:w-full"></span>
               </motion.button>
             ))}
+            </div>
           </div>
 
-          {/* CTA Button and Controls */}
+          {/* Right: CTA + language (same width as left for symmetry) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: 0.3 }}
-            className="hidden lg:flex items-center space-x-4"
+            className="hidden lg:flex items-center justify-end w-48 min-w-[12rem] flex-shrink-0 space-x-3"
           >
-            <motion.button
-              onClick={() => scrollToSection('contact')}
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 10px 25px rgba(0, 201, 255, 0.3)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.15 }}
-              className="bg-gradient-to-r from-accent to-purple text-background font-semibold px-6 py-2 lg:px-8 lg:py-3 rounded-lg hover:from-accent/90 hover:to-purple/90 transition-all duration-200 shadow-lg hover:shadow-glow-lg"
+            <button
+              onClick={() => scrollToSection('site-contact')}
+              className="bg-gradient-to-r from-accent to-purple text-background font-semibold px-6 py-2 lg:px-8 lg:py-3 rounded-lg hover:from-accent/90 hover:to-purple/90 transition-all duration-150 shadow-lg hover:shadow-glow-lg hover:scale-105 active:scale-95 whitespace-nowrap flex-shrink-0"
             >
               {t('getStarted')}
-            </motion.button>
+            </button>
             <LanguageSwitcher />
           </motion.div>
 
           {/* Mobile Menu Button */}
-          <motion.button
+          <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            whileTap={{ scale: 0.95 }}
-            className="lg:hidden p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10"
+            className="lg:hidden p-2 rounded-lg bg-white/5 backdrop-blur-sm border border-white/10 transition-transform duration-150 active:scale-95"
           >
             <svg 
               className="w-6 h-6 text-text" 
@@ -130,47 +118,42 @@ const Navigation = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
-          </motion.button>
+          </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu (dropdown panel under nav) */}
         <motion.div
           initial={{ opacity: 0, height: 0 }}
-          animate={{ 
+          animate={{
             opacity: isMobileMenuOpen ? 1 : 0,
             height: isMobileMenuOpen ? 'auto' : 0
           }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
           className="lg:hidden overflow-hidden"
         >
-          <div className="py-4 space-y-2 border-t border-white/10 mt-4">
-            {navItems.map((item, index) => (
-              <motion.button
-                key={item.name}
-                onClick={item.action}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                whileHover={{ x: 5, color: '#00C9FF' }}
-                transition={{ duration: 0.15 }}
-                className="block w-full text-left text-secondary hover:text-accent transition-all duration-200 font-medium py-2 px-4 rounded-lg hover:bg-white/5"
-              >
-                {item.name}
-              </motion.button>
-            ))}
-            <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="mt-3 rounded-2xl border border-white/10 bg-background/95/90 backdrop-blur-xl shadow-xl">
+            <div className="py-3 space-y-1">
+              {navItems.map((item, index) => (
+                <motion.button
+                  key={item.name}
+                  onClick={item.action}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: isMobileMenuOpen ? 1 : 0, x: isMobileMenuOpen ? 0 : -6 }}
+                  transition={{ duration: 0.2, delay: 0.05 + index * 0.03 }}
+                  className="block w-full text-left text-sm font-medium text-slate-100 py-2 px-4 hover:bg-white/5 hover:text-accent transition-all duration-150"
+                >
+                  {item.name}
+                </motion.button>
+              ))}
+            </div>
+            <div className="flex items-center justify-between px-4 py-3 border-t border-white/10">
               <LanguageSwitcher />
-              <motion.button
-                onClick={() => scrollToSection('contact')}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: navItems.length * 0.1 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="bg-gradient-to-r from-accent to-purple text-background font-semibold py-3 px-4 rounded-lg hover:from-accent/90 hover:to-purple/90 transition-all duration-200"
+              <button
+                onClick={() => scrollToSection('site-contact')}
+                className="bg-gradient-to-r from-accent to-purple text-background font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-glow-lg hover:from-accent/90 hover:to-purple/90 transition-all duration-150 text-xs"
               >
                 {t('getStarted')}
-              </motion.button>
+              </button>
             </div>
           </div>
         </motion.div>

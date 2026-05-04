@@ -1,444 +1,164 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
+
+/** Same shell for every contact tile: size, radius, stroke weight aligned. */
+const ContactIconShell = ({ children }) => (
+  <div
+    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-purple text-background ring-1 ring-white/15 shadow-md shadow-black/25"
+    aria-hidden
+  >
+    <span className="flex h-6 w-6 items-center justify-center [&>svg]:h-full [&>svg]:w-full">{children}</span>
+  </div>
+)
+
+const contactTileClass =
+  'group glass-card grid h-full min-h-[118px] grid-cols-[48px_1fr] items-center gap-x-4 gap-y-1 rounded-2xl border border-white/10 bg-background/50 p-4 transition-all duration-200 hover:border-accent/40 hover:bg-background/60 hover:shadow-[0_0_28px_rgba(0,201,255,0.18)]'
 
 const Contact = () => {
   const { t } = useLanguage()
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    company: '',
-    project: '',
-    budget: '',
-    message: ''
-  })
-  
-  const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState(null) // 'success', 'error', null
-
-  // Validation functions
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(email)
-  }
-
-  const validateName = (name) => {
-    return name.trim().length >= 2
-  }
-
-  const validateMessage = (message) => {
-    return message.trim().length >= 10
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-
-    if (!validateName(formData.name)) {
-      newErrors.name = 'Name must be at least 2 characters long'
-    }
-
-    if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
-    }
-
-    if (!validateMessage(formData.message)) {
-      newErrors.message = 'Message must be at least 10 characters long'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }))
-    }
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!validateForm()) {
-      return
-    }
-
-    setIsLoading(true)
-    setSubmitStatus(null)
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Simulate success
-      setSubmitStatus('success')
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        project: '',
-        budget: '',
-        message: ''
-      })
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus(null)
-      }, 5000)
-      
-    } catch (error) {
-      setSubmitStatus('error')
-      
-      // Reset error message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus(null)
-      }, 5000)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const inputClasses = (fieldName) => {
-    const baseClasses = "w-full px-4 py-3 bg-white/5 border rounded-xl text-text placeholder-secondary focus:outline-none focus:ring-2 transition-all duration-200"
-    const errorClasses = "border-red-500 focus:ring-red-500/50"
-    const successClasses = "border-accent/50 focus:ring-accent/50"
-    const defaultClasses = "border-white/10 focus:border-accent"
-    
-    if (errors[fieldName]) {
-      return `${baseClasses} ${errorClasses}`
-    } else if (formData[fieldName] && !errors[fieldName]) {
-      return `${baseClasses} ${successClasses}`
-    }
-    return `${baseClasses} ${defaultClasses}`
-  }
+  const scrollViewport = { once: true, amount: 0.15, margin: '-50px' }
 
   return (
-    <section id="contact" className="section-padding relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-10 w-64 h-64 bg-accent/8 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-purple/5 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-purple/6 rounded-full blur-2xl"></div>
+    <section id="site-contact" className="section-padding relative overflow-hidden">
+      {/* Background: soft CTA glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-accent/4 rounded-full blur-[130px]" />
+        <div className="absolute top-20 left-20 w-96 h-96 bg-purple/3 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 right-20 w-[400px] h-[400px] bg-accent/2 rounded-full blur-3xl" />
       </div>
 
       <div className="container-custom relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+          viewport={scrollViewport}
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Let's <span className="gradient-text">Work Together</span>
+            Let&apos;s <span className="gradient-text">Work Together</span>
           </h2>
           <p className="section-description">
-            Ready to transform your ideas into reality? Get in touch and let's create something amazing together.
+            Ready to transform your ideas into reality? Choose the contact option that works best for you. No long forms, just direct access to our team.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <div className="space-y-8">
-              <div>
-                <h3 className="text-2xl font-bold text-text mb-4">{t('getInTouch')}</h3>
-                <p className="text-secondary leading-relaxed">
-                  {t('getInTouchText')}
-                </p>
+        {/* Contact Hub */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.2, 0.7, 0.2, 1] }}
+          viewport={scrollViewport}
+          className="max-w-5xl mx-auto mt-10 glass-card bg-background/40 border border-white/10 backdrop-blur-xl p-8 lg:p-10 grid lg:grid-cols-[minmax(260px,1.05fr)_minmax(320px,1.35fr)] gap-10"
+        >
+          {/* Left: intro + quick response + note */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-2xl font-bold text-text mb-3">{t('getInTouch')}</h3>
+              <p className="text-secondary leading-relaxed">
+                {t('getInTouchText')}
+              </p>
+            </div>
+
+            <div className="glass-card bg-background/60 border border-white/10 p-5">
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-green-400 font-semibold text-sm">Quick Response</span>
               </div>
+              <p className="text-secondary text-sm">
+                We typically reply within 24 hours on business days. Use the channel that feels most natural to you.
+              </p>
+            </div>
 
-              {/* Contact Methods */}
-              <div className="space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-text">Email</h4>
-                    <p className="text-secondary">{t('emailContact')}</p>
-                  </div>
-                </div>
+            <div className="text-xs text-slate-500/90">
+              <p>
+                No long forms, just direct ways to reach our team. Every message is read and answered by a real person.
+              </p>
+            </div>
+          </div>
 
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-text">Phone</h4>
-                    <p className="text-secondary">{t('phone')}</p>
-                  </div>
+          {/* Right: contact methods grid */}
+          <div className="space-y-5">
+            <div className="grid auto-rows-fr sm:grid-cols-2 gap-4">
+              {/* Email */}
+              <a href="mailto:info@webenox.de" className={contactTileClass}>
+                <ContactIconShell>
+                  <svg fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </ContactIconShell>
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-text text-sm mb-1">Email</h4>
+                  <p className="text-secondary text-xs mb-1">Best for detailed briefs and RFPs.</p>
+                  <p className="text-accent text-sm font-medium break-all">info@webenox.de</p>
                 </div>
+              </a>
 
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-xl flex items-center justify-center">
-                    <svg className="w-6 h-6 text-background" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-text">Location</h4>
-                    <p className="text-secondary">{t('address')}</p>
-                  </div>
+              {/* Phone / WhatsApp */}
+              <a href="tel:+496912345678" className={contactTileClass}>
+                <ContactIconShell>
+                  <svg fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </ContactIconShell>
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-text text-sm mb-1">Call / WhatsApp</h4>
+                  <p className="text-secondary text-xs mb-1">For quick questions and time-sensitive projects.</p>
+                  <p className="text-text text-sm font-medium">{t('phone')}</p>
                 </div>
-              </div>
+              </a>
 
-              {/* Response Time */}
-              <div className="glass-card p-6">
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-green-400 font-semibold">Quick Response</span>
+              {/* Book a call */}
+              <a
+                href="mailto:info@webenox.de?subject=Intro%20call%20request"
+                className={contactTileClass}
+              >
+                <ContactIconShell>
+                  <svg fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </ContactIconShell>
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-text text-sm mb-1">Book an Intro Call</h4>
+                  <p className="text-secondary text-xs">
+                    Choose a time that works for you. We&apos;ll confirm the slot by email.
+                  </p>
                 </div>
-                <p className="text-secondary text-sm">
-                  We typically respond within 24 hours during business days.
-                </p>
+              </a>
+
+              {/* Location */}
+              <div className={contactTileClass}>
+                <ContactIconShell>
+                  {/* Classic map pin: inner dot + teardrop (Heroicons-style), reads clearly at 24px */}
+                  <svg fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                  </svg>
+                </ContactIconShell>
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-text text-sm mb-1">Location</h4>
+                  <p className="text-secondary text-xs mb-1">{t('address')}</p>
+                  <p className="text-secondary text-xs">Available for remote and on-site collaborations.</p>
+                </div>
               </div>
             </div>
-          </motion.div>
 
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            <div className="glass-card p-8">
-              {/* Success/Error Messages */}
-              {submitStatus === 'success' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl"
-                >
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-green-400 font-medium">Message sent successfully!</span>
-                  </div>
-                  <p className="text-green-400/80 text-sm mt-1">We'll get back to you within 24 hours.</p>
-                </motion.div>
-              )}
-
-              {submitStatus === 'error' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl"
-                >
-                  <div className="flex items-center space-x-3">
-                    <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-red-400 font-medium">Something went wrong</span>
-                  </div>
-                  <p className="text-red-400/80 text-sm mt-1">Please try again or contact us directly.</p>
-                </motion.div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Name Field */}
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-text mb-2">
-                      {t('name')} *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className={inputClasses('name')}
-                      placeholder="John Doe"
-                      disabled={isLoading}
-                    />
-                    {errors.name && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-red-400 text-sm mt-1"
-                      >
-                        {errors.name}
-                      </motion.p>
-                    )}
-                  </div>
-
-                  {/* Email Field */}
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
-                      {t('email')} *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className={inputClasses('email')}
-                      placeholder="john@company.com"
-                      disabled={isLoading}
-                    />
-                    {errors.email && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-red-400 text-sm mt-1"
-                      >
-                        {errors.email}
-                      </motion.p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Company Field */}
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-text mb-2">
-                      {t('company')}
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleInputChange}
-                      className={inputClasses('company')}
-                      placeholder="Your Company"
-                      disabled={isLoading}
-                    />
-                  </div>
-
-                  {/* Project Type Field */}
-                  <div>
-                    <label htmlFor="project" className="block text-sm font-medium text-text mb-2">
-                      {t('projectType')}
-                    </label>
-                    <select
-                      id="project"
-                      name="project"
-                      value={formData.project}
-                      onChange={handleInputChange}
-                      className={inputClasses('project')}
-                      disabled={isLoading}
-                    >
-                      <option value="">Select project type</option>
-                      <option value="web-development">Web Development</option>
-                      <option value="mobile-app">Mobile App</option>
-                      <option value="ui-ux-design">UI/UX Design</option>
-                      <option value="branding">Branding</option>
-                      <option value="consultation">Consultation</option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Budget Field */}
-                <div>
-                  <label htmlFor="budget" className="block text-sm font-medium text-text mb-2">
-                    {t('budget')}
-                  </label>
-                  <select
-                    id="budget"
-                    name="budget"
-                    value={formData.budget}
-                    onChange={handleInputChange}
-                    className={inputClasses('budget')}
-                    disabled={isLoading}
-                  >
-                    <option value="">Select budget range</option>
-                    <option value="5k-10k">€5,000 - €10,000</option>
-                    <option value="10k-25k">€10,000 - €25,000</option>
-                    <option value="25k-50k">€25,000 - €50,000</option>
-                    <option value="50k-100k">€50,000 - €100,000</option>
-                    <option value="100k+">€100,000+</option>
-                    <option value="discuss">Let's discuss</option>
-                  </select>
-                </div>
-
-                {/* Message Field */}
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-text mb-2">
-                    {t('message')} *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows={5}
-                    className={inputClasses('message')}
-                    placeholder="Tell us about your project, goals, and requirements..."
-                    disabled={isLoading}
-                  />
-                  {errors.message && (
-                    <motion.p
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-red-400 text-sm mt-1"
-                    >
-                      {errors.message}
-                    </motion.p>
-                  )}
-                </div>
-
-                {/* Submit Button */}
-                <motion.button
-                  type="submit"
-                  disabled={isLoading}
-                  whileHover={{ 
-                    scale: isLoading ? 1 : 1.02,
-                    boxShadow: isLoading ? "none" : "0 20px 40px rgba(0, 201, 255, 0.3)"
-                  }}
-                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
-                  transition={{ duration: 0.15 }}
-                  className={`w-full py-4 px-8 rounded-xl font-bold text-lg transition-all duration-200 ${
-                    isLoading
-                      ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-accent to-purple text-background hover:from-accent/90 hover:to-purple/90 shadow-lg hover:shadow-glow-lg'
-                  }`}
-                >
-                  {isLoading ? (
-                    <div className="flex items-center justify-center space-x-3">
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full"
-                      />
-                      <span>Sending Message...</span>
-                    </div>
-                  ) : (
-                    t('sendMessage')
-                  )}
-                </motion.button>
-              </form>
+            {/* What happens next */}
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <p className="text-xs uppercase tracking-[0.18em] text-secondary mb-2">
+                What happens after you reach out
+              </p>
+              <ol className="space-y-1 text-xs text-secondary">
+                <li>1. We review your message and context.</li>
+                <li>2. You receive a reply with clarifying questions or a link to book a call.</li>
+                <li>3. If there&apos;s a fit, we prepare a tailored proposal for your project.</li>
+              </ol>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
 }
 
-export default Contact 
+export default Contact

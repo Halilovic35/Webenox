@@ -114,7 +114,7 @@ const Footer = () => {
                 {t('services')}
               </motion.button>
               <motion.button
-                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById('site-contact')?.scrollIntoView({ behavior: 'smooth' })}
                 whileHover={{ x: 3, color: '#00C9FF' }}
                 transition={{ duration: 0.15 }}
                 className="footer-link text-base block"
