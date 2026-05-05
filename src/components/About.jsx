@@ -139,7 +139,7 @@ const About = () => {
           transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
           viewport={scrollViewport}
         >
-          <h2 className="text-3xl font-bold text-white text-center mb-12 luxury-heading">
+          <h2 className="section-title luxury-heading">
             Our <span className="gradient-text">Process</span>
           </h2>
 

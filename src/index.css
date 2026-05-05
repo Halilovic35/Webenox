@@ -258,7 +258,20 @@
   }
 
   .section-title {
-    @apply heading-2 text-text mb-6;
+    @apply heading-2 text-text mb-6 inline-block relative pb-3;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 86px;
+    height: 3px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(0, 201, 255, 0), rgba(0, 201, 255, 0.95), rgba(146, 95, 226, 0.85), rgba(0, 201, 255, 0));
+    box-shadow: 0 0 22px rgba(0, 201, 255, 0.22);
   }
 
   .section-description {
