@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useRef } from 'react'
+import AccentUnderline from './AccentUnderline'
 
 // SVG Icons for Mission/Vision/Approach
 const MissionIcon = () => (
@@ -140,7 +141,7 @@ const About = () => {
           viewport={scrollViewport}
         >
           <h2 className="section-title luxury-heading text-center">
-            Our <span className="gradient-text accent-underline">Process</span>
+            Our <AccentUnderline className="gradient-text">Process</AccentUnderline>
           </h2>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">

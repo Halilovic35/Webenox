@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
+import AccentUnderline from './AccentUnderline'
 
 const Services = () => {
   const { t } = useLanguage()
@@ -111,7 +112,7 @@ const Services = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Our <span className="gradient-text accent-underline">Services</span>
+            Our <AccentUnderline className="gradient-text">Services</AccentUnderline>
           </h2>
           <p className="section-description max-w-3xl mx-auto">{t('servicesSectionLead')}</p>
         </motion.div>

@@ -268,18 +268,6 @@
     padding-bottom: 0.18em;
   }
 
-  .accent-underline::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 3px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(0, 201, 255, 0.95), rgba(146, 95, 226, 0.85));
-    box-shadow: 0 0 18px rgba(0, 201, 255, 0.18);
-  }
-
   .section-description {
     @apply paragraph text-xl max-w-3xl mx-auto;
   }

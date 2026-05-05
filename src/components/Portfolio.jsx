@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePortfolioConfig } from '../context/PortfolioConfigContext'
+import AccentUnderline from './AccentUnderline'
 import PortfolioLivePreview from './PortfolioLivePreview'
 import AppPhonePreview from './AppPhonePreview'
 
@@ -92,7 +93,7 @@ const TryOurDesigns = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Bring Your <span className="gradient-text accent-underline">Ideas to Life</span>
+            Bring Your <AccentUnderline className="gradient-text">Ideas to Life</AccentUnderline>
           </h2>
           <p className="section-description">
             Choose an industry and explore a design concept. These previews are just starting points, every project we build is fully custom, tailored to your business, your goals, and your users.
@@ -199,17 +200,49 @@ const TryOurDesigns = () => {
                 >
                   {/* Fake Browser Bar */}
                   <div className="flex items-center gap-3 px-4 py-3 bg-white/5 border-b border-white/10">
-                    <div className="flex gap-2">
-                      <span className="w-3 h-3 rounded-full bg-red-500/80" />
-                      <span className="w-3 h-3 rounded-full bg-amber-500/80" />
-                      <span className="w-3 h-3 rounded-full bg-green-500/80" />
+                    <div className="flex items-center gap-2 text-white/45">
+                      <button
+                        type="button"
+                        className="h-8 w-8 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
+                        aria-label="Back"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                          <path d="M14 6 8 12l6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        className="h-8 w-8 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
+                        aria-label="Forward"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                          <path d="M10 6l6 6-6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
                     </div>
+
                     <div className="flex-1 flex justify-center">
-                      <div className="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-secondary text-xs font-mono max-w-md truncate">
-                        {selectedIndustry?.demoDomain || 'yourbusiness.com'}
+                      <div className="flex w-full max-w-md items-center gap-2 rounded-full border border-white/12 bg-black/25 px-4 py-2 text-[12px] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                        <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-emerald-300/80 shrink-0" aria-hidden>
+                          <path d="M7.5 11V9a4.5 4.5 0 0 1 9 0v2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                          <path d="M7 11h10v9H7v-9Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                        </svg>
+                        <span className="truncate font-medium">{selectedIndustry?.demoDomain || 'yourbusiness.com'}</span>
                       </div>
                     </div>
-                    <div className="w-16" />
+
+                    <div className="flex items-center gap-2 text-white/45">
+                      <button
+                        type="button"
+                        className="h-8 w-8 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
+                        aria-label="Reload"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                          <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                          <path d="M20 4v6h-6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Preview Content with loading overlay */}
