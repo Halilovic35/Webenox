@@ -139,8 +139,8 @@ const About = () => {
           transition={{ duration: 0.6, ease: [0.2, 0.7, 0.2, 1] }}
           viewport={scrollViewport}
         >
-          <h2 className="section-title luxury-heading">
-            Our <span className="gradient-text">Process</span>
+          <h2 className="section-title luxury-heading text-center">
+            Our <span className="gradient-text accent-underline">Process</span>
           </h2>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">

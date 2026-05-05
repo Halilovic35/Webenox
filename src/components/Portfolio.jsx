@@ -92,7 +92,7 @@ const TryOurDesigns = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Bring Your <span className="gradient-text">Ideas to Life</span>
+            Bring Your <span className="gradient-text accent-underline">Ideas to Life</span>
           </h2>
           <p className="section-description">
             Choose an industry and explore a design concept. These previews are just starting points, every project we build is fully custom, tailored to your business, your goals, and your users.

@@ -111,7 +111,7 @@ const Services = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Our <span className="gradient-text">Services</span>
+            Our <span className="gradient-text accent-underline">Services</span>
           </h2>
           <p className="section-description max-w-3xl mx-auto">{t('servicesSectionLead')}</p>
         </motion.div>
