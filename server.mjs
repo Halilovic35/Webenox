@@ -13,6 +13,10 @@ const distDir = path.join(__dirname, 'dist')
 const port = Number(process.env.PORT || 4173)
 const PREVIEW_PASSWORD = String(process.env.PREVIEW_PASSWORD || '1952')
 const PREVIEW_COOKIE = 'webenox_preview=1'
+const DISABLE_PREVIEW_AUTH =
+  process.env.DISABLE_PREVIEW_AUTH === '1' ||
+  process.env.DISABLE_PREVIEW_AUTH === 'true' ||
+  process.env.PUBLIC_SITE === '1'
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 const OPENAI_MODEL = String(process.env.OPENAI_MODEL || 'gpt-4o-mini')
 const DATABASE_URL = process.env.DATABASE_URL
@@ -81,6 +85,37 @@ function getCookieHeader(req) {
 function isAuthed(req) {
   const cookie = getCookieHeader(req)
   return cookie.includes(PREVIEW_COOKIE)
+}
+
+/** Railway / reverse proxies terminate TLS; Node sees HTTP unless we read forwarded proto. */
+function isHttpsRequest(req) {
+  const xf = String(req.headers?.['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase()
+  if (xf === 'https') return true
+  if (String(req.headers?.['x-forwarded-ssl'] || '').toLowerCase() === 'on') return true
+  return false
+}
+
+function previewCookieAttrs(req) {
+  const secure = isHttpsRequest(req) ? '; Secure' : ''
+  return `Path=/; HttpOnly; SameSite=Lax${secure}`
+}
+
+function isPublicStaticPath(pathOnly, method) {
+  if (method !== 'GET') return false
+  if (pathOnly === '/site.webmanifest' || pathOnly === '/manifest.json') return true
+  if (pathOnly === '/favicon.ico' || pathOnly === '/robots.txt' || pathOnly === '/sitemap.xml') return true
+  if (pathOnly.startsWith('/assets/') || pathOnly.startsWith('/images/')) return true
+  return false
+}
+
+function tryServePublicDist(req, res, pathOnly) {
+  if (!isPublicStaticPath(pathOnly, req.method || 'GET')) return false
+  const candidate = safeJoin(distDir, pathOnly)
+  if (candidate && existsSync(candidate) && statSync(candidate).isFile()) {
+    sendFile(res, candidate)
+    return true
+  }
+  return false
 }
 
 function readBody(req, limitBytes = 10_000) {
@@ -269,7 +304,7 @@ function sendLockScreen(res, opts = {}) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Webenox — Private Preview</title>
+    <title>Webenox · Private Preview</title>
     <style>
       :root { color-scheme: dark; }
       body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(1200px 700px at 20% 15%, rgba(0,201,255,0.18), transparent 55%), radial-gradient(1000px 600px at 85% 85%, rgba(146,95,226,0.14), transparent 55%), #05070c; color: rgba(255,255,255,0.92); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
@@ -302,6 +337,7 @@ function sendLockScreen(res, opts = {}) {
 
 const server = http.createServer((req, res) => {
   const urlPath = req.url || '/'
+  const pathOnly = urlPath.split('?')[0] || '/'
 
   // Healthcheck
   if (urlPath === '/health' || urlPath === '/healthz') {
@@ -323,11 +359,7 @@ const server = http.createServer((req, res) => {
         }
         res.statusCode = 302
         res.setHeader('Location', '/')
-        // 30 days cookie, secure on https
-        res.setHeader(
-          'Set-Cookie',
-          `${PREVIEW_COOKIE}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000; Secure`
-        )
+        res.setHeader('Set-Cookie', `${PREVIEW_COOKIE}; ${previewCookieAttrs(req)}; Max-Age=2592000`)
         res.end()
       })
       .catch(() => sendLockScreen(res, { error: 'Try again' }))
@@ -337,12 +369,15 @@ const server = http.createServer((req, res) => {
   if (urlPath.startsWith('/__logout')) {
     res.statusCode = 302
     res.setHeader('Location', '/')
-    res.setHeader('Set-Cookie', `webenox_preview=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax; Secure`)
+    res.setHeader('Set-Cookie', `webenox_preview=; ${previewCookieAttrs(req)}; Max-Age=0`)
     res.end()
     return
   }
 
-  if (!isAuthed(req)) {
+  // PWA / static: do not require preview cookie (no secrets in these files).
+  if (tryServePublicDist(req, res, pathOnly)) return
+
+  if (!DISABLE_PREVIEW_AUTH && !isAuthed(req)) {
     return sendLockScreen(res)
   }
 
@@ -358,10 +393,18 @@ const server = http.createServer((req, res) => {
     const pathOnly = urlPath.split('?')[0]
 
     const fail = (err) => {
+      console.error('[webenoxai]', err?.code || 'error', err?.message || err)
       if (err?.code === 'missing_openai_key') return sendJson(res, 500, { error: 'missing_openai_key' })
       if (err?.code === 'missing_database_url') return sendJson(res, 500, { error: 'missing_database_url' })
       if (err?.code === 'invalid_json_from_openai') return sendJson(res, 502, { error: 'invalid_json_from_openai', detail: err.detail })
-      return sendJson(res, 500, { error: 'server_error', detail: String(err?.message || err) })
+      if (err?.code === 'openai_error')
+        return sendJson(res, 502, { error: 'openai_error', status: err.status, detail: err.detail })
+      const code = err?.code || err?.name
+      return sendJson(res, 500, {
+        error: 'server_error',
+        code: code ? String(code) : undefined,
+        detail: String(err?.message || err)
+      })
     }
 
     // GET /api/webenoxai/saved
@@ -680,5 +723,14 @@ const server = http.createServer((req, res) => {
 server.listen(port, '0.0.0.0', () => {
   console.log(`[server] serving ${distDir}`)
   console.log(`[server] listening on 0.0.0.0:${port}`)
+  console.log(
+    `[server] preview auth: ${DISABLE_PREVIEW_AUTH ? 'disabled (PUBLIC)' : 'enabled'} | db: ${prisma ? 'on' : 'OFF'} | openai: ${openai ? 'on' : 'OFF'}`
+  )
+  if (prisma) {
+    prisma
+      .$connect()
+      .then(() => console.log('[server] prisma connected'))
+      .catch((e) => console.error('[server] prisma connect failed:', e?.message || e))
+  }
 })
 
