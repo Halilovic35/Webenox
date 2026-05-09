@@ -112,7 +112,10 @@ const Services = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Our <AccentUnderline className="gradient-text">Services</AccentUnderline>
+            Our{' '}
+            <AccentUnderline>
+              <span className="gradient-text">Services</span>
+            </AccentUnderline>
           </h2>
           <p className="section-description max-w-3xl mx-auto">{t('servicesSectionLead')}</p>
         </motion.div>

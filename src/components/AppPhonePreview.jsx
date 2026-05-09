@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import WebenoxFlyGame from './WebenoxFlyGame'
 import ClinicFlowApp from './ClinicFlowApp'
 import WebenoxShopApp from './WebenoxShopApp'
+import WebenoxAIApp from './WebenoxAIApp'
 
 /**
  * HTML embedded SVG defaults to a viewport that clips paint to the viewBox — strokes
@@ -178,15 +179,17 @@ const APP_META = {
     ),
     color: 'from-orange-400/55 to-rose-500/45'
   },
-  tablebook: {
+  webenoxai: {
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
-        <path d="M7 6h10v12H7V6Z" stroke="currentColor" strokeWidth="1.6" />
-        <path d="M9 4v4M15 4v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-        <path d="M9 11h6M9 14h6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.85" />
-      </svg>
+      <img
+        src="/images/WebenoxAI.png"
+        alt="WebenoxAI"
+        className="h-12 w-12 object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.55)]"
+        draggable={false}
+        loading="eager"
+      />
     ),
-    color: 'from-purple-400/55 to-fuchsia-500/45'
+    color: 'from-fuchsia-400/65 via-purple-500/55 to-indigo-500/45'
   },
   webenoxshop: {
     icon: (
@@ -242,6 +245,28 @@ const getIconGradient = (appId) => {
   return base || 'from-cyan-400/55 to-blue-500/45'
 }
 
+const getIconGlow = (appId, chrome) => {
+  if (appId === 'webenoxai') {
+    return {
+      glowA: 'rgba(255, 255, 255, 0.22)',
+      glowB: 'rgba(146, 95, 226, 0.32)'
+    }
+  }
+  if (appId === 'fittrack') {
+    return {
+      glowA: 'rgba(255, 255, 255, 0.22)',
+      glowB: 'rgba(255, 90, 120, 0.28)'
+    }
+  }
+  if (appId === 'clinicflow') {
+    return {
+      glowA: 'rgba(255, 255, 255, 0.22)',
+      glowB: 'rgba(16, 185, 129, 0.24)'
+    }
+  }
+  return { glowA: chrome.glowA, glowB: chrome.glowB }
+}
+
 const AppPhonePreview = () => {
   const [activeApp, setActiveApp] = useState(null)
   const [launcherBgId, setLauncherBgId] = useState(LAUNCHER_BACKGROUNDS[0].id)
@@ -290,7 +315,7 @@ const AppPhonePreview = () => {
       { id: 'clinicflow', name: 'ClinicFlow' },
       { id: 'webenoxshop', name: 'WebenoxShop' },
       { id: 'fittrack', name: 'FitTrack' },
-      { id: 'tablebook', name: 'TableBook' }
+      { id: 'webenoxai', name: 'WebenoxAI' }
     ],
     []
   )
@@ -346,8 +371,7 @@ const AppPhonePreview = () => {
     if (activeApp === 'clinicflow') return shell(<ClinicFlowApp ref={clinicNavRef} />)
     if (activeApp === 'webenoxshop') return shell(<WebenoxShopApp ref={shopNavRef} />)
     if (activeApp === 'fittrack') return shell(<PlaceholderApp title="FitTrack" items={['Workout: Upper Body', 'Progress: 68% this week', 'Streak: 4 days']} cta="Start Workout" />)
-    if (activeApp === 'tablebook')
-      return shell(<PlaceholderApp title="TableBook" items={['Available: 6:30 PM', 'Available: 7:00 PM', 'Available: 8:15 PM']} cta="Reserve Table" />)
+    if (activeApp === 'webenoxai') return shell(<WebenoxAIApp />)
     return null
   }
 
@@ -405,6 +429,7 @@ const AppPhonePreview = () => {
                           {apps.slice(0, 3).map((app) => {
                             const meta = APP_META[app.id]
                             const grad = getIconGradient(app.id)
+                            const glow = getIconGlow(app.id, chrome)
                             return (
                               <motion.button
                                 key={app.id}
@@ -421,7 +446,7 @@ const AppPhonePreview = () => {
                                   <div
                                     className="absolute -inset-4 rounded-[28px] blur-xl opacity-0 group-hover:opacity-90 transition-opacity"
                                     style={{
-                                      background: `radial-gradient(circle at 30% 25%, ${chrome.glowA}, transparent 55%), radial-gradient(circle at 70% 80%, ${chrome.glowB}, transparent 60%)`
+                                      background: `radial-gradient(circle at 30% 25%, ${glow.glowA}, transparent 55%), radial-gradient(circle at 70% 80%, ${glow.glowB}, transparent 60%)`
                                     }}
                                   />
                                   <div
@@ -440,6 +465,7 @@ const AppPhonePreview = () => {
                           {apps.slice(3).map((app) => {
                             const meta = APP_META[app.id]
                             const grad = getIconGradient(app.id)
+                            const glow = getIconGlow(app.id, chrome)
                             return (
                               <motion.button
                                 key={app.id}
@@ -456,7 +482,7 @@ const AppPhonePreview = () => {
                                   <div
                                     className="absolute -inset-4 rounded-[28px] blur-xl opacity-0 group-hover:opacity-90 transition-opacity"
                                     style={{
-                                      background: `radial-gradient(circle at 30% 25%, ${chrome.glowA}, transparent 55%), radial-gradient(circle at 70% 80%, ${chrome.glowB}, transparent 60%)`
+                                      background: `radial-gradient(circle at 30% 25%, ${glow.glowA}, transparent 55%), radial-gradient(circle at 70% 80%, ${glow.glowB}, transparent 60%)`
                                     }}
                                   />
                                   <div

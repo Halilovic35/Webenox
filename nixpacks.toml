@@ -2,8 +2,8 @@
 cmds = ["npm ci"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["npm run prisma:generate", "npm run build"]
 
 [start]
-cmd = "npm start"
+cmd = "npm run prisma:migrate && npm start"
 

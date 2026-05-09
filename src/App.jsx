@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { LanguageProvider } from './context/LanguageContext'
 import { PortfolioConfigProvider } from './context/PortfolioConfigContext'
@@ -7,6 +7,7 @@ import Navigation from './components/Navigation'
 import Hero from './components/Hero'
 import About from './components/About'
 import Services from './components/Services'
+import TryOurDesigns from './components/Portfolio'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
@@ -14,9 +15,6 @@ import ScrollProgress from './components/ScrollProgress'
 import AdvancedAnimations from './components/AdvancedAnimations'
 import Imprint from './components/Imprint'
 import DataProtection from './components/DataProtection'
-
-// Lazy load optional sections
-const TryOurDesigns = lazy(() => import('./components/Portfolio'))
 
 // Loading component for lazy-loaded sections
 const SectionLoader = () => (

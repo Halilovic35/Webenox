@@ -9,12 +9,17 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "gen:shop": "node scripts/generate-webenox-shop-data.mjs",
     "preview": "vite preview",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma db push",
     "start": "node -e \"console.log('[railway] starting, PORT=' + (process.env.PORT || ''));\" && node server.mjs"
   },
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "framer-motion": "^12.38.0",
+    "openai": "^6.36.0",
+    "prisma": "^6.19.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.7.1",

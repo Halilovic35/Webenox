@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { useLanguage } from '../context/LanguageContext'
+import AccentUnderline from './AccentUnderline'
 
 const Hero = () => {
   const [currentText, setCurrentText] = useState('')
@@ -113,7 +114,9 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           className="heading-1 text-text mb-3 sm:mb-4 tracking-tight"
         >
-          <span className="gradient-text">Webenox</span>
+          <AccentUnderline mode="load" delay={0.65} bottom="0.14em">
+            <span className="gradient-text">Webenox</span>
+          </AccentUnderline>
         </motion.h1>
 
         <motion.h2

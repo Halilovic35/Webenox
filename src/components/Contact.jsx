@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useLanguage } from '../context/LanguageContext'
+import AccentUnderline from './AccentUnderline'
 
 /** Same shell for every contact tile: size, radius, stroke weight aligned. */
 const ContactIconShell = ({ children }) => (
@@ -36,7 +37,10 @@ const Contact = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Let&apos;s <span className="gradient-text">Work Together</span>
+            Let&apos;s{' '}
+            <AccentUnderline>
+              <span className="gradient-text">Work Together</span>
+            </AccentUnderline>
           </h2>
           <p className="section-description">
             Ready to transform your ideas into reality? Choose the contact option that works best for you. No long forms, just direct access to our team.
