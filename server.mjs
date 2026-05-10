@@ -488,22 +488,22 @@ const server = http.createServer((req, res) => {
           let convoId = String(data.conversationId || '').trim()
           let convo = null
           if (convoId) {
-            convo = await prisma.aiConversation.findFirst({ where: { id: convoId, userId: user.id } })
+            convo = await prisma.aIConversation.findFirst({ where: { id: convoId, userId: user.id } })
           }
           if (!convo) {
-            convo = await prisma.aiConversation.create({
+            convo = await prisma.aIConversation.create({
               data: { userId: user.id, title: message.slice(0, 80) || 'Conversation' }
             })
             convoId = convo.id
           }
 
-          const prev = await prisma.aiMessage.findMany({
+          const prev = await prisma.aIMessage.findMany({
             where: { conversationId: convoId },
             orderBy: { createdAt: 'asc' },
             take: 18
           })
 
-          await prisma.aiMessage.create({
+          await prisma.aIMessage.create({
             data: { userId: user.id, conversationId: convoId, role: 'user', content: message }
           })
 
@@ -522,7 +522,7 @@ const server = http.createServer((req, res) => {
 
           const aiText = await openaiText({ system, prompt })
 
-          const aiRow = await prisma.aiMessage.create({
+          const aiRow = await prisma.aIMessage.create({
             data: { userId: user.id, conversationId: convoId, role: 'assistant', content: aiText }
           })
 
@@ -540,7 +540,7 @@ const server = http.createServer((req, res) => {
       const anonId = getAnonId(req, null)
       return getOrCreateUserByAnonId(anonId)
         .then((user) =>
-          prisma.aiConversation.findMany({
+          prisma.aIConversation.findMany({
             where: { userId: user.id },
             orderBy: { updatedAt: 'desc' },
             take: 30
@@ -557,9 +557,9 @@ const server = http.createServer((req, res) => {
       const anonId = getAnonId(req, null)
       return getOrCreateUserByAnonId(anonId)
         .then(async (user) => {
-          const convo = await prisma.aiConversation.findFirst({ where: { id: convoId, userId: user.id } })
+          const convo = await prisma.aIConversation.findFirst({ where: { id: convoId, userId: user.id } })
           if (!convo) return sendJson(res, 404, { error: 'not_found' })
-          const msgs = await prisma.aiMessage.findMany({
+          const msgs = await prisma.aIMessage.findMany({
             where: { conversationId: convoId },
             orderBy: { createdAt: 'asc' },
             take: 80
