@@ -420,6 +420,45 @@ function sendLockScreen(res, opts = {}) {
 </html>`)
 }
 
+function sendSharePreview(res, req) {
+  const host = String(req.headers?.host || 'webenox.de').trim() || 'webenox.de'
+  const proto = isHttpsRequest(req) ? 'https' : 'http'
+  const base = `${proto}://${host}`
+  const url = `${base}/`
+  const img = `${base}/images/og-image.png`
+  const title = 'Webenox - Premium Digital Agency'
+  const desc = 'Transform your ideas into exceptional digital experiences. Web development, mobile apps, UI/UX design, and branding services.'
+
+  res.statusCode = 200
+  res.setHeader('Content-Type', 'text/html; charset=utf-8')
+  res.setHeader('Cache-Control', 'no-store')
+  res.end(`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${title}</title>
+    <link rel="canonical" href="${url}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="${url}" />
+    <meta property="og:title" content="${title}" />
+    <meta property="og:description" content="${desc}" />
+    <meta property="og:image" content="${img}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="${url}" />
+    <meta property="twitter:title" content="${title}" />
+    <meta property="twitter:description" content="${desc}" />
+    <meta property="twitter:image" content="${img}" />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <noscript>Webenox</noscript>
+  </body>
+</html>`)
+}
+
 const server = http.createServer((req, res) => {
   const urlPath = req.url || '/'
   const pathOnly = urlPath.split('?')[0] || '/'
@@ -462,6 +501,11 @@ const server = http.createServer((req, res) => {
 
   // PWA / static: do not require preview cookie (no secrets in these files).
   if (tryServePublicDist(req, res, pathOnly)) return
+
+  // Public OG preview endpoint for social crawlers (keep site gated).
+  if (req.method === 'GET' && pathOnly === '/share') {
+    return sendSharePreview(res, req)
+  }
 
   if (!DISABLE_PREVIEW_AUTH && !isAuthed(req)) {
     return sendLockScreen(res)
