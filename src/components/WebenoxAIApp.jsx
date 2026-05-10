@@ -241,6 +241,11 @@ export default function WebenoxAIApp() {
   const [messages, setMessages] = useState(() => [
     { id: 'm0', role: 'ai', text: 'Ask anything. Product, design, code, marketing, strategy.' }
   ])
+  const chatScrollRef = useRef(null)
+  const chatEndRef = useRef(null)
+  const chatStickRef = useRef(true)
+  const [chatStuck, setChatStuck] = useState(true)
+  const streamRef = useRef({ t: 0 })
 
   const loadingTimerRef = useRef({ ids: [] })
 
@@ -248,8 +253,61 @@ export default function WebenoxAIApp() {
     return () => {
       loadingTimerRef.current.ids.forEach((id) => window.clearTimeout(id))
       loadingTimerRef.current.ids = []
+      if (streamRef.current.t) window.clearInterval(streamRef.current.t)
+      streamRef.current.t = 0
     }
   }, [])
+
+  const updateChatStickiness = () => {
+    const el = chatScrollRef.current
+    if (!el) return
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
+    // Stick to bottom unless user intentionally scrolls up.
+    const stuck = distanceFromBottom < 120
+    chatStickRef.current = stuck
+    setChatStuck(stuck)
+  }
+
+  const scrollChatToEnd = (behavior = 'auto') => {
+    const end = chatEndRef.current
+    if (!end) return
+    end.scrollIntoView({ block: 'end', behavior })
+  }
+
+  const startStream = (id, fullText) => {
+    if (streamRef.current.t) window.clearInterval(streamRef.current.t)
+    streamRef.current.t = 0
+
+    const txt = String(fullText || '')
+    let i = 0
+    const step = () => {
+      const burst = 3 + Math.floor(Math.random() * 3) // 3-5 chars
+      i = Math.min(txt.length, i + burst)
+      const chunk = txt.slice(0, i)
+      setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, text: chunk } : m)))
+      if (chatStickRef.current) scrollChatToEnd('auto')
+      if (i >= txt.length) {
+        window.clearInterval(streamRef.current.t)
+        streamRef.current.t = 0
+      }
+    }
+    // start quickly so it feels alive
+    step()
+    streamRef.current.t = window.setInterval(step, 18)
+  }
+
+  useEffect(() => {
+    if (route !== 'chat') return
+    // allow layout to paint first
+    window.requestAnimationFrame(() => scrollChatToEnd('auto'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route])
+
+  useEffect(() => {
+    if (route !== 'chat') return
+    scrollChatToEnd('smooth')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages.length, isTyping, route])
 
   useEffect(() => {
     setRouteHistory((prev) => {
@@ -495,6 +553,7 @@ export default function WebenoxAIApp() {
     const userMsg = { id: `u_${Date.now()}`, role: 'user', text: value }
     setMessages((prev) => [...prev, userMsg])
     setChatInput('')
+    window.requestAnimationFrame(() => scrollChatToEnd('auto'))
     setIsTyping(true)
     try {
       const data = await apiFetch('/api/webenoxai/chat', {
@@ -505,7 +564,13 @@ export default function WebenoxAIApp() {
       refreshConversations()
       const aiText = String(data?.message?.text || '').trim()
       if (!aiText) throw new Error('empty_ai')
-      setMessages((prev) => prev.concat([{ id: `a_${Date.now()}`, role: 'ai', text: aiText }]))
+      const id = `a_${Date.now()}`
+      setMessages((prev) => prev.concat([{ id, role: 'ai', text: '' }]))
+      setIsTyping(false)
+      chatStickRef.current = true
+      setChatStuck(true)
+      window.requestAnimationFrame(() => scrollChatToEnd('auto'))
+      startStream(id, aiText)
     } catch {
       showToast('Chat failed (API/network)')
     } finally {
@@ -1175,7 +1240,11 @@ export default function WebenoxAIApp() {
                 </div>
 
                 <Surface className="flex-1 min-h-0 overflow-hidden">
-                  <div className="h-full min-h-0 overflow-auto p-4 space-y-3">
+                  <div
+                    ref={chatScrollRef}
+                    onScroll={updateChatStickiness}
+                    className="h-full min-h-0 overflow-auto p-4 space-y-3 scroll-smooth"
+                  >
                     {messages.map((m) => (
                       <div key={m.id} className={cls('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
                         <div
@@ -1195,6 +1264,7 @@ export default function WebenoxAIApp() {
                         </div>
                       </div>
                     )}
+                    <div ref={chatEndRef} />
                   </div>
                 </Surface>
 
@@ -1224,6 +1294,27 @@ export default function WebenoxAIApp() {
                     </div>
                   </Surface>
                 </div>
+
+                <AnimatePresence>
+                  {!chatStuck && (
+                    <motion.button
+                      type="button"
+                      onClick={() => {
+                        chatStickRef.current = true
+                        setChatStuck(true)
+                        scrollChatToEnd('smooth')
+                      }}
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="absolute bottom-[108px] right-6 z-20 rounded-full border border-white/12 bg-black/50 px-3.5 py-2 text-[11px] font-extrabold text-white/80 shadow-[0_18px_60px_-45px_rgba(0,0,0,0.9)] backdrop-blur-md"
+                      aria-label="Scroll to latest"
+                    >
+                      Latest
+                    </motion.button>
+                  )}
+                </AnimatePresence>
 
                 <AnimatePresence>
                   {isThreadsOpen && (
