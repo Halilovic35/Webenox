@@ -572,9 +572,9 @@ const server = http.createServer((req, res) => {
           })
 
           const system =
-            'You are WebenoxAI — a premium AI assistant for founders and brands. ' +
-            'You can act as: startup advisor, branding expert, UI/UX consultant, SaaS strategist, product architect. ' +
-            'Be concise, structured, and actionable. Use short sections, bullets, and next steps. No fluff.'
+            'You are WebenoxAI — a premium general-purpose AI assistant. ' +
+            'Answer any question (business, design, code, marketing, strategy, writing, learning, planning). ' +
+            'Be concise, structured, and actionable. Use short sections, bullets, and next steps when helpful. No fluff.'
 
           const prompt =
             `Conversation:\n` +

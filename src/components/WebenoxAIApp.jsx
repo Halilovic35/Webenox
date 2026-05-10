@@ -269,9 +269,13 @@ export default function WebenoxAIApp() {
   }
 
   const scrollChatToEnd = (behavior = 'auto') => {
-    const end = chatEndRef.current
-    if (!end) return
-    end.scrollIntoView({ block: 'end', behavior })
+    const el = chatScrollRef.current
+    if (!el) return
+    // IMPORTANT: don't use scrollIntoView here — it can scroll the whole page
+    // (and yank the user above the phone preview). Only scroll the chat container.
+    const top = el.scrollHeight
+    if (behavior === 'smooth') el.scrollTo({ top, behavior: 'smooth' })
+    else el.scrollTop = top
   }
 
   const startStream = (id, fullText) => {
