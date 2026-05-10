@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename)
 
 const distDir = path.join(__dirname, 'dist')
 const port = Number(process.env.PORT || 4173)
-const PREVIEW_PASSWORD = String(process.env.PREVIEW_PASSWORD || '1952')
+const PREVIEW_PASSWORD = String(process.env.PREVIEW_PASSWORD || '2908')
 const PREVIEW_COOKIE = 'webenox_preview=1'
 const DISABLE_PREVIEW_AUTH =
   process.env.DISABLE_PREVIEW_AUTH === '1' ||
@@ -444,7 +444,8 @@ const server = http.createServer((req, res) => {
         }
         res.statusCode = 302
         res.setHeader('Location', '/')
-        res.setHeader('Set-Cookie', `${PREVIEW_COOKIE}; ${previewCookieAttrs(req)}; Max-Age=2592000`)
+        // Session cookie: requires password again after browser is closed.
+        res.setHeader('Set-Cookie', `${PREVIEW_COOKIE}; ${previewCookieAttrs(req)}`)
         res.end()
       })
       .catch(() => sendLockScreen(res, { error: 'Try again' }))
