@@ -3,6 +3,12 @@ import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 
 const cls = (...xs) => xs.filter(Boolean).join(' ')
 
+const welcomeChatMessage = () => ({
+  id: `welcome_${Date.now()}`,
+  role: 'ai',
+  text: 'Ask anything you want — welcome to WebenoxAI.'
+})
+
 const Screen = ({ children }) => (
   <div className="relative h-full w-full min-h-0 overflow-hidden bg-[#070810]">
     <div className="pointer-events-none absolute inset-0">
@@ -33,7 +39,8 @@ const Surface = ({ children, className }) => (
     )}
   >
     <div className="pointer-events-none absolute inset-0 rounded-[28px] bg-[radial-gradient(circle_at_15%_10%,rgba(255,255,255,0.10),transparent_55%),radial-gradient(circle_at_85%_90%,rgba(255,255,255,0.06),transparent_55%)]" />
-    <div className="relative">{children}</div>
+    {/* h-full min-h-0: so nested overflow-y (chat) gets a bounded height inside flex layouts */}
+    <div className="relative h-full min-h-0">{children}</div>
   </div>
 )
 
@@ -238,9 +245,7 @@ export default function WebenoxAIApp() {
 
   const [chatInput, setChatInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [messages, setMessages] = useState(() => [
-    { id: 'm0', role: 'ai', text: 'Ask anything. Product, design, code, marketing, strategy.' }
-  ])
+  const [messages, setMessages] = useState(() => [welcomeChatMessage()])
   const chatScrollRef = useRef(null)
   const chatEndRef = useRef(null)
   const chatStickRef = useRef(true)
@@ -408,7 +413,8 @@ export default function WebenoxAIApp() {
       const data = await apiFetch(`/api/webenoxai/conversations/${id}/messages`, { method: 'GET', headers: {} })
       if (data?.conversationId) setConversationId(data.conversationId)
       if (Array.isArray(data.messages)) {
-        setMessages(data.messages.map((m) => ({ id: m.id, role: m.role, text: m.text })))
+        const mapped = data.messages.map((m) => ({ id: m.id, role: m.role, text: m.text }))
+        setMessages(mapped.length ? mapped : [welcomeChatMessage()])
       }
     } catch {
       // ignore
@@ -603,7 +609,7 @@ export default function WebenoxAIApp() {
   )
 
   const header = (
-    <div className="relative z-10 pl-2 pr-5 pt-4 pb-3">
+    <div className="relative z-10 px-4 pt-4 pb-3">
       <div className="flex items-center justify-between gap-2">
         <div className="relative flex min-w-0 items-center -ml-3">
           <div
@@ -642,7 +648,7 @@ export default function WebenoxAIApp() {
         <Toast toast={toast} />
         {header}
 
-        <div className="relative z-10 flex-1 min-h-0 overflow-hidden pl-3 pr-5 pb-3">
+        <div className="relative z-10 flex flex-1 min-h-0 flex-col overflow-hidden px-4 pb-3">
           <AnimatePresence mode="wait" initial={false}>
             {showIntro && (
               <MotionConfig reducedMotion="never">
@@ -841,7 +847,7 @@ export default function WebenoxAIApp() {
                             exit={{ opacity: 0, y: -8, filter: 'blur(6px)' }}
                             transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
                           >
-                            Ask anything. Get clean, structured answers.
+                            Open Chat and type below — answers stream in as you go.
                           </motion.div>
                         )}
                         {introStep === 1 && (
@@ -914,7 +920,7 @@ export default function WebenoxAIApp() {
               </MotionConfig>
             )}
             {route === 'home' && (
-              <motion.div key="home" {...pageMotion} className="h-full min-h-0 flex flex-col overflow-hidden">
+              <motion.div key="home" {...pageMotion} className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 <div className="flex-1 min-h-0 overflow-auto pb-24 space-y-3">
                   <Surface className="p-4">
                     <SectionTitle overline="WELCOME" title="What do you want to build?" right={<TinyPill tone="brand">v2</TinyPill>} />
@@ -978,7 +984,7 @@ export default function WebenoxAIApp() {
             )}
 
             {route === 'create' && (
-              <motion.div key="create" {...pageMotion} className="h-full min-h-0 flex flex-col overflow-hidden">
+              <motion.div key="create" {...pageMotion} className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 <div className="flex items-center justify-between gap-3 pb-2">
                   <div className="text-sm font-extrabold text-white/90">Create</div>
                   <GhostButton onClick={() => setRoute('home')}>Close</GhostButton>
@@ -1226,15 +1232,15 @@ export default function WebenoxAIApp() {
             )}
 
             {route === 'chat' && (
-              <motion.div key="chat" {...pageMotion} className="h-full min-h-0 flex flex-col overflow-hidden">
-                <div className="flex items-center justify-between gap-3 pb-2">
-                  <div className="text-sm font-extrabold text-white/90 ml-2">Chat</div>
+              <motion.div key="chat" {...pageMotion} className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+                <div className="flex shrink-0 items-center justify-between gap-3 pb-2">
+                  <div className="text-sm font-extrabold text-white/90">Chat</div>
                   <div className="flex items-center gap-2">
                     <GhostButton onClick={() => setThreadsOpen(true)}>Threads</GhostButton>
                     <GhostButton
                       onClick={() => {
                         setConversationId('')
-                        setMessages([{ id: 'm0', role: 'ai', text: 'Ask anything. I will answer clearly and fast.' }])
+                        setMessages([welcomeChatMessage()])
                         showToast('New chat started')
                       }}
                     >
@@ -1247,7 +1253,7 @@ export default function WebenoxAIApp() {
                   <div
                     ref={chatScrollRef}
                     onScroll={updateChatStickiness}
-                    className="h-full min-h-0 overflow-auto p-4 space-y-3 scroll-smooth"
+                    className="webenoxai-chat-scroll h-full min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain p-4 pb-6 space-y-3 scroll-smooth touch-pan-y [-webkit-overflow-scrolling:touch]"
                   >
                     {messages.map((m) => (
                       <div key={m.id} className={cls('flex', m.role === 'user' ? 'justify-end' : 'justify-start')}>
@@ -1272,8 +1278,8 @@ export default function WebenoxAIApp() {
                   </div>
                 </Surface>
 
-                <div className="pt-3">
-                  <Surface className="px-3 py-2">
+                <div className="shrink-0 pt-3">
+                  <Surface className="px-4 py-2">
                     <div className="flex items-center gap-2">
                       <input
                         value={chatInput}
@@ -1281,8 +1287,8 @@ export default function WebenoxAIApp() {
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') sendChat()
                         }}
-                        className="flex-1 bg-transparent text-[12px] text-white/85 placeholder:text-white/35 outline-none"
-                        placeholder="Message…"
+                        className="min-w-0 flex-1 bg-transparent text-[12px] text-white/85 placeholder:text-white/35 outline-none"
+                        placeholder="Ask whatever you need…"
                       />
                       <button
                         type="button"
@@ -1312,7 +1318,7 @@ export default function WebenoxAIApp() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.98 }}
                       transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="absolute bottom-[108px] right-6 z-20 rounded-full border border-white/12 bg-black/50 px-3.5 py-2 text-[11px] font-extrabold text-white/80 shadow-[0_18px_60px_-45px_rgba(0,0,0,0.9)] backdrop-blur-md"
+                      className="absolute bottom-[108px] right-4 z-20 rounded-full border border-white/12 bg-black/50 px-3.5 py-2 text-[11px] font-extrabold text-white/80 shadow-[0_18px_60px_-45px_rgba(0,0,0,0.9)] backdrop-blur-md"
                       aria-label="Scroll to latest"
                     >
                       Latest
@@ -1373,7 +1379,7 @@ export default function WebenoxAIApp() {
             )}
 
             {route === 'vault' && (
-              <motion.div key="vault" {...pageMotion} className="h-full min-h-0 flex flex-col overflow-hidden">
+              <motion.div key="vault" {...pageMotion} className="flex min-h-0 flex-1 flex-col overflow-hidden">
                 <div className="flex items-center justify-between gap-3 pb-2">
                   <div className="text-sm font-extrabold text-white/90">Vault</div>
                   <GhostButton onClick={() => setRoute('home')}>Close</GhostButton>
@@ -1418,7 +1424,7 @@ export default function WebenoxAIApp() {
           </AnimatePresence>
         </div>
 
-        <div className="relative z-10 pl-3 pr-5 pb-4">
+        <div className="relative z-10 px-4 pb-4">
           <div className="rounded-3xl border border-white/12 bg-black/40 backdrop-blur-xl px-2 py-2 shadow-[0_22px_70px_-50px_rgba(0,0,0,0.95)]">
             <div className="flex items-center justify-between gap-2">
               <TabButton active={route === 'chat'} icon={Icon.Chat} label="Chat" onClick={() => setRoute('chat')} />

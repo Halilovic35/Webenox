@@ -124,11 +124,11 @@ const TryOurDesigns = () => {
                 </button>
               )
             })}
-          </div>
+                    </div>
           <p className="text-secondary text-sm text-center max-w-3xl">
             Explore websites or interactive app concepts. These are just starting points, every project is fully custom.
           </p>
-        </div>
+                    </div>
 
         <AnimatePresence mode="wait" initial={false}>
           {previewMode === 'website' ? (
@@ -139,11 +139,11 @@ const TryOurDesigns = () => {
             >
               {/* Left Panel - Controls */}
               <div className="space-y-6 order-2 lg:order-1 lg:max-w-xs">
-                <div>
+                          <div>
                   <h3 className="text-base font-semibold text-text mb-3">1. Select Industry</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {industries.map((ind) => (
-                      <motion.button
+                        <motion.button
                         key={ind.id}
                         onClick={() => handleIndustryChange(ind.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
@@ -154,16 +154,16 @@ const TryOurDesigns = () => {
                       >
                         <span className="text-accent flex-shrink-0">{INDUSTRY_ICONS[ind.icon] || INDUSTRY_ICONS.clinic}</span>
                         <span className="block text-sm font-medium text-text truncate">{ind.shortLabel}</span>
-                      </motion.button>
+                        </motion.button>
                     ))}
                   </div>
                 </div>
 
-                <div>
+                  <div>
                   <h3 className="text-base font-semibold text-text mb-3">2. Select Style</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {styles.map((sty) => (
-                      <motion.button
+                  <motion.button 
                         key={sty.id}
                         onClick={() => handleStyleChange(sty.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
@@ -179,13 +179,13 @@ const TryOurDesigns = () => {
                             {sty.colorStrip.map((c, i) => (
                               <span key={i} className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: c }} />
                             ))}
-                          </div>
-                        )}
+                      </div>
+                    )}
                       </motion.button>
-                    ))}
-                  </div>
-                </div>
+                ))}
               </div>
+            </div>
+        </div>
 
               {/* Right Panel - Browser-style Preview (~68%) */}
               <div className="order-1 lg:order-2">
@@ -196,7 +196,7 @@ const TryOurDesigns = () => {
                 </p>
                 <div
                   className="rounded-2xl shadow-2xl border border-white/10 bg-background/40 backdrop-blur-sm"
-                  style={{
+                style={{ 
                     overflow: 'clip',
                     boxShadow: '0 25px 80px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)'
                   }}
@@ -211,7 +211,7 @@ const TryOurDesigns = () => {
                       >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
                           <path d="M14 6 8 12l6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+              </svg>
                       </button>
                       <button
                         type="button"
@@ -220,20 +220,20 @@ const TryOurDesigns = () => {
                       >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
                           <path d="M10 6l6 6-6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+              </svg>
                       </button>
-                    </div>
-
+            </div>
+            
                     <div className="flex-1 flex justify-center">
                       <div className="flex w-full max-w-md items-center gap-2 rounded-full border border-white/12 bg-black/25 px-4 py-2 text-[12px] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-emerald-300/80 shrink-0" aria-hidden>
                           <path d="M7.5 11V9a4.5 4.5 0 0 1 9 0v2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                           <path d="M7 11h10v9H7v-9Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-                        </svg>
+              </svg>
                         <span className="truncate font-medium">{selectedIndustry?.demoDomain || 'yourbusiness.com'}</span>
-                      </div>
+            </div>
                     </div>
-
+                    
                     <div className="flex items-center gap-2 text-white/45">
                       <button
                         type="button"
@@ -245,9 +245,9 @@ const TryOurDesigns = () => {
                           <path d="M20 4v6h-6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </button>
+                      </div>
                     </div>
-                  </div>
-
+                    
                   {/* Preview Content with loading overlay */}
                   <div
                     id="portfolio-preview-scroll-container"
@@ -255,41 +255,41 @@ const TryOurDesigns = () => {
                     style={{ height: 'max(60vh, 520px)' }}
                   >
                     <PortfolioLivePreview industry={selectedIndustry} style={selectedStyle} />
-                  </div>
-
+                    </div>
+                    
                   {/* CTA Footer */}
                   <div className="p-5 border-t border-white/10 bg-background/90 backdrop-blur-sm">
                     {hasBothSelected && (
-                      <motion.p
+              <motion.p 
                         initial={{ opacity: 0, y: 4 }}
-                        animate={{ opacity: 1, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
                         className="text-sm text-accent mb-3 text-center font-medium"
-                      >
+              >
                         Preview: {selectedIndustry.brandName || selectedIndustry.shortLabel} · {selectedStyle.name}
-                      </motion.p>
+              </motion.p>
                     )}
-                    <motion.button
+              <motion.button
                       onClick={chooseConfiguration}
                       whileHover={{ scale: 1.02, boxShadow: '0 20px 50px rgba(0, 201, 255, 0.35)' }}
-                      whileTap={{ scale: 0.98 }}
+                        whileTap={{ scale: 0.98 }}
                       className="w-full py-5 px-8 rounded-2xl font-bold text-xl bg-gradient-to-r from-accent to-purple text-background hover:from-accent/90 hover:to-purple/90 transition-all shadow-lg hover:shadow-glow-lg"
-                    >
+                      >
                       Start My Website
-                    </motion.button>
+                      </motion.button>
                     <p className="text-xs text-secondary mt-3 text-center">
                       We'll customize this design for your brand, content, and goals.
                     </p>
                   </div>
-                </div>
-              </div>
-            </motion.div>
+                          </div>
+                    </div>
+                  </motion.div>
           ) : (
             <motion.div key="app" {...switchMotion} className="flex justify-center">
               <AppPhonePreview />
-            </motion.div>
+        </motion.div>
           )}
-        </AnimatePresence>
-      </div>
+      </AnimatePresence>
+    </div>
     </section>
   )
 }
