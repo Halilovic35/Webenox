@@ -414,24 +414,26 @@ function sendLockScreen(res, opts = {}) {
     <meta name="robots" content="noindex, nofollow" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://webenox.de/" />
+    <meta property="og:url" content="https://www.webenox.de/" />
     <meta property="og:title" content="Webenox - Premium Digital Agency" />
     <meta
       property="og:description"
       content="Transform your ideas into exceptional digital experiences. Web development, mobile apps, UI/UX design, and branding services."
     />
-    <meta property="og:image" content="https://webenox.de/images/og-image.png" />
+    <meta property="og:image" content="https://www.webenox.de/images/og-image.png" />
+    <meta property="og:image:secure_url" content="https://www.webenox.de/images/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://webenox.de/" />
+    <meta property="twitter:url" content="https://www.webenox.de/" />
     <meta property="twitter:title" content="Webenox - Premium Digital Agency" />
     <meta
       property="twitter:description"
       content="Transform your ideas into exceptional digital experiences. Web development, mobile apps, UI/UX design, and branding services."
     />
-    <meta property="twitter:image" content="https://webenox.de/images/og-image.png" />
+    <meta property="twitter:image" content="https://www.webenox.de/images/og-image.png" />
     <style>
       :root { color-scheme: dark; }
       body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(1200px 700px at 20% 15%, rgba(0,201,255,0.18), transparent 55%), radial-gradient(1000px 600px at 85% 85%, rgba(146,95,226,0.14), transparent 55%), #05070c; color: rgba(255,255,255,0.92); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
