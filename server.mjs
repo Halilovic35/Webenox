@@ -179,6 +179,40 @@ async function getOrCreateUserByAnonId(anonId) {
   return await prisma.user.create({ data: { anonId } })
 }
 
+/** Avoid dozens of threads all titled "hi" — use timestamp label for generic openers. */
+function threadTitleFromFirstMessage(text) {
+  const t = String(text || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+  if (!t) return 'Chat'
+  const noEndPunct = t.replace(/[.!?…]+$/u, '').trim()
+  const generic = /^(hi|hey|hello|hej|hola|yo|ok+|okay|yes|no|hvala|thanks?|thank you|hallo|test(ing)?)$/iu.test(noEndPunct)
+  if (t.length <= 22 && generic) {
+    const fmt = new Intl.DateTimeFormat('en-GB', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    return `Chat · ${fmt.format(new Date())}`
+  }
+  return t.length > 76 ? `${t.slice(0, 73)}…` : t
+}
+
+/** If the stored title is a short placeholder, replace from user text or first AI line. */
+function improvedThreadTitle(existingTitle, userMessage, aiText) {
+  const ex = String(existingTitle || '').trim()
+  const exCore = ex.replace(/[.!?…]+$/u, '').trim()
+  const looksPlaceholder = ex.length <= 3 || /^(hi|hey|hello|hej|yo|ok+|\.{2,}|…+)$/iu.test(exCore)
+  if (!looksPlaceholder) return null
+  const um = String(userMessage || '').trim().replace(/\s+/g, ' ')
+  if (um.length >= 18) return um.length > 76 ? `${um.slice(0, 73)}…` : um
+  const lines = String(aiText || '')
+    .replace(/\*+/g, ' ')
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+  const first = lines.find((l) => !/^#{1,6}\s/.test(l)) || lines[0] || ''
+  const cleaned = first.replace(/^[-*]\s+/, '').replace(/^#{1,6}\s*/, '').trim()
+  if (cleaned.length >= 14) return cleaned.length > 80 ? `${cleaned.slice(0, 77)}…` : cleaned
+  return null
+}
+
 async function openaiText({ system, prompt, temperature = 0.4 }) {
   if (!openai) {
     const err = new Error('OPENAI_API_KEY not set')
@@ -556,7 +590,7 @@ const server = http.createServer((req, res) => {
           }
           if (!convo) {
             convo = await prisma.aIConversation.create({
-              data: { userId: user.id, title: message.slice(0, 80) || 'Conversation' }
+              data: { userId: user.id, title: threadTitleFromFirstMessage(message) }
             })
             convoId = convo.id
           }
@@ -590,6 +624,12 @@ const server = http.createServer((req, res) => {
             data: { userId: user.id, conversationId: convoId, role: 'assistant', content: aiText }
           })
 
+          // Bump thread order + fix placeholder titles (Prisma does not auto-touch parent on child rows).
+          const patch = { updatedAt: new Date() }
+          const nextTitle = improvedThreadTitle(convo?.title, message, aiText)
+          if (nextTitle) patch.title = nextTitle
+          await prisma.aIConversation.update({ where: { id: convoId }, data: patch })
+
           return sendJson(res, 200, {
             anonId,
             conversationId: convoId,
@@ -610,7 +650,17 @@ const server = http.createServer((req, res) => {
             take: 30
           })
         )
-        .then((rows) => sendJson(res, 200, { anonId, conversations: rows }))
+        .then((rows) =>
+          sendJson(res, 200, {
+            anonId,
+            conversations: rows.map((r) => ({
+              id: r.id,
+              title: r.title,
+              createdAt: r.createdAt,
+              updatedAt: r.updatedAt
+            }))
+          })
+        )
         .catch(fail)
     }
 

@@ -216,10 +216,18 @@ export default function WebenoxAIApp() {
 
   const [anonId, setAnonId] = useState(() => {
     try {
-      return localStorage.getItem('webenoxai_anon') || ''
+      const x = localStorage.getItem('webenoxai_anon')
+      if (x && String(x).trim()) return String(x).trim().slice(0, 80)
     } catch {
-      return ''
+      // ignore
     }
+    const gen = `anon_${crypto.randomUUID()}`
+    try {
+      localStorage.setItem('webenoxai_anon', gen)
+    } catch {
+      // ignore
+    }
+    return gen
   })
   const [conversationId, setConversationId] = useState('')
   const [routeHistory, setRouteHistory] = useState(() => ['chat'])
@@ -1236,7 +1244,14 @@ export default function WebenoxAIApp() {
                 <div className="flex shrink-0 items-center justify-between gap-3 pb-2">
                   <div className="text-sm font-extrabold text-white/90">Chat</div>
                   <div className="flex items-center gap-2">
-                    <GhostButton onClick={() => setThreadsOpen(true)}>Threads</GhostButton>
+                    <GhostButton
+                      onClick={() => {
+                        refreshConversations()
+                        setThreadsOpen(true)
+                      }}
+                    >
+                      Threads
+                    </GhostButton>
                     <GhostButton
                       onClick={() => {
                         setConversationId('')
@@ -1345,7 +1360,7 @@ export default function WebenoxAIApp() {
                       >
                         <Surface className="p-4">
                           <SectionTitle overline="THREADS" title="Conversations" right={<GhostButton onClick={() => setThreadsOpen(false)}>Close</GhostButton>} />
-                          <div className="mt-3 space-y-2 max-h-[46vh] overflow-auto">
+                          <div className="webenoxai-chat-scroll mt-3 max-h-[46vh] space-y-2 overflow-y-auto overflow-x-hidden overscroll-contain pr-1">
                             {conversations.length === 0 ? (
                               <div className="rounded-3xl border border-white/10 bg-black/20 px-4 py-4 text-[12px] text-white/60">
                                 No conversations yet.
