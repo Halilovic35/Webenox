@@ -186,11 +186,19 @@ async function openaiText({ system, prompt, temperature = 0.4 }) {
     throw err
   }
   const input = [system, prompt].filter(Boolean).join('\n\n')
-  const resp = await openai.responses.create({
-    model: OPENAI_MODEL,
-    input,
-    temperature
-  })
+  const baseBody = { model: OPENAI_MODEL, input }
+  const tryBody = temperature == null ? baseBody : { ...baseBody, temperature }
+  let resp
+  try {
+    resp = await openai.responses.create(tryBody)
+  } catch (e) {
+    const msg = String(e?.message || '')
+    if (String(e?.status || '') === '400' && msg.includes("Unsupported parameter: 'temperature'")) {
+      resp = await openai.responses.create(baseBody)
+    } else {
+      throw e
+    }
+  }
   return String(resp.output_text || '').trim()
 }
 
@@ -201,12 +209,22 @@ async function openaiJson({ system, prompt }) {
     throw err
   }
   const input = [system, prompt].filter(Boolean).join('\n\n')
-  const resp = await openai.responses.create({
+  const baseBody = {
     model: OPENAI_MODEL,
     input,
-    temperature: 0.35,
     response_format: { type: 'json_object' }
-  })
+  }
+  let resp
+  try {
+    resp = await openai.responses.create({ ...baseBody, temperature: 0.35 })
+  } catch (e) {
+    const msg = String(e?.message || '')
+    if (String(e?.status || '') === '400' && msg.includes("Unsupported parameter: 'temperature'")) {
+      resp = await openai.responses.create(baseBody)
+    } else {
+      throw e
+    }
+  }
   const text = String(resp.output_text || '').trim()
   const parsed = safeJsonParse(text)
   if (parsed.ok) return parsed.value
@@ -266,6 +284,35 @@ async function callOpenAI({ prompt, system, jsonSchemaHint }) {
 
   const text = await r.text()
   if (!r.ok) {
+    // Some models (e.g. reasoning models) reject temperature; retry once without it.
+    if (r.status === 400 && String(text).includes("Unsupported parameter: 'temperature'")) {
+      const body2 = { ...body }
+      delete body2.temperature
+      const r2 = await fetch('https://api.openai.com/v1/responses', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body2)
+      })
+      const text2 = await r2.text()
+      if (!r2.ok) {
+        const err = new Error(`OpenAI error ${r2.status}`)
+        err.code = 'openai_error'
+        err.status = r2.status
+        err.detail = text2.slice(0, 2000)
+        throw err
+      }
+      const parsed2 = safeJsonParse(text2)
+      if (!parsed2.ok) return { raw: text2, outputText: text2 }
+      const json2 = parsed2.value
+      const outputText2 =
+        json2?.output_text ||
+        json2?.output?.map((o) => o?.content?.map((c) => c?.text).filter(Boolean).join('')).filter(Boolean).join('\n\n') ||
+        ''
+      return { raw: json2, outputText: outputText2 }
+    }
     const err = new Error(`OpenAI error ${r.status}`)
     err.code = 'openai_error'
     err.status = r.status
