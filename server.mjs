@@ -91,6 +91,25 @@ function isAuthed(req) {
   return cookie.includes(PREVIEW_COOKIE)
 }
 
+function isSocialCrawler(req) {
+  const ua = String(req.headers?.['user-agent'] || '').toLowerCase()
+  if (!ua) return false
+  return (
+    ua.includes('facebookexternalhit') ||
+    ua.includes('facebot') ||
+    ua.includes('twitterbot') ||
+    ua.includes('linkedinbot') ||
+    ua.includes('slackbot') ||
+    ua.includes('discordbot') ||
+    ua.includes('whatsapp') ||
+    ua.includes('telegrambot') ||
+    ua.includes('skypeuripreview') ||
+    ua.includes('pinterest') ||
+    ua.includes('googlebot') ||
+    ua.includes('bingbot')
+  )
+}
+
 /** Railway / reverse proxies terminate TLS; Node sees HTTP unless we read forwarded proto. */
 function isHttpsRequest(req) {
   const xf = String(req.headers?.['x-forwarded-proto'] || '').split(',')[0].trim().toLowerCase()
@@ -504,6 +523,11 @@ const server = http.createServer((req, res) => {
 
   // Public OG preview endpoint for social crawlers (keep site gated).
   if ((req.method === 'GET' || req.method === 'HEAD') && (pathOnly === '/share' || pathOnly === '/share/')) {
+    return sendSharePreview(res, req)
+  }
+
+  // Let social crawlers fetch OG tags even when site is gated.
+  if (!DISABLE_PREVIEW_AUTH && !isAuthed(req) && (req.method === 'GET' || req.method === 'HEAD') && pathOnly === '/' && isSocialCrawler(req)) {
     return sendSharePreview(res, req)
   }
 
