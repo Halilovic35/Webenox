@@ -503,7 +503,7 @@ const server = http.createServer((req, res) => {
   if (tryServePublicDist(req, res, pathOnly)) return
 
   // Public OG preview endpoint for social crawlers (keep site gated).
-  if (req.method === 'GET' && pathOnly === '/share') {
+  if ((req.method === 'GET' || req.method === 'HEAD') && (pathOnly === '/share' || pathOnly === '/share/')) {
     return sendSharePreview(res, req)
   }
 
