@@ -17,6 +17,10 @@ const DISABLE_PREVIEW_AUTH =
   process.env.DISABLE_PREVIEW_AUTH === '1' ||
   process.env.DISABLE_PREVIEW_AUTH === 'true' ||
   process.env.PUBLIC_SITE === '1'
+const DEBUG_ERRORS =
+  process.env.DEBUG_ERRORS === '1' ||
+  process.env.DEBUG_ERRORS === 'true' ||
+  process.env.NODE_ENV === 'development'
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 const OPENAI_MODEL = String(process.env.OPENAI_MODEL || 'gpt-4o-mini')
 const DATABASE_URL = process.env.DATABASE_URL
@@ -393,7 +397,8 @@ const server = http.createServer((req, res) => {
     const pathOnly = urlPath.split('?')[0]
 
     const fail = (err) => {
-      console.error('[webenoxai]', err?.code || 'error', err?.message || err)
+      console.error('[webenoxai]', err?.code || err?.name || 'error', err?.message || err)
+      if (err?.stack) console.error(err.stack)
       if (err?.code === 'missing_openai_key') return sendJson(res, 500, { error: 'missing_openai_key' })
       if (err?.code === 'missing_database_url') return sendJson(res, 500, { error: 'missing_database_url' })
       if (err?.code === 'invalid_json_from_openai') return sendJson(res, 502, { error: 'invalid_json_from_openai', detail: err.detail })
@@ -403,7 +408,19 @@ const server = http.createServer((req, res) => {
       return sendJson(res, 500, {
         error: 'server_error',
         code: code ? String(code) : undefined,
-        detail: String(err?.message || err)
+        detail: String(err?.message || err),
+        stack: DEBUG_ERRORS ? String(err?.stack || '') : undefined
+      })
+    }
+
+    // GET /api/webenoxai/health
+    if (method === 'GET' && pathOnly === '/api/webenoxai/health') {
+      return sendJson(res, 200, {
+        ok: true,
+        auth: DISABLE_PREVIEW_AUTH ? 'disabled' : isAuthed(req) ? 'authed' : 'locked',
+        prisma: Boolean(prisma),
+        openai: Boolean(openai),
+        model: OPENAI_MODEL
       })
     }
 
