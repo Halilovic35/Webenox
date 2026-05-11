@@ -299,7 +299,7 @@ export const STYLES = [
   }
 ]
 
-export const INDUSTRIES = [
+const RAW_INDUSTRIES = [
   {
     id: 'clinic',
     name: 'Clinic / Practice',
@@ -1508,3 +1508,27 @@ export const INDUSTRIES = [
     parentIndustry: 'Home Services'
   }
 ]
+
+const sanitizeImagePath = (v) => {
+  const s = String(v || '').trim()
+  if (!s) return ''
+  if (s.startsWith('/')) return s
+  // Block remote image URLs to avoid "broken HTTPS" from third-party cert issues.
+  if (s.startsWith('http://') || s.startsWith('https://')) return ''
+  return s
+}
+
+const sanitizeImageArray = (arr) => (Array.isArray(arr) ? arr.map(sanitizeImagePath).filter((x) => x && x.startsWith('/')) : [])
+
+const sanitizeTeam = (team) =>
+  Array.isArray(team) ? team.map((m) => ({ ...m, image: sanitizeImagePath(m?.image) })) : team
+
+const sanitizeIndustry = (ind) => ({
+  ...ind,
+  heroImage: sanitizeImagePath(ind?.heroImage),
+  sectionImage: sanitizeImagePath(ind?.sectionImage),
+  gallery: sanitizeImageArray(ind?.gallery),
+  team: sanitizeTeam(ind?.team)
+})
+
+export const INDUSTRIES = RAW_INDUSTRIES.map(sanitizeIndustry)
