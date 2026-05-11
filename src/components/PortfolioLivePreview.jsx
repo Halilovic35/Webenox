@@ -251,8 +251,20 @@ const PortfolioLivePreview = ({ industry, style }) => {
     transition: `all ${transitionDuration}s ease`
   })
 
-  const heroBgImage = industry.heroImage
-    ? { backgroundImage: `linear-gradient(to bottom, ${p.bg}99 0%, ${p.bg}cc 50%, ${p.bg} 100%), url(${industry.heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+  const safePreviewImg = (src) => {
+    const s = String(src || '').trim()
+    // Avoid external assets in the live preview. If a third-party host has TLS issues,
+    // Chrome marks the whole page as "broken HTTPS".
+    if (!s) return ''
+    if (s.startsWith('/')) return s
+    return ''
+  }
+
+  const heroImage = safePreviewImg(industry.heroImage)
+  const sectionImage = safePreviewImg(industry.sectionImage)
+
+  const heroBgImage = heroImage
+    ? { backgroundImage: `linear-gradient(to bottom, ${p.bg}99 0%, ${p.bg}cc 50%, ${p.bg} 100%), url(${heroImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
     : {}
 
   return (
@@ -328,7 +340,7 @@ const PortfolioLivePreview = ({ industry, style }) => {
                 lineHeight: 1.15,
                 marginBottom: '1rem',
                 color: p.text,
-                textShadow: industry.heroImage ? `0 2px 20px ${p.bg}99` : 'none'
+                textShadow: heroImage ? `0 2px 20px ${p.bg}99` : 'none'
               }}
             >
               {industry.hero.headline}
@@ -380,7 +392,7 @@ const PortfolioLivePreview = ({ industry, style }) => {
               </motion.div>
             ))}
           </div>
-          {industry.sectionImage && (
+          {sectionImage && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -394,7 +406,7 @@ const PortfolioLivePreview = ({ industry, style }) => {
                 padding: 0
               }}
             >
-              <img src={industry.sectionImage} alt="" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
+              <img src={sectionImage} alt="" style={{ width: '100%', height: '200px', objectFit: 'cover', display: 'block' }} />
             </motion.div>
           )}
         </section>
