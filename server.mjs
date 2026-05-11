@@ -11,9 +11,14 @@ const __dirname = path.dirname(__filename)
 
 const distDir = path.join(__dirname, 'dist')
 const port = Number(process.env.PORT || 4173)
-const PREVIEW_PASSWORD = String(process.env.PREVIEW_PASSWORD || '2908')
 const PREVIEW_COOKIE = 'webenox_preview=1'
+/** Password gate is off by default. Set PREVIEW_AUTH_ENABLED=1 and PREVIEW_PASSWORD to require login again. */
+const PREVIEW_AUTH_ENABLED =
+  process.env.PREVIEW_AUTH_ENABLED === '1' || process.env.PREVIEW_AUTH_ENABLED === 'true'
+const PREVIEW_PASSWORD = PREVIEW_AUTH_ENABLED ? String(process.env.PREVIEW_PASSWORD || '').trim() : ''
 const DISABLE_PREVIEW_AUTH =
+  !PREVIEW_AUTH_ENABLED ||
+  !PREVIEW_PASSWORD ||
   process.env.DISABLE_PREVIEW_AUTH === '1' ||
   process.env.DISABLE_PREVIEW_AUTH === 'true' ||
   process.env.PUBLIC_SITE === '1'
@@ -551,6 +556,12 @@ const server = http.createServer((req, res) => {
 
   // Password gate: allow login/logout endpoints without auth
   if (urlPath.startsWith('/__auth')) {
+    if (DISABLE_PREVIEW_AUTH) {
+      res.statusCode = 302
+      res.setHeader('Location', '/')
+      res.end()
+      return
+    }
     if (req.method !== 'POST') return sendLockScreen(res)
     readBody(req)
       .then((body) => {
@@ -966,7 +977,7 @@ server.listen(port, '0.0.0.0', () => {
   console.log(`[server] serving ${distDir}`)
   console.log(`[server] listening on 0.0.0.0:${port}`)
   console.log(
-    `[server] preview auth: ${DISABLE_PREVIEW_AUTH ? 'disabled (PUBLIC)' : 'enabled'} | db: ${prisma ? 'on' : 'OFF'} | openai: ${openai ? 'on' : 'OFF'}`
+    `[server] preview auth: ${DISABLE_PREVIEW_AUTH ? 'disabled (PUBLIC)' : 'enabled (PREVIEW_AUTH_ENABLED)'} | db: ${prisma ? 'on' : 'OFF'} | openai: ${openai ? 'on' : 'OFF'}`
   )
   if (prisma) {
     prisma
