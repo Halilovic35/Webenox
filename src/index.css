@@ -36,6 +36,17 @@
     background: rgba(0, 201, 255, 0.5);
   }
 
+  /* Hide scrollbar (keep scroll) for in-phone UIs */
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
   /* Focus styles for accessibility */
   *:focus-visible {
     outline: 2px solid #00C9FF;

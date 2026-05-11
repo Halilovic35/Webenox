@@ -771,7 +771,7 @@ export default function WebenoxAIApp() {
                   </motion.div>
 
                   <motion.div
-                    className="flex flex-col items-center text-center"
+                    className="flex flex-col items-center text-center -translate-y-4"
                     initial="hidden"
                     animate="show"
                     variants={{
@@ -818,34 +818,8 @@ export default function WebenoxAIApp() {
                         hidden: { opacity: 0, y: 16 },
                         show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
                       }}
-                      className="mt-2 max-w-[272px] text-[12px] leading-relaxed text-white/55"
+                      className="mt-1.5 max-w-[272px] text-[12px] leading-relaxed text-white/55"
                     >
-                      <div className="mt-3 flex items-center justify-center gap-2">
-                        {[
-                          { k: 0, label: 'Chat', hint: 'Ask' },
-                          { k: 1, label: 'Tools', hint: '/website /logo' },
-                          { k: 2, label: 'Vault', hint: 'Save' }
-                        ].map((x) => {
-                          const active = introStep === x.k
-                          return (
-                            <motion.div
-                              key={x.k}
-                              layout
-                              className={cls(
-                                'relative rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em]',
-                                active
-                                  ? 'border-fuchsia-200/25 bg-fuchsia-400/10 text-white/80'
-                                  : 'border-white/10 bg-black/20 text-white/40'
-                              )}
-                              animate={active ? { y: [0, -2, 0], boxShadow: ['0 0 0 rgba(0,0,0,0)', '0 0 26px rgba(185,51,255,0.22)', '0 0 0 rgba(0,0,0,0)'] } : { y: 0, boxShadow: '0 0 0 rgba(0,0,0,0)' }}
-                              transition={{ duration: 0.9, ease: 'easeInOut' }}
-                            >
-                              <span className="relative z-10">{x.label}</span>
-                              <span className="ml-2 text-white/35 font-bold tracking-normal normal-case">{x.hint}</span>
-                            </motion.div>
-                          )
-                        })}
-                      </div>
                       <AnimatePresence mode="wait" initial={false}>
                         {introStep === 0 && (
                           <motion.div
@@ -882,6 +856,32 @@ export default function WebenoxAIApp() {
                           </motion.div>
                         )}
                       </AnimatePresence>
+                      <div className="mt-2.5 flex items-center justify-center gap-2">
+                        {[
+                          { k: 0, label: 'Chat', hint: 'Ask' },
+                          { k: 1, label: 'Tools', hint: '/website /logo' },
+                          { k: 2, label: 'Vault', hint: 'Save' }
+                        ].map((x) => {
+                          const active = introStep === x.k
+                          return (
+                            <motion.div
+                              key={x.k}
+                              layout
+                              className={cls(
+                                'relative rounded-full border px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.18em]',
+                                active
+                                  ? 'border-fuchsia-200/25 bg-fuchsia-400/10 text-white/80'
+                                  : 'border-white/10 bg-black/20 text-white/40'
+                              )}
+                              animate={active ? { y: [0, -2, 0], boxShadow: ['0 0 0 rgba(0,0,0,0)', '0 0 26px rgba(185,51,255,0.22)', '0 0 0 rgba(0,0,0,0)'] } : { y: 0, boxShadow: '0 0 0 rgba(0,0,0,0)' }}
+                              transition={{ duration: 0.9, ease: 'easeInOut' }}
+                            >
+                              <span className="relative z-10">{x.label}</span>
+                              <span className="ml-2 text-white/35 font-bold tracking-normal normal-case">{x.hint}</span>
+                            </motion.div>
+                          )
+                        })}
+                      </div>
                     </motion.div>
                   </motion.div>
 
@@ -1242,7 +1242,7 @@ export default function WebenoxAIApp() {
             {route === 'chat' && (
               <motion.div key="chat" {...pageMotion} className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
                 <div className="flex shrink-0 items-center justify-between gap-3 pb-2">
-                  <div className="text-sm font-extrabold text-white/90">Chat</div>
+                  <div className="text-sm font-extrabold text-white/90 ml-3">Chat</div>
                   <div className="flex items-center gap-2">
                     <GhostButton
                       onClick={() => {

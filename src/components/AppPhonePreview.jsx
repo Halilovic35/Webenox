@@ -4,6 +4,7 @@ import WebenoxFlyGame from './WebenoxFlyGame'
 import ClinicFlowApp from './ClinicFlowApp'
 import WebenoxShopApp from './WebenoxShopApp'
 import WebenoxAIApp from './WebenoxAIApp'
+import WebenoxPulseApp from './WebenoxPulseApp'
 
 /**
  * HTML embedded SVG defaults to a viewport that clips paint to the viewBox — strokes
@@ -170,26 +171,32 @@ const APP_META = {
     ),
     color: 'from-emerald-400/50 to-teal-500/45'
   },
-  fittrack: {
+  webenoxpulse: {
     icon: (
-      <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
-        <path d="M7 15c2-5.5 4.3-7.8 8-9-1 4.2-2.9 7.8-6.1 11.4-1 .8-2.2 1.2-3.9 1.6.6-1.5 1.1-2.8 2-4Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
-        <path d="M15.3 8.7l2 2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-      </svg>
+      <img
+        src="/images/WebenoxPulse.png"
+        alt="WebenoxPulse"
+        className="h-12 w-12 object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.45)]"
+        draggable={false}
+        loading="eager"
+      />
     ),
-    color: 'from-orange-400/55 to-rose-500/45'
+    color: 'from-neutral-950/65 via-black/50 to-zinc-900/40'
   },
   webenoxai: {
     icon: (
       <img
         src="/images/WebenoxAI.png"
         alt="WebenoxAI"
-        className="h-12 w-12 object-contain drop-shadow-[0_12px_22px_rgba(0,0,0,0.55)]"
+        className="h-[72px] w-[72px] object-contain drop-shadow-[0_18px_34px_rgba(0,0,0,0.7)]"
         draggable={false}
         loading="eager"
+        style={{
+          filter: 'contrast(1.22) saturate(1.6) brightness(1.18) drop-shadow(0 0 10px rgba(255, 210, 90, 0.22))'
+        }}
       />
     ),
-    color: 'from-fuchsia-400/65 via-purple-500/55 to-indigo-500/45'
+    color: 'from-red-500/75 via-rose-500/65 to-fuchsia-500/45'
   },
   webenoxshop: {
     icon: (
@@ -200,7 +207,7 @@ const APP_META = {
         draggable={false}
       />
     ),
-    color: 'from-cyan-400/55 to-purple-500/50'
+    color: 'from-white/70 to-purple-500/50'
   }
 }
 
@@ -252,10 +259,10 @@ const getIconGlow = (appId, chrome) => {
       glowB: 'rgba(146, 95, 226, 0.32)'
     }
   }
-  if (appId === 'fittrack') {
+  if (appId === 'webenoxpulse') {
     return {
-      glowA: 'rgba(255, 255, 255, 0.22)',
-      glowB: 'rgba(255, 90, 120, 0.28)'
+      glowA: 'rgba(255, 255, 255, 0.18)',
+      glowB: 'rgba(148, 163, 184, 0.14)'
     }
   }
   if (appId === 'clinicflow') {
@@ -314,7 +321,7 @@ const AppPhonePreview = () => {
       { id: 'webenoxfly', name: 'WebenoxFly' },
       { id: 'clinicflow', name: 'ClinicFlow' },
       { id: 'webenoxshop', name: 'WebenoxShop' },
-      { id: 'fittrack', name: 'FitTrack' },
+      { id: 'webenoxpulse', name: 'WebenoxPulse' },
       { id: 'webenoxai', name: 'WebenoxAI' }
     ],
     []
@@ -370,7 +377,7 @@ const AppPhonePreview = () => {
     if (activeApp === 'webenoxfly') return shell(<WebenoxFlyGame ref={flyNavRef} onExit={handleOsHome} />)
     if (activeApp === 'clinicflow') return shell(<ClinicFlowApp ref={clinicNavRef} />)
     if (activeApp === 'webenoxshop') return shell(<WebenoxShopApp ref={shopNavRef} />)
-    if (activeApp === 'fittrack') return shell(<PlaceholderApp title="FitTrack" items={['Workout: Upper Body', 'Progress: 68% this week', 'Streak: 4 days']} cta="Start Workout" />)
+    if (activeApp === 'webenoxpulse') return shell(<WebenoxPulseApp />)
     if (activeApp === 'webenoxai') return shell(<WebenoxAIApp />)
     return null
   }
@@ -450,7 +457,7 @@ const AppPhonePreview = () => {
                                     }}
                                   />
                                   <div
-                                    className={`h-[82px] w-[82px] rounded-[28px] border ${chrome.iconBorder} bg-gradient-to-br ${grad} shadow-[0_20px_60px_-30px_rgba(0,0,0,0.85)] flex items-center justify-center ${chrome.iconText}`}
+                                    className={`relative h-[82px] w-[82px] rounded-[28px] border ${chrome.iconBorder} bg-gradient-to-br ${grad} shadow-[0_20px_60px_-30px_rgba(0,0,0,0.85)] flex items-center justify-center ${chrome.iconText}`}
                                   >
                                     <div className="drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]">{meta.icon}</div>
                                   </div>
@@ -486,7 +493,7 @@ const AppPhonePreview = () => {
                                     }}
                                   />
                                   <div
-                                    className={`h-[82px] w-[82px] rounded-[28px] border ${chrome.iconBorder} bg-gradient-to-br ${grad} shadow-[0_20px_60px_-30px_rgba(0,0,0,0.85)] flex items-center justify-center ${chrome.iconText}`}
+                                    className={`relative h-[82px] w-[82px] rounded-[28px] border ${chrome.iconBorder} bg-gradient-to-br ${grad} shadow-[0_20px_60px_-30px_rgba(0,0,0,0.85)] flex items-center justify-center ${chrome.iconText}`}
                                   >
                                     <div className="drop-shadow-[0_10px_18px_rgba(0,0,0,0.45)]">{meta.icon}</div>
                                   </div>
