@@ -176,7 +176,7 @@ const BoldNeonLayout = ({ industry, style }) => {
       <section
         id="hero"
         style={{
-          height: `calc(${HERO_MIN_HEIGHT} + 8px)`,
+          height: HERO_MIN_HEIGHT,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',

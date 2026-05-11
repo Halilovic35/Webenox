@@ -1,5 +1,5 @@
 /* @refresh reset */
-import React, { useMemo, useState } from 'react'
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePortfolioConfig } from '../context/PortfolioConfigContext'
 import { useLanguage } from '../context/LanguageContext'
@@ -65,6 +65,15 @@ const TryOurDesigns = () => {
   const scrollViewport = { once: true, amount: 0.1 }
   const hasBothSelected = selectedIndustryId && selectedStyleId
   const [previewMode, setPreviewMode] = useState('website') // 'website' | 'app'
+
+  // Keep these names defined so any stale HMR/sourcemap references never crash.
+  // (We intentionally do NOT lock heights or enable left-column scrolling.)
+  const portfolioRightRef = useRef(null)
+  const [leftColHeightPx, setLeftColHeightPx] = useState(null)
+
+  useLayoutEffect(() => {
+    setLeftColHeightPx(null)
+  }, [previewMode, selectedIndustryId, selectedStyleId])
 
   const switchMotion = useMemo(
     () => ({
@@ -198,12 +207,12 @@ const TryOurDesigns = () => {
               {/* Right Panel - Browser-style Preview (~68%); slight nudge right on desktop */}
               <div className="order-1 min-w-0 w-full lg:order-2 lg:ml-3 xl:ml-5">
                 {/* Your Website Concept label */}
-                <p className="text-sm font-medium text-accent mb-3 flex items-center gap-2">
+                <p className="text-sm font-medium text-accent mb-3 flex items-center gap-2 max-lg:pl-2">
                   <span>{t('portfolioWebsiteConceptLabel')}</span>
                   <span className="w-8 h-px bg-accent/50" />
                 </p>
                 <div
-                  className="rounded-2xl shadow-2xl border border-white/10 bg-background/40 backdrop-blur-sm"
+                  className="rounded-2xl shadow-2xl border border-white/10 bg-background/40 backdrop-blur-sm max-lg:mx-2 max-lg:border-white/25"
                 style={{ 
                     overflow: 'clip',
                     boxShadow: '0 25px 80px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)'
@@ -260,14 +269,14 @@ const TryOurDesigns = () => {
                   {/* Preview Content — scroll root stays here for in-preview nav */}
                   <div
                     id="portfolio-preview-scroll-container"
-                    className="hide-scrollbar relative overflow-x-clip overflow-y-auto max-md:h-[min(72svh,max(52vh,300px))] h-[min(80svh,max(50vh,280px))] sm:h-[min(82svh,max(52vh,360px))] lg:h-[min(85svh,max(58vh,480px))]"
+                    className="hide-scrollbar relative overflow-x-clip overflow-y-auto [--portfolio-preview-container-h:max(60vh,520px)] max-sm:[--portfolio-preview-container-h:min(92svh,max(78vh,560px))] max-sm:h-[min(92svh,max(78vh,560px))] max-md:h-[min(84svh,max(60vh,380px))] h-[min(80svh,max(50vh,280px))] sm:h-[min(82svh,max(52vh,360px))] lg:h-[min(85svh,max(58vh,480px))]"
                   >
                     <PortfolioLivePreview industry={selectedIndustry} style={selectedStyle} />
                   </div>
                 </PortfolioPreviewDesktopScale>
 
-                  {/* CTA Footer */}
-                  <div className="border-t border-white/10 bg-background/90 p-4 backdrop-blur-sm sm:p-5">
+                  {/* CTA Footer — desktop only (hidden inside mock window on phones) */}
+                  <div className="hidden border-t border-white/10 bg-background/90 p-4 backdrop-blur-sm sm:p-5 lg:block">
                     {hasBothSelected && (
               <motion.p 
                         initial={{ opacity: 0, y: 4 }}

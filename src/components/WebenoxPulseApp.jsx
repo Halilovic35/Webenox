@@ -86,14 +86,18 @@ const Card = ({ children, className }) => (
 )
 
 const Metric = ({ label, value, delta, tone = 'neutral' }) => (
-  <Card className="p-4">
-    <div className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-white/45">{label}</div>
-    <div className="mt-1 flex items-end justify-between gap-2">
-      <div className="text-[18px] font-black tracking-tight text-white/90">{value}</div>
+  <Card className="min-w-0 p-3 md:p-4">
+    <div className="text-[9px] font-extrabold uppercase tracking-[0.16em] text-white/45 md:text-[10px] md:tracking-[0.18em]">
+      {label}
+    </div>
+    <div className="mt-1 flex min-w-0 items-end justify-between gap-1">
+      <div className="min-w-0 flex-1 text-[12px] font-black leading-none tracking-tight text-white/90 tabular-nums md:text-[17px]">
+        {value}
+      </div>
       {delta ? (
         <div
           className={cls(
-            'rounded-full border px-2 py-1 text-[10px] font-extrabold',
+            'shrink-0 whitespace-nowrap rounded-full border px-1.5 py-0.5 text-[8px] font-extrabold md:px-2 md:py-1 md:text-[10px]',
             tone === 'good'
               ? 'border-emerald-300/20 bg-emerald-400/10 text-emerald-100/80'
               : tone === 'bad'
@@ -251,14 +255,14 @@ const Pill = ({ active, onClick, children, icon }) => (
     type="button"
     onClick={onClick}
     className={cls(
-      'flex items-center gap-2 rounded-2xl border px-3 py-2 text-[11px] font-extrabold transition-all',
+      'flex shrink-0 items-center gap-2 rounded-2xl border px-3 py-2 text-[11px] font-extrabold transition-all',
       active
         ? 'border-cyan-200/25 bg-gradient-to-r from-cyan-400/12 via-sky-400/10 to-purple-400/10 text-white/85 shadow-[0_0_24px_rgba(56,189,248,0.10)]'
         : 'border-white/10 bg-black/20 text-white/60 hover:bg-white/[0.06] hover:text-white/75'
     )}
   >
     {icon ? <span className={cls('text-white/70', active && 'text-cyan-100/85')}>{icon}</span> : null}
-    <span className="truncate">{children}</span>
+    <span className="whitespace-nowrap">{children}</span>
   </button>
 )
 
@@ -454,7 +458,7 @@ export default function WebenoxPulseApp() {
               subtitle={`${detail.kind} · Last ${range === '30d' ? '30 days' : '7 days'} · ${segment}`}
               onBack={() => setDetail(null)}
             />
-            <div className="mt-3 flex-1 min-h-0 overflow-y-auto hide-scrollbar space-y-3 pb-6">
+            <div className="mt-3 flex-1 min-h-0 overflow-y-auto hide-scrollbar space-y-3 pb-12">
               <Row title="Trend" right="vs previous">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
@@ -468,7 +472,7 @@ export default function WebenoxPulseApp() {
                 <div className="mt-3">{detailSeries ? <Sparkline points={detailSeries} tone="purple" /> : null}</div>
               </Row>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid min-w-0 grid-cols-2 gap-3">
                 <Metric label="Sessions" value={fmtInt(detailKpis.sessions)} delta={fmtDeltaPct(detailKpis.sessions, detailKpis.sessions * 0.94, 1)} tone="good" />
                 <Metric label="Share" value={fmtPct(detailKpis.share, 0)} delta="+0.6%" tone="good" />
                 <Metric label="Conv. rate" value={fmtPct(detailKpis.conv, 2)} delta="+0.1%" tone="good" />
@@ -522,47 +526,52 @@ export default function WebenoxPulseApp() {
           </div>
         </div>
 
-        <div className="mt-3 flex shrink-0 items-center gap-2">
-          {[
-            { id: 'overview', label: 'Overview', icon: <Icon name="spark" /> },
-            { id: 'acquisition', label: 'Acquisition', icon: <Icon name="globe" /> },
-            { id: 'campaigns', label: 'Campaigns', icon: <Icon name="bolt" /> }
-          ].map((x) => (
-            <button
-              key={x.id}
-              type="button"
-              onClick={() => setTab(x.id)}
-              className={cls(
-                'flex-1 rounded-2xl border px-3 py-2 text-[11px] font-extrabold transition-all',
-                tab === x.id
-                  ? 'border-white/18 bg-white/[0.07] text-white/85 shadow-[0_0_18px_rgba(255,255,255,0.06)]'
-                  : 'border-white/12 bg-white/[0.03] text-white/65 hover:bg-white/[0.06] hover:text-white/75'
-              )}
-            >
-              <span className="inline-flex items-center justify-center gap-2">
-                <span className={cls('text-white/65', tab === x.id && 'text-cyan-100/85')}>{x.icon}</span>
-                <span>{x.label}</span>
-              </span>
-            </button>
-          ))}
+        {/* Horizontal scroll when the strip is wider than the phone (viewport mq alone is not enough for desktop + narrow mock). */}
+        <div className="mt-3 -mx-1 shrink-0 overflow-x-auto overscroll-x-contain px-1 pb-0.5 hide-scrollbar">
+          <div className="flex w-max max-w-none flex-nowrap items-center gap-2">
+            {[
+              { id: 'overview', label: 'Overview', icon: <Icon name="spark" /> },
+              { id: 'acquisition', label: 'Acquisition', icon: <Icon name="globe" /> },
+              { id: 'campaigns', label: 'Campaigns', icon: <Icon name="bolt" /> }
+            ].map((x) => (
+              <button
+                key={x.id}
+                type="button"
+                onClick={() => setTab(x.id)}
+                className={cls(
+                  'shrink-0 rounded-2xl border px-3 py-2 text-[11px] font-extrabold transition-all',
+                  tab === x.id
+                    ? 'border-white/18 bg-white/[0.07] text-white/85 shadow-[0_0_18px_rgba(255,255,255,0.06)]'
+                    : 'border-white/12 bg-white/[0.03] text-white/65 hover:bg-white/[0.06] hover:text-white/75'
+                )}
+              >
+                <span className="inline-flex items-center justify-center gap-2 whitespace-nowrap">
+                  <span className={cls('text-white/65', tab === x.id && 'text-cyan-100/85')}>{x.icon}</span>
+                  <span>{x.label}</span>
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="mt-3 flex shrink-0 items-center gap-2">
-          <Pill active={segment === 'all'} onClick={() => setSegment('all')} icon={<Icon name="spark" className="h-3.5 w-3.5" />}>
-            All traffic
-          </Pill>
-          <Pill active={segment === 'organic'} onClick={() => setSegment('organic')}>
-            Organic
-          </Pill>
-          <Pill active={segment === 'paid'} onClick={() => setSegment('paid')}>
-            Paid
-          </Pill>
-          <Pill active={segment === 'referral'} onClick={() => setSegment('referral')}>
-            Referral
-          </Pill>
+        <div className="mt-3 -mx-1 shrink-0 overflow-x-auto overscroll-x-contain px-1 pb-0.5 hide-scrollbar">
+          <div className="flex w-max max-w-none flex-nowrap items-center gap-2">
+            <Pill active={segment === 'all'} onClick={() => setSegment('all')} icon={<Icon name="spark" className="h-3.5 w-3.5" />}>
+              All traffic
+            </Pill>
+            <Pill active={segment === 'organic'} onClick={() => setSegment('organic')}>
+              Organic
+            </Pill>
+            <Pill active={segment === 'paid'} onClick={() => setSegment('paid')}>
+              Paid
+            </Pill>
+            <Pill active={segment === 'referral'} onClick={() => setSegment('referral')}>
+              Referral
+            </Pill>
+          </div>
         </div>
 
-        <div className="mt-3 flex-1 min-h-0 overflow-y-auto hide-scrollbar space-y-3 pb-6">
+        <div className="mt-3 flex-1 min-h-0 overflow-y-auto hide-scrollbar space-y-3 pb-12">
           <AnimatePresence mode="wait" initial={false}>
             {tab === 'overview' ? (
               <motion.div
@@ -596,7 +605,7 @@ export default function WebenoxPulseApp() {
                   </div>
                 </Row>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid min-w-0 grid-cols-2 gap-3">
                   <Metric
                     label="Visits"
                     value={fmtInt(data.base.visits)}

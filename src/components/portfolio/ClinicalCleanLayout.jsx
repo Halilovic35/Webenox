@@ -208,7 +208,7 @@ const ClinicalCleanLayout = ({ industry, style }) => {
           alignItems: 'center',
           textAlign: 'center',
           padding: '1.5rem 1.5rem 0',
-          height: `calc(${HERO_MIN_HEIGHT} + 8px)`,
+          height: HERO_MIN_HEIGHT,
           backgroundColor: p.surface,
           backgroundImage: `linear-gradient(180deg, ${p.bg} 0%, ${p.surface} 100%)`,
           boxSizing: 'border-box',

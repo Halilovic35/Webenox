@@ -192,7 +192,7 @@ const WarmArtisanLayout = ({ industry, style }) => {
           padding: '1.5rem',
           maxWidth: '1000px',
           margin: '0 auto',
-          height: `calc(${HERO_MIN_HEIGHT} + 8px)`,
+          height: HERO_MIN_HEIGHT,
           boxSizing: 'border-box'
         }}
       >

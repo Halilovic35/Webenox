@@ -773,9 +773,10 @@ const WebenoxShopApp = forwardRef(function WebenoxShopApp(_props, ref) {
                       ) : (
                         <div className="grid grid-cols-2 gap-3">
                           {(homeCategory === 'All' ? homeGridProducts.slice(0, homeVisibleCount) : homeGridProducts).map((p, i) => (
-                            <motion.button
+                            <motion.div
                               key={p.id}
-                              type="button"
+                              role="button"
+                              tabIndex={0}
                               initial={{ opacity: 0, y: 16 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{
@@ -789,7 +790,13 @@ const WebenoxShopApp = forwardRef(function WebenoxShopApp(_props, ref) {
                               }}
                               whileTap={{ scale: 0.97 }}
                               onClick={() => openProduct(p.id)}
-                              className={`group text-left ${card} border border-transparent transition-[box-shadow,border-color] duration-300 hover:border-accent/25 hover:shadow-[0_16px_44px_-22px_rgba(0,201,255,0.16)]`}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                  e.preventDefault()
+                                  openProduct(p.id)
+                                }
+                              }}
+                              className={`group cursor-pointer text-left outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black/80 ${card} border border-transparent transition-[box-shadow,border-color] duration-300 hover:border-accent/25 hover:shadow-[0_16px_44px_-22px_rgba(0,201,255,0.16)]`}
                             >
                               <div className={`${catalogMediaBoxClass(p.category, 'home')} transition-colors duration-300`}>
                                 <ProductImage
@@ -822,7 +829,7 @@ const WebenoxShopApp = forwardRef(function WebenoxShopApp(_props, ref) {
                                 <div className="line-clamp-2 text-[11px] font-bold leading-snug text-white/90">{p.name}</div>
                                 <div className="text-xs font-extrabold text-accent">{formatMoney(p.price, settings.currency)}</div>
                               </div>
-                            </motion.button>
+                            </motion.div>
                           ))}
                         </div>
                       )}

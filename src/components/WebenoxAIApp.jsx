@@ -208,10 +208,15 @@ const defaultWebsitePrompt = 'A modern clinic website with booking and premium d
 const stepsWebsite = ['Analyzing…', 'Structuring…', 'Finalizing…']
 const stepsLogo = ['Analyzing…', 'Crafting…', 'Finalizing…']
 
+/** Tailwind `md` — intro overlay only on desktop; skip on phone browsers (narrow viewport). */
+const INTRO_MIN_VIEWPORT_W = 768
+
 export default function WebenoxAIApp() {
   const [route, setRoute] = useState('chat') // chat | vault
   const [toast, setToast] = useState(null)
-  const [showIntro, setShowIntro] = useState(true)
+  const [showIntro, setShowIntro] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth >= INTRO_MIN_VIEWPORT_W
+  )
   const [introStep, setIntroStep] = useState(0)
 
   const [anonId, setAnonId] = useState(() => {

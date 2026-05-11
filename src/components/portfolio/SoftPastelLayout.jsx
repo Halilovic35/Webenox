@@ -470,6 +470,7 @@ const SoftPastelLayout = ({ industry, style }) => {
   const mission = industry?.mission || null
 
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)')?.matches
+  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)')?.matches
 
   const contactFooterGridStyle = useMemo(() => ({
     display: 'grid',
@@ -506,13 +507,22 @@ const SoftPastelLayout = ({ industry, style }) => {
 
   // Stable reference: inline array would change every render and recreate WebGL (context limit / HMR 500).
   const navSpheres = useMemo(
-    () => [
-      { label: 'SERVICES', section: 'Services', top: '19%', left: '20%', size: 102, worldScale: 0.9, motion: 'vertical', floatOffset: 0 },
-      { label: 'TEAM', section: 'Team', top: '19%', right: '20%', size: 108, worldScale: 0.95, motion: 'horizontal', floatOffset: 0.6 },
-      { label: 'CONTACT', section: 'Contact', bottom: '20%', left: '22%', size: 110, worldScale: 0.96, motion: 'orbit', floatOffset: 1.1 },
-      { label: 'ABOUT', section: 'About', bottom: '18%', right: '20%', size: 124, worldScale: 1.04, motion: 'anchor', floatOffset: 1.7 }
-    ],
-    []
+    () =>
+      isPhone
+        ? [
+            // Phone: keep the orbs well inside the preview window
+            { label: 'SERVICES', section: 'Services', top: '14%', left: '10%', size: 98, worldScale: 0.92, motion: 'vertical', floatOffset: 0 },
+            { label: 'TEAM', section: 'Team', top: '14%', right: '10%', size: 102, worldScale: 0.95, motion: 'horizontal', floatOffset: 0.6 },
+            { label: 'CONTACT', section: 'Contact', bottom: '14%', left: '10%', size: 106, worldScale: 0.98, motion: 'orbit', floatOffset: 1.1 },
+            { label: 'ABOUT', section: 'About', bottom: '14%', right: '10%', size: 112, worldScale: 1.02, motion: 'anchor', floatOffset: 1.7 }
+          ]
+        : [
+            { label: 'SERVICES', section: 'Services', top: '19%', left: '20%', size: 102, worldScale: 0.9, motion: 'vertical', floatOffset: 0 },
+            { label: 'TEAM', section: 'Team', top: '19%', right: '20%', size: 108, worldScale: 0.95, motion: 'horizontal', floatOffset: 0.6 },
+            { label: 'CONTACT', section: 'Contact', bottom: '20%', left: '22%', size: 110, worldScale: 0.96, motion: 'orbit', floatOffset: 1.1 },
+            { label: 'ABOUT', section: 'About', bottom: '18%', right: '20%', size: 124, worldScale: 1.04, motion: 'anchor', floatOffset: 1.7 }
+          ],
+    [isPhone]
   )
 
   const baseStyles = {
@@ -578,8 +588,9 @@ const SoftPastelLayout = ({ industry, style }) => {
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, backgroundColor: 'rgba(255,255,255,0.1)' }} />
 
         {/* Orbs: sphere + label as single unit, synced via 3D→2D projection */}
-        {!prefersReducedMotion && <SoftPastelSpheresScene spheres={navSpheres} onOrbClick={scrollToSection} />}
-        {prefersReducedMotion && navSpheres.map((sphere) => (
+        {/* On phones, prefer the 2D fallback so orbs never disappear due to WebGL projection/cropping. */}
+        {!prefersReducedMotion && !isPhone && <SoftPastelSpheresScene spheres={navSpheres} onOrbClick={scrollToSection} />}
+        {(prefersReducedMotion || isPhone) && navSpheres.map((sphere) => (
           <motion.button
             key={sphere.label}
             type="button"

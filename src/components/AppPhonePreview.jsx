@@ -61,17 +61,12 @@ const StatusBatteryIcon = ({ level = 1 }) => {
 /** OS-style top bar (mirrors PhoneSystemNav: dark strip + hairline + blur) */
 const PhoneStatusBar = ({ phoneTime }) => (
   <div className="relative z-20 shrink-0 overflow-visible border-b border-white/10 bg-black/45 px-5 py-2 backdrop-blur-md">
-    <div className="relative flex min-h-[36px] items-center justify-between overflow-visible">
-      <div className="pointer-events-none absolute inset-x-0 top-1/2 z-0 flex -translate-y-1/2 justify-center">
-        <div className="h-5 w-36 rounded-full bg-black/50 border border-white/10" />
-      </div>
-
-      {/* Single flex row + items-center: same cross-axis as iOS status; all glyphs h-4 for one band. */}
-      <div className="relative z-10 flex min-w-0 flex-nowrap items-center gap-2 pr-[5.25rem] leading-none pointer-events-none">
+    {/* Desktop: 3 columns + island. Mobile: flex so when island is hidden, battery stays flush right (grid would park it in column 2). */}
+    <div className="relative flex min-h-[36px] items-center justify-between overflow-visible md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:justify-normal">
+      <div className="relative z-10 flex min-w-0 flex-nowrap items-center justify-start gap-2 leading-none pointer-events-none">
         <span className="inline-flex h-4 shrink-0 items-center text-[11px] font-semibold tabular-nums text-white/70">
           {phoneTime}
         </span>
-        {/* Tight pair: signal + Wi‑Fi share one h-4 band, minimal gap (was gap-2 between them). */}
         <span className="inline-flex h-4 shrink-0 items-center gap-px text-white/55">
           <span className="inline-flex h-4 w-[18px] items-center justify-center">
             <StatusSignalIcon />
@@ -82,7 +77,12 @@ const PhoneStatusBar = ({ phoneTime }) => (
         </span>
       </div>
 
-      <div className="relative z-10 inline-flex h-4 shrink-0 items-center pl-[5.25rem] leading-none pointer-events-none">
+      {/* Pill / “island” — decorative on the mock; hide on real narrow viewports so it doesn’t read as a fake camera */}
+      <div className="pointer-events-none hidden w-[9rem] shrink-0 items-center justify-center px-1 md:flex">
+        <div className="h-5 w-full max-w-[9rem] rounded-full border border-white/10 bg-black/50" />
+      </div>
+
+      <div className="relative z-10 flex h-4 items-center justify-end leading-none pointer-events-none">
         <StatusBatteryIcon level={1} />
       </div>
     </div>
@@ -391,7 +391,7 @@ const AppPhonePreview = () => {
         {/* phone frame */}
         <div className="webenox-phone-preview relative overscroll-contain rounded-[54px] border border-white/12 bg-gradient-to-b from-[#0b0f16] to-[#05070c] shadow-[0_36px_140px_-55px_rgba(0,0,0,0.88)] p-[12px]">
             <div className="relative isolate overflow-clip rounded-[44px] border border-white/8 bg-gradient-to-b from-[#0f1624] to-[#070a12]">
-            <div className="flex h-[720px] flex-col overflow-clip">
+            <div className="flex h-[720px] max-sm:h-[min(78svh,720px)] flex-col overflow-clip">
               <PhoneStatusBar phoneTime={phoneTime} />
 
               <div className="relative min-h-0 flex-1 overflow-clip">
@@ -425,7 +425,7 @@ const AppPhonePreview = () => {
                       </AnimatePresence>
 
                       {/* header */}
-                      <div className="px-7 pt-7 pb-4">
+                      <div className="px-7 pt-7 pb-4 max-sm:px-6 max-sm:pt-6">
                         <div className={`${chrome.headerText} font-extrabold text-lg tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)]`}>
                           App Concepts
                         </div>
@@ -435,7 +435,7 @@ const AppPhonePreview = () => {
                       </div>
 
                       {/* grid: 3 + 2 app icons (5 total) */}
-                      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-clip px-7 pb-4">
+                      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-clip px-7 pb-4 max-sm:px-6">
                         <div className="grid grid-cols-3 gap-5">
                           {apps.slice(0, 3).map((app) => {
                             const meta = APP_META[app.id]

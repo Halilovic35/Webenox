@@ -221,7 +221,7 @@ const LuxuryNoirLayout = ({ industry, style }) => {
         id="hero"
         style={{
           position: 'relative',
-          height: `calc(${HERO_MIN_HEIGHT} + 8px)`,
+          height: HERO_MIN_HEIGHT,
           width: '100%',
           display: 'flex',
           flexDirection: 'column',

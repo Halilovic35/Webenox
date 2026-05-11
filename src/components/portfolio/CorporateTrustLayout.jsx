@@ -6,7 +6,19 @@
  */
 import React, { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { truncateText, SERVICE_DESC_MAX, CARD_DESC_MAX, ABOUT_PARA_MAX, PROCESS_DESC_MAX, TESTIMONIAL_QUOTE_MAX, FAQ_ANSWER_MAX, HERO_MIN_HEIGHT, scrollToSection, getPortfolioPreviewScrollRoot, colorWithAlpha } from '../../utils/portfolioUtils'
+import {
+  truncateText,
+  SERVICE_DESC_MAX,
+  CARD_DESC_MAX,
+  ABOUT_PARA_MAX,
+  PROCESS_DESC_MAX,
+  TESTIMONIAL_QUOTE_MAX,
+  FAQ_ANSWER_MAX,
+  PREVIEW_CONTAINER_HEIGHT,
+  scrollToSection,
+  getPortfolioPreviewScrollRoot,
+  colorWithAlpha
+} from '../../utils/portfolioUtils'
 
 const SERVICE_ICONS = {
   legal: (
@@ -67,6 +79,7 @@ const CorporateTrustLayout = ({ industry, style }) => {
   const mission = industry?.mission || null
 
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)')?.matches
+  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)')?.matches
 
   const previewScrollRoot = useMemo(() => getPortfolioPreviewScrollRoot(), [])
   const sectionView = useMemo(
@@ -136,12 +149,14 @@ const CorporateTrustLayout = ({ industry, style }) => {
         id="hero"
         style={{
           position: 'relative',
-        height: `calc(${HERO_MIN_HEIGHT} + 96px)`,
+          // Full-bleed hero (no top nav row) — match preview scroll “window” exactly
+          height: PREVIEW_CONTAINER_HEIGHT,
           width: '100%',
           display: 'flex',
+          flexDirection: isPhone ? 'column' : 'row',
           alignItems: 'stretch',
           justifyContent: 'center',
-          padding: '2.5rem 3.5rem 3.5rem',
+          padding: isPhone ? '1.35rem 1.25rem 2.25rem' : '2.5rem 3.5rem 3.5rem',
           boxSizing: 'border-box',
           backgroundImage: `radial-gradient(circle at top left, ${p.secondary || '#1e40af'}55 0, transparent 55%), radial-gradient(circle at bottom right, ${p.accent || '#facc15'}33 0, transparent 60%), url(${heroImage})`,
           backgroundSize: '140% auto, 120% auto, cover',
@@ -168,8 +183,8 @@ const CorporateTrustLayout = ({ industry, style }) => {
         <div
           style={{
             position: 'absolute',
-            top: '1.75rem',
-            right: '3.5rem',
+            top: isPhone ? '1rem' : '1.75rem',
+            right: isPhone ? '1rem' : '3.5rem',
             display: 'flex',
             alignItems: 'center',
             gap: '1rem',
@@ -232,8 +247,8 @@ const CorporateTrustLayout = ({ industry, style }) => {
         <div
           style={{
             position: 'absolute',
-            top: '1.75rem',
-            left: '3.5rem',
+            top: isPhone ? '1rem' : '1.75rem',
+            left: isPhone ? '1rem' : '3.5rem',
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.3rem',
@@ -266,10 +281,10 @@ const CorporateTrustLayout = ({ industry, style }) => {
           style={{
             position: 'relative',
             zIndex: 2,
-            alignSelf: 'flex-end',
-            paddingBottom: '5.25rem',
-            maxWidth: '32rem',
-            paddingRight: '2rem'
+            alignSelf: isPhone ? 'flex-start' : 'flex-end',
+            paddingBottom: isPhone ? '1.25rem' : '5.25rem',
+            maxWidth: isPhone ? '100%' : '32rem',
+            paddingRight: isPhone ? 0 : '2rem'
           }}
         >
           <div
@@ -287,7 +302,7 @@ const CorporateTrustLayout = ({ industry, style }) => {
             style={{
               fontFamily: "'Inter', sans-serif",
               fontWeight: 800,
-              fontSize: 'clamp(2.8rem, 5vw, 4rem)',
+              fontSize: isPhone ? 'clamp(3.4rem, 11vw, 4.2rem)' : 'clamp(2.8rem, 5vw, 4rem)',
               lineHeight: 1,
               color: '#f9fafb',
               letterSpacing: '-0.045em',
@@ -338,10 +353,10 @@ const CorporateTrustLayout = ({ industry, style }) => {
           style={{
             position: 'relative',
             zIndex: 2,
-            alignSelf: 'flex-end',
-            marginLeft: 'auto',
-            paddingBottom: '6.5rem',
-            maxWidth: '22rem',
+            alignSelf: isPhone ? 'flex-start' : 'flex-end',
+            marginLeft: isPhone ? 0 : 'auto',
+            paddingBottom: isPhone ? '0.5rem' : '6.5rem',
+            maxWidth: isPhone ? '100%' : '22rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '1.25rem'

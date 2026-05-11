@@ -71,6 +71,7 @@ const CreativeStudioLayout = ({ industry, style }) => {
   const bodyFont = "'DM Sans', sans-serif"
 
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)')?.matches
+  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)')?.matches
 
   const previewScrollRoot = useMemo(() => getPortfolioPreviewScrollRoot(), [])
   const sectionView = useMemo(
@@ -193,7 +194,7 @@ const CreativeStudioLayout = ({ industry, style }) => {
         id="hero"
         style={{
           padding: '1.5rem',
-          height: `calc(${HERO_MIN_HEIGHT} + 8px)`,
+          height: HERO_MIN_HEIGHT,
           backgroundColor: bg,
           position: 'relative',
           overflow: 'hidden',
@@ -273,6 +274,11 @@ const CreativeStudioLayout = ({ industry, style }) => {
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '1rem',
+            alignItems: 'stretch',
+            // Phone: keep equal breathing room left/right so the 3 cards feel centered/symmetric.
+            margin: '0 auto',
+            padding: isPhone ? '0 0.5rem' : undefined,
+            boxSizing: 'border-box',
             flex: 1,
             marginBottom: '3px',
             alignSelf: 'stretch',
@@ -322,7 +328,7 @@ const CreativeStudioLayout = ({ industry, style }) => {
             )}
           </div>
           {/* Card 3 */}
-          <div style={{ height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '11px', border: '1px solid rgba(255,255,255,0.05)', padding: '1.1rem', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ height: '100%', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '11px', border: '1px solid rgba(255,255,255,0.05)', padding: isPhone ? '0.9rem' : '1.1rem', display: 'flex', flexDirection: 'column' }}>
             <div style={{ fontSize: '1.05rem', fontWeight: 600, marginBottom: '0.6rem', textAlign: 'center' }}>Press Release</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', justifyContent: 'flex-start' }}>
                <div style={{ alignSelf: 'flex-start', padding: '0.75rem 1rem', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '12px 12px 12px 0', fontSize: '0.875rem', lineHeight: 1.4, color: 'rgba(255,255,255,0.95)', maxWidth: '94%' }}>I&apos;ll get started with the copy for the press release this PM</div>

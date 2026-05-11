@@ -227,7 +227,7 @@ const EcoNaturalLayout = ({ industry, style }) => {
           padding: '1.5rem',
           maxWidth: '1000px',
           margin: '0 auto',
-          height: `calc(${HERO_MIN_HEIGHT} + 8px)`,
+          height: HERO_MIN_HEIGHT,
           background: `linear-gradient(90deg, ${p.primary}08 0%, transparent 50%, ${p.accent || p.primary}06 100%)`,
           borderRadius: cardRadius,
           boxSizing: 'border-box'

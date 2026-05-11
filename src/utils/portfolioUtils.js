@@ -22,8 +22,13 @@ export const TESTIMONIAL_QUOTE_MAX = 100
 /** Max chars for FAQ answers */
 export const FAQ_ANSWER_MAX = 100
 
-/** Hero must fill viewport - min height for preview (accounting for container and navbar) */
-export const PREVIEW_CONTAINER_HEIGHT = 'max(60vh, 520px)'
+/** Scroll area height inside the portfolio browser mock (CSS var from Portfolio.jsx) */
+export const PREVIEW_CONTAINER_HEIGHT = 'var(--portfolio-preview-container-h, max(60vh, 520px))'
+
+/**
+ * Hero block height below a ~80px sticky preview navbar so nav + hero = one “window”.
+ * Do not add extra px in layouts — that overflowed the mock on desktop.
+ */
 export const HERO_MIN_HEIGHT = `calc(${PREVIEW_CONTAINER_HEIGHT} - 80px)`
 
 /** Scroll container used by the portfolio preview (Framer Motion `whileInView` root) */
