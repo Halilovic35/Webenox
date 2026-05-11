@@ -37,14 +37,12 @@ const Contact = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Let&apos;s{' '}
+            {t('contactPageTitleLets')}{' '}
             <AccentUnderline>
-              <span className="gradient-text">Work Together</span>
+              <span className="gradient-text">{t('contactPageTitleWork')}</span>
             </AccentUnderline>
           </h2>
-          <p className="section-description">
-            Ready to transform your ideas into reality? Choose the contact option that works best for you. No long forms, just direct access to our team.
-          </p>
+          <p className="section-description">{t('contactPageLead')}</p>
         </motion.div>
 
         {/* Contact Hub */}
@@ -67,17 +65,13 @@ const Contact = () => {
             <div className="glass-card bg-background/60 border border-white/10 p-5">
               <div className="flex items-center space-x-3 mb-2">
                 <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
-                <span className="text-green-400 font-semibold text-sm">Quick Response</span>
+                <span className="text-green-400 font-semibold text-sm">{t('contactQuickResponseTitle')}</span>
               </div>
-              <p className="text-secondary text-sm">
-                We typically reply within 24 hours on business days. Use the channel that feels most natural to you.
-              </p>
+              <p className="text-secondary text-sm">{t('contactQuickResponseBody')}</p>
             </div>
 
             <div className="text-xs text-slate-500/90">
-              <p>
-                No long forms, just direct ways to reach our team. Every message is read and answered by a real person.
-              </p>
+              <p>{t('contactHubFootnote')}</p>
             </div>
           </div>
 
@@ -92,29 +86,29 @@ const Contact = () => {
                   </svg>
                 </ContactIconShell>
                 <div className="min-w-0">
-                  <h4 className="font-semibold text-text text-sm mb-1">Email</h4>
-                  <p className="text-secondary text-xs mb-1">Best for detailed briefs and RFPs.</p>
+                  <h4 className="font-semibold text-text text-sm mb-1">{t('contactLabelEmail')}</h4>
+                  <p className="text-secondary text-xs mb-1">{t('contactHintEmail')}</p>
                   <p className="text-accent text-sm font-medium break-all">info@webenox.de</p>
                 </div>
               </a>
 
               {/* Phone / WhatsApp */}
-              <a href="tel:+496912345678" className={contactTileClass}>
+              <a href="tel:+491734160361" className={contactTileClass}>
                 <ContactIconShell>
                   <svg fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
                     <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
                 </ContactIconShell>
                 <div className="min-w-0">
-                  <h4 className="font-semibold text-text text-sm mb-1">Call / WhatsApp</h4>
-                  <p className="text-secondary text-xs mb-1">For quick questions and time-sensitive projects.</p>
+                  <h4 className="font-semibold text-text text-sm mb-1">{t('contactLabelPhone')}</h4>
+                  <p className="text-secondary text-xs mb-1">{t('contactHintPhone')}</p>
                   <p className="text-text text-sm font-medium">{t('phone')}</p>
                 </div>
               </a>
 
               {/* Book a call */}
               <a
-                href="mailto:info@webenox.de?subject=Intro%20call%20request"
+                href={`mailto:info@webenox.de?subject=${encodeURIComponent(t('contactMailSubjectIntro'))}`}
                 className={contactTileClass}
               >
                 <ContactIconShell>
@@ -123,10 +117,8 @@ const Contact = () => {
                   </svg>
                 </ContactIconShell>
                 <div className="min-w-0">
-                  <h4 className="font-semibold text-text text-sm mb-1">Book an Intro Call</h4>
-                  <p className="text-secondary text-xs">
-                    Choose a time that works for you. We&apos;ll confirm the slot by email.
-                  </p>
+                  <h4 className="font-semibold text-text text-sm mb-1">{t('contactLabelBookCall')}</h4>
+                  <p className="text-secondary text-xs">{t('contactHintBookCall')}</p>
                 </div>
               </a>
 
@@ -140,22 +132,20 @@ const Contact = () => {
                   </svg>
                 </ContactIconShell>
                 <div className="min-w-0">
-                  <h4 className="font-semibold text-text text-sm mb-1">Location</h4>
+                  <h4 className="font-semibold text-text text-sm mb-1">{t('contactLabelLocation')}</h4>
                   <p className="text-secondary text-xs mb-1">{t('address')}</p>
-                  <p className="text-secondary text-xs">Available for remote and on-site collaborations.</p>
+                  <p className="text-secondary text-xs">{t('contactHintLocation')}</p>
                 </div>
               </div>
             </div>
 
             {/* What happens next */}
             <div className="mt-4 pt-4 border-t border-white/10">
-              <p className="text-xs uppercase tracking-[0.18em] text-secondary mb-2">
-                What happens after you reach out
-              </p>
+              <p className="text-xs uppercase tracking-[0.18em] text-secondary mb-2">{t('contactFlowTitle')}</p>
               <ol className="space-y-1 text-xs text-secondary">
-                <li>1. We review your message and context.</li>
-                <li>2. You receive a reply with clarifying questions or a link to book a call.</li>
-                <li>3. If there&apos;s a fit, we prepare a tailored proposal for your project.</li>
+                <li>{t('contactFlowStep1')}</li>
+                <li>{t('contactFlowStep2')}</li>
+                <li>{t('contactFlowStep3')}</li>
               </ol>
             </div>
           </div>

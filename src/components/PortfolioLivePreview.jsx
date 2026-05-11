@@ -298,14 +298,37 @@ const PortfolioLivePreview = ({ industry, style }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: `${spacing.section} 1.5rem`,
+            flexWrap: 'wrap',
+            rowGap: '0.5rem',
+            columnGap: '0.75rem',
+            padding: `${spacing.section} clamp(0.75rem, 3vw, 1.5rem)`,
             borderBottom: `1px solid ${p.muted}20`,
             backgroundColor: t.card.glass ? `${p.surface}95` : `${p.surface}ee`,
             backdropFilter: t.card.glass ? 'blur(12px)' : 'none'
           }}
         >
-          <span style={{ fontFamily: t.typography.headingFont, fontWeight: 700, fontSize: '1.25rem', color: p.text }}>{industry?.brandName || 'Webenox'}</span>
-          <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.875rem' }}>
+          <span
+            style={{
+              fontFamily: t.typography.headingFont,
+              fontWeight: 700,
+              fontSize: 'clamp(1rem, 3.5vw, 1.25rem)',
+              color: p.text,
+              minWidth: 0
+            }}
+          >
+            {industry?.brandName || 'Webenox'}
+          </span>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 'clamp(0.5rem, 2vw, 1.25rem)',
+              fontSize: 'clamp(0.7rem, 2.2vw, 0.875rem)',
+              justifyContent: 'flex-end',
+              minWidth: 0,
+              flex: '1 1 auto'
+            }}
+          >
             {industry.navLabels.map((label) => (
               <motion.span
                 key={label}

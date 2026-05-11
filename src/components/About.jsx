@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import AccentUnderline from './AccentUnderline'
 
 // SVG Icons for Mission/Vision/Approach
@@ -47,7 +48,27 @@ const LaunchIcon = () => (
 )
 
 const About = () => {
+  const { t } = useLanguage()
   const containerRef = useRef(null)
+
+  const processSteps = useMemo(
+    () => [
+      { icon: DiscoverIcon, title: t('aboutStepDiscoverTitle'), desc: t('aboutStepDiscoverDesc') },
+      { icon: DesignIcon, title: t('aboutStepDesignTitle'), desc: t('aboutStepDesignDesc') },
+      { icon: DevelopIcon, title: t('aboutStepDevelopTitle'), desc: t('aboutStepDevelopDesc') },
+      { icon: LaunchIcon, title: t('aboutStepLaunchTitle'), desc: t('aboutStepLaunchDesc') }
+    ],
+    [t]
+  )
+
+  const mvCards = useMemo(
+    () => [
+      { icon: MissionIcon, title: t('aboutMvMissionTitle'), desc: t('aboutMvMissionDesc') },
+      { icon: VisionIcon, title: t('aboutMvVisionTitle'), desc: t('aboutMvVisionDesc') },
+      { icon: ApproachIcon, title: t('aboutMvApproachTitle'), desc: t('aboutMvApproachDesc') }
+    ],
+    [t]
+  )
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -67,19 +88,6 @@ const About = () => {
   }
 
   const scrollViewport = { once: true, amount: 0.15, margin: "-50px" }
-
-  const processSteps = [
-    { icon: DiscoverIcon, title: "Discover", desc: "We dive deep into your vision, goals, and challenges to understand what matters most." },
-    { icon: DesignIcon, title: "Design", desc: "Beautiful, functional solutions crafted to exceed expectations and delight users." },
-    { icon: DevelopIcon, title: "Develop", desc: "Clean code, modern tech stack, and precision execution bring designs to life." },
-    { icon: LaunchIcon, title: "Launch", desc: "Smooth deployment, testing, and ongoing support ensure success from day one." }
-  ]
-
-  const mvCards = [
-    { icon: MissionIcon, title: "Our Mission", desc: "We create clean, modern digital experiences that help businesses grow and succeed." },
-    { icon: VisionIcon, title: "Our Vision", desc: "To lead in digital innovation, crafting experiences that anticipate tomorrow's possibilities." },
-    { icon: ApproachIcon, title: "Our Approach", desc: "Strategic thinking meets creative execution solutions that look great and perform exceptionally." }
-  ]
 
   return (
     <section id="about" ref={containerRef} className="section-padding relative overflow-visible">
@@ -104,14 +112,18 @@ const About = () => {
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-snug overflow-visible luxury-heading"
             variants={itemVariants}
           >
-            <span className="gradient-text block mb-0.2 pb-2" style={{ lineHeight: 1.5 }}>Crafting Digital</span>
-            <span className="block" style={{ lineHeight: 1.4 }}>Excellence</span>
+            <span className="gradient-text block mb-0.2 pb-2" style={{ lineHeight: 1.5 }}>
+              {t('aboutTaglineLine1')}
+            </span>
+            <span className="block" style={{ lineHeight: 1.4 }}>
+              {t('aboutTaglineLine2')}
+            </span>
           </motion.h1>
           <motion.p
             className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed"
             variants={itemVariants}
           >
-            We're passionate digital craftsmen building exceptional web experiences that make a difference. Every project is a journey of discovery, design, development, and launch.
+            {t('aboutTaglineLead')}
           </motion.p>
           <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center mt-10"
@@ -121,13 +133,13 @@ const About = () => {
               href="#portfolio"
               className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-xl hover:shadow-glow transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98] inline-block text-center"
             >
-              View Our Work
+              {t('aboutCtaPortfolio')}
             </a>
             <a
               href="#site-contact"
               className="px-8 py-4 border-2 border-cyan-500/30 text-cyan-400 font-bold rounded-xl hover:bg-cyan-500/10 hover:border-cyan-500/50 transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] inline-block text-center"
             >
-              Get in Touch
+              {t('aboutCtaContact')}
             </a>
           </motion.div>
         </motion.div>
@@ -141,9 +153,9 @@ const About = () => {
           viewport={scrollViewport}
         >
           <h2 className="section-title luxury-heading text-center">
-            Our{' '}
+            {t('aboutProcessOur')}{' '}
             <AccentUnderline>
-              <span className="gradient-text">Process</span>
+              <span className="gradient-text">{t('aboutProcessProcess')}</span>
             </AccentUnderline>
           </h2>
 

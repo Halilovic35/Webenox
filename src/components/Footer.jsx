@@ -1,28 +1,12 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLanguage } from '../context/LanguageContext'
 
 const Footer = () => {
   const { t } = useLanguage()
-  const [newsletterEmail, setNewsletterEmail] = useState('')
-  const [isSubscribing, setIsSubscribing] = useState(false)
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleNewsletterSubmit = async (e) => {
-    e.preventDefault()
-    setIsSubscribing(true)
-    
-    // Simulate newsletter subscription
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
-    setNewsletterEmail('')
-    setIsSubscribing(false)
-    
-    alert('Thank you for subscribing to our newsletter!')
   }
 
   const containerVariants = {
@@ -51,9 +35,9 @@ const Footer = () => {
   }
 
   return (
-    <footer className="relative overflow-hidden">
+    <footer className="relative overflow-hidden min-w-0">
       {/* Horizontal divider */}
-      <div className="border-t border-white/10"></div>
+      <div className="border-t border-white/10" />
       
       {/* Background decorative elements */}
       <div className="absolute inset-0">
@@ -61,39 +45,39 @@ const Footer = () => {
         <div className="absolute top-10 right-10 w-80 h-80 bg-purple/3 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="container-custom py-16 relative z-10">
+      <div className="container-custom relative z-10 py-12 sm:py-14 lg:py-16">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="grid lg:grid-cols-4 gap-12 items-start"
+          className="grid grid-cols-1 gap-10 min-w-0 sm:gap-11 md:grid-cols-2 md:gap-x-10 md:gap-y-12 lg:grid-cols-4 lg:gap-12 items-start"
         >
           {/* Logo and Mission - Fixed Alignment */}
-          <motion.div variants={itemVariants} className="lg:col-span-1 footer-align">
+          <motion.div variants={itemVariants} className="footer-align min-w-0 w-full md:max-lg:max-w-none">
             {/* Logo and company name aligned with other headings */}
-            <div className="flex items-center mb-6">
+            <div className="mb-5 flex items-center sm:mb-6">
               <img 
                 src="/images/wlogo.png" 
                 alt="Webenox Logo" 
-                className="w-8 h-8 mr-3"
+                className="mr-3 h-8 w-8 shrink-0"
               />
-              <span className="text-xl font-bold text-text">Webenox</span>
+              <span className="text-lg font-bold text-text sm:text-xl">Webenox</span>
             </div>
-            <p className="paragraph mb-8 max-w-md leading-relaxed text-base lg:text-lg">
+            <p className="paragraph mb-0 max-w-none text-pretty text-sm leading-relaxed sm:mb-2 sm:text-base lg:max-w-md lg:text-lg">
               {t('weBuildText')}
             </p>
           </motion.div>
 
           {/* Quick Links - Aligned and Faster Hover */}
-          <motion.div variants={itemVariants} className="lg:col-span-1 footer-align">
-            <h3 className="text-xl font-bold text-text mb-6">{t('quickLinks')}</h3>
-            <div className="grid grid-cols-2 gap-4">
+          <motion.div variants={itemVariants} className="footer-align min-w-0 w-full">
+            <h3 className="mb-4 text-lg font-bold text-text sm:mb-5 sm:text-xl">{t('quickLinks')}</h3>
+            <div className="grid w-full max-w-sm grid-cols-2 gap-x-4 gap-y-3 sm:max-w-none sm:gap-4">
               <motion.button
                 onClick={scrollToTop}
                 whileHover={{ x: 3, color: '#00C9FF' }}
                 transition={{ duration: 0.15 }}
-                className="footer-link text-base text-left"
+                className="footer-link block text-left text-sm sm:text-base"
               >
                 {t('home')}
               </motion.button>
@@ -101,7 +85,7 @@ const Footer = () => {
                 onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })}
                 whileHover={{ x: 3, color: '#00C9FF' }}
                 transition={{ duration: 0.15 }}
-                className="footer-link text-base block"
+                className="footer-link block text-left text-sm sm:text-base"
               >
                 {t('about')}
               </motion.button>
@@ -109,7 +93,7 @@ const Footer = () => {
                 onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}
                 whileHover={{ x: 3, color: '#00C9FF' }}
                 transition={{ duration: 0.15 }}
-                className="footer-link text-base block"
+                className="footer-link block text-left text-sm sm:text-base"
               >
                 {t('services')}
               </motion.button>
@@ -117,48 +101,34 @@ const Footer = () => {
                 onClick={() => document.getElementById('site-contact')?.scrollIntoView({ behavior: 'smooth' })}
                 whileHover={{ x: 3, color: '#00C9FF' }}
                 transition={{ duration: 0.15 }}
-                className="footer-link text-base block"
+                className="footer-link block text-left text-sm sm:text-base"
               >
                 {t('contact')}
               </motion.button>
             </div>
           </motion.div>
 
-          {/* Newsletter Subscription - Aligned */}
-          <motion.div variants={itemVariants} className="lg:col-span-1 footer-align">
-            <h3 className="text-xl font-bold text-text mb-6">{t('newsletter')}</h3>
-            <p className="paragraph mb-4">
+          {/* Newsletter: sign-up not live yet */}
+          <motion.div variants={itemVariants} className="footer-align min-w-0 w-full">
+            <h3 className="mb-4 text-lg font-bold text-text sm:mb-5 sm:text-xl">{t('newsletter')}</h3>
+            <p className="paragraph mb-4 text-sm sm:text-base">
               {t('newsletterText')}
             </p>
-            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-              <input
-                type="email"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder={t('emailPlaceholder')}
-                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/20 rounded-lg text-text placeholder-secondary focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all duration-200"
-                required
-              />
-              <motion.button
-                type="submit"
-                disabled={isSubscribing}
-                whileHover={{ 
-                  scale: 1.02,
-                  boxShadow: "0 10px 20px rgba(0, 201, 255, 0.3)"
-                }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.15 }}
-                className="w-full bg-gradient-to-r from-accent to-purple text-background font-semibold px-4 py-3 rounded-lg hover:from-accent/90 hover:to-purple/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubscribing ? t('subscribing') : t('subscribe')}
-              </motion.button>
-            </form>
+            <div
+              className="inline-flex w-full max-w-md items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-center sm:max-w-none sm:justify-start"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="text-sm font-semibold tracking-wide text-accent sm:text-base">
+                {t('newsletterComingSoon')}
+              </span>
+            </div>
           </motion.div>
 
           {/* Social Media with Enhanced Hover Effects - Aligned */}
-          <motion.div variants={itemVariants} className="lg:col-span-1 footer-align">
-            <h3 className="text-xl font-bold text-text mb-6">{t('connect')}</h3>
-            <div className="flex space-x-4">
+          <motion.div variants={itemVariants} className="footer-align min-w-0 w-full">
+            <h3 className="mb-4 text-lg font-bold text-text sm:mb-5 sm:text-xl">{t('connect')}</h3>
+            <div className="flex flex-wrap gap-3 sm:gap-4">
               <motion.a
                 href="#"
                 whileHover={{ 
@@ -168,7 +138,7 @@ const Footer = () => {
                   backgroundColor: "rgba(0, 201, 255, 0.1)"
                 }}
                 transition={{ duration: 0.15 }}
-                className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-xl flex items-center justify-center text-background hover:from-accent/90 hover:to-purple/90 transition-all duration-200 shadow-lg hover:shadow-glow-lg"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-accent to-purple text-background shadow-lg transition-all duration-200 hover:from-accent/90 hover:to-purple/90 hover:shadow-glow-lg sm:h-12 sm:w-12"
                 aria-label="LinkedIn"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -184,7 +154,7 @@ const Footer = () => {
                   backgroundColor: "rgba(0, 201, 255, 0.1)"
                 }}
                 transition={{ duration: 0.15 }}
-                className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-xl flex items-center justify-center text-background hover:from-accent/90 hover:to-purple/90 transition-all duration-200 shadow-lg hover:shadow-glow-lg"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-accent to-purple text-background shadow-lg transition-all duration-200 hover:from-accent/90 hover:to-purple/90 hover:shadow-glow-lg sm:h-12 sm:w-12"
                 aria-label="Twitter"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -200,7 +170,7 @@ const Footer = () => {
                   backgroundColor: "rgba(0, 201, 255, 0.1)"
                 }}
                 transition={{ duration: 0.15 }}
-                className="w-12 h-12 bg-gradient-to-r from-accent to-purple rounded-xl flex items-center justify-center text-background hover:from-accent/90 hover:to-purple/90 transition-all duration-200 shadow-lg hover:shadow-glow-lg"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-accent to-purple text-background shadow-lg transition-all duration-200 hover:from-accent/90 hover:to-purple/90 hover:shadow-glow-lg sm:h-12 sm:w-12"
                 aria-label="GitHub"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -217,22 +187,22 @@ const Footer = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true, margin: "-50px" }}
-          className="border-t border-white/10 mt-12 pt-8"
+          className="mt-10 border-t border-white/10 pt-6 sm:mt-12 sm:pt-8"
         >
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-secondary text-sm text-center md:text-left">
+          <div className="flex min-w-0 flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <p className="text-center text-sm text-secondary text-pretty sm:min-w-0 sm:flex-1 sm:text-left">
               {t('allRightsReserved')}
             </p>
-            <div className="flex space-x-6">
-              <Link 
-                to="/imprint"
-                className="text-secondary hover:text-accent transition-all duration-200 text-sm"
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 sm:shrink-0 sm:justify-end">
+              <Link
+                to="/impressum"
+                className="text-sm text-secondary transition-all duration-200 hover:text-accent"
               >
                 {t('imprint')}
               </Link>
               <Link 
                 to="/datenschutz"
-                className="text-secondary hover:text-accent transition-all duration-200 text-sm"
+                className="text-sm text-secondary transition-all duration-200 hover:text-accent"
               >
                 {t('privacyPolicy')}
               </Link>

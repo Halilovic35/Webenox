@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePortfolioConfig } from '../context/PortfolioConfigContext'
+import { useLanguage } from '../context/LanguageContext'
 import AccentUnderline from './AccentUnderline'
 import PortfolioLivePreview from './PortfolioLivePreview'
 import AppPhonePreview from './AppPhonePreview'
@@ -36,6 +37,7 @@ const INDUSTRY_ICONS = {
 }
 
 const TryOurDesigns = () => {
+  const { t } = useLanguage()
   const {
     selectedIndustryId,
     setSelectedIndustryId,
@@ -72,13 +74,13 @@ const TryOurDesigns = () => {
     []
   )
 
-  const cardBase = 'relative rounded-2xl border backdrop-blur-sm transition-all duration-300 cursor-pointer p-4'
+  const cardBase = 'relative rounded-2xl border backdrop-blur-sm transition-all duration-300 cursor-pointer p-3 sm:p-4'
   const cardSelected = 'border-accent shadow-glow ring-2 ring-accent/30'
   const cardHover = 'hover:border-white/30 hover:-translate-y-0.5'
 
   return (
-    <section id="portfolio" className="section-padding relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <section id="portfolio" className="section-padding relative">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-accent/3 rounded-full blur-[130px]" />
         <div className="absolute top-20 right-20 w-80 h-80 bg-purple/3 rounded-full blur-3xl" />
         <div className="absolute bottom-32 left-20 w-96 h-96 bg-accent/2 rounded-full blur-3xl" />
@@ -90,25 +92,21 @@ const TryOurDesigns = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           viewport={scrollViewport}
-          className="section-header"
+          className="section-header mb-10 px-2 sm:mb-16 sm:px-0"
         >
-          <h2 className="section-title luxury-heading">
-            Bring Your{' '}
+          <h2 className="section-title luxury-heading text-balance max-w-[min(100%,42rem)] mx-auto">
+            {t('portfolioTitleBring')}{' '}
             <AccentUnderline>
-              <span className="gradient-text">Ideas to Life</span>
+              <span className="gradient-text">{t('portfolioTitleIdeas')}</span>
             </AccentUnderline>
           </h2>
-          <p className="section-description">
-            Choose an industry and explore a design concept. These previews are just starting points, every project we build is fully custom, tailored to your business, your goals, and your users.
-          </p>
-          <p className="text-secondary text-sm lg:text-base max-w-3xl mx-auto mt-3">
-            From websites to web apps and mobile applications, we design and build exactly what you need.
-          </p>
+          <p className="section-description text-base sm:text-xl px-1 sm:px-0">{t('portfolioLead1')}</p>
+          <p className="text-secondary text-sm lg:text-base max-w-3xl mx-auto mt-3">{t('portfolioLead2')}</p>
         </motion.div>
 
         {/* Preview mode toggle */}
-        <div className="flex flex-col items-center justify-center gap-3 mt-2 mb-8">
-          <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
+        <div className="flex flex-col items-center justify-center gap-3 mt-2 mb-6 sm:mb-8 px-1">
+          <div className="inline-flex max-w-full flex-wrap justify-center rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
             {['website', 'app'].map((mode) => {
               const isActive = previewMode === mode
               return (
@@ -116,18 +114,16 @@ const TryOurDesigns = () => {
                   key={mode}
                   type="button"
                   onClick={() => setPreviewMode(mode)}
-                  className={`relative rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  className={`relative rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-200 sm:px-4 sm:py-2 sm:text-sm ${
                     isActive ? 'bg-gradient-to-r from-accent to-purple text-background shadow-glow' : 'text-secondary hover:text-text'
                   }`}
                 >
-                  {mode === 'website' ? 'Website' : 'App'}
+                  {mode === 'website' ? t('portfolioTabWebsite') : t('portfolioTabApp')}
                 </button>
               )
             })}
                     </div>
-          <p className="text-secondary text-sm text-center max-w-3xl">
-            Explore websites or interactive app concepts. These are just starting points, every project is fully custom.
-          </p>
+          <p className="text-secondary text-sm text-center max-w-3xl">{t('portfolioTabHint')}</p>
                     </div>
 
         <AnimatePresence mode="wait" initial={false}>
@@ -135,45 +131,45 @@ const TryOurDesigns = () => {
             <motion.div
               key="website"
               {...switchMotion}
-              className="grid lg:grid-cols-[minmax(260px,32%)_1fr] gap-6 lg:gap-8 items-start"
+              className="grid min-w-0 lg:grid-cols-[minmax(240px,32%)_1fr] gap-4 sm:gap-6 lg:gap-8 items-start"
             >
               {/* Left Panel - Controls */}
-              <div className="space-y-6 order-2 lg:order-1 lg:max-w-xs">
+              <div className="min-w-0 w-full space-y-5 sm:space-y-6 order-2 lg:order-1 lg:max-w-xs">
                           <div>
-                  <h3 className="text-base font-semibold text-text mb-3">1. Select Industry</h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <h3 className="text-base font-semibold text-text mb-3">{t('portfolioStep1Industry')}</h3>
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     {industries.map((ind) => (
                         <motion.button
                         key={ind.id}
                         onClick={() => handleIndustryChange(ind.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`${cardBase} ${cardHover} flex items-center gap-3 ${
+                        className={`${cardBase} ${cardHover} flex min-w-0 items-center gap-2 sm:gap-3 ${
                           selectedIndustryId === ind.id ? `${cardSelected} shadow-accent/20` : 'border-white/10 bg-white/5'
                         }`}
                       >
-                        <span className="text-accent flex-shrink-0">{INDUSTRY_ICONS[ind.icon] || INDUSTRY_ICONS.clinic}</span>
-                        <span className="block text-sm font-medium text-text truncate">{ind.shortLabel}</span>
+                        <span className="text-accent flex-shrink-0 [&>svg]:h-4 [&>svg]:w-4 sm:[&>svg]:h-5 sm:[&>svg]:w-5">{INDUSTRY_ICONS[ind.icon] || INDUSTRY_ICONS.clinic}</span>
+                        <span className="block min-w-0 text-left text-xs font-medium text-text sm:text-sm truncate">{ind.shortLabel}</span>
                         </motion.button>
                     ))}
                   </div>
                 </div>
 
                   <div>
-                  <h3 className="text-base font-semibold text-text mb-3">2. Select Style</h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <h3 className="text-base font-semibold text-text mb-3">{t('portfolioStep2Style')}</h3>
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     {styles.map((sty) => (
                   <motion.button 
                         key={sty.id}
                         onClick={() => handleStyleChange(sty.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`${cardBase} ${cardHover} text-left ${
+                        className={`${cardBase} ${cardHover} min-w-0 text-left ${
                           selectedStyleId === sty.id ? `${cardSelected} shadow-accent/20` : 'border-white/10 bg-white/5'
                         }`}
                       >
-                        <span className="block text-xs font-semibold text-text leading-tight">{sty.name}</span>
-                        <span className="block text-[10px] text-secondary mt-0.5 truncate">{sty.tagline}</span>
+                        <span className="block text-[11px] font-semibold text-text leading-tight sm:text-xs">{sty.name}</span>
+                        <span className="mt-0.5 block line-clamp-2 text-[9px] text-secondary sm:text-[10px]">{sty.tagline}</span>
                         {sty.colorStrip && (
                           <div className="flex gap-0.5 mt-2">
                             {sty.colorStrip.map((c, i) => (
@@ -188,10 +184,10 @@ const TryOurDesigns = () => {
         </div>
 
               {/* Right Panel - Browser-style Preview (~68%) */}
-              <div className="order-1 lg:order-2">
+              <div className="order-1 min-w-0 w-full lg:order-2">
                 {/* Your Website Concept label */}
                 <p className="text-sm font-medium text-accent mb-3 flex items-center gap-2">
-                  <span>Your Website Concept</span>
+                  <span>{t('portfolioWebsiteConceptLabel')}</span>
                   <span className="w-8 h-px bg-accent/50" />
                 </p>
                 <div
@@ -202,12 +198,12 @@ const TryOurDesigns = () => {
                   }}
                 >
                   {/* Fake Browser Bar */}
-                  <div className="flex items-center gap-3 px-4 py-3 bg-white/5 border-b border-white/10">
-                    <div className="flex items-center gap-2 text-white/45">
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2 bg-white/5 px-3 py-2.5 border-b border-white/10 sm:gap-3 sm:px-4 sm:py-3">
+                    <div className="flex shrink-0 items-center gap-1.5 text-white/45 sm:gap-2">
                       <button
                         type="button"
                         className="h-8 w-8 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
-                        aria-label="Back"
+                        aria-label={t('portfolioAriaBack')}
                       >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
                           <path d="M14 6 8 12l6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
@@ -216,7 +212,7 @@ const TryOurDesigns = () => {
                       <button
                         type="button"
                         className="h-8 w-8 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
-                        aria-label="Forward"
+                        aria-label={t('portfolioAriaForward')}
                       >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
                           <path d="M10 6l6 6-6 6" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" />
@@ -224,8 +220,8 @@ const TryOurDesigns = () => {
                       </button>
             </div>
             
-                    <div className="flex-1 flex justify-center">
-                      <div className="flex w-full max-w-md items-center gap-2 rounded-full border border-white/12 bg-black/25 px-4 py-2 text-[12px] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                    <div className="flex min-w-0 flex-1 basis-[min(100%,14rem)] justify-center sm:basis-auto">
+                      <div className="flex min-w-0 w-full max-w-md items-center gap-2 rounded-full border border-white/12 bg-black/25 px-3 py-1.5 text-[11px] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:px-4 sm:py-2 sm:text-[12px]">
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-emerald-300/80 shrink-0" aria-hidden>
                           <path d="M7.5 11V9a4.5 4.5 0 0 1 9 0v2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                           <path d="M7 11h10v9H7v-9Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
@@ -234,11 +230,11 @@ const TryOurDesigns = () => {
             </div>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-white/45">
+                    <div className="ml-auto flex shrink-0 items-center gap-2 text-white/45 sm:ml-0">
                       <button
                         type="button"
-                        className="h-8 w-8 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center"
-                        aria-label="Reload"
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors hover:bg-white/10"
+                        aria-label={t('portfolioAriaReload')}
                       >
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
                           <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -251,40 +247,44 @@ const TryOurDesigns = () => {
                   {/* Preview Content with loading overlay */}
                   <div
                     id="portfolio-preview-scroll-container"
-                    className="relative overflow-x-hidden overflow-y-auto"
-                    style={{ height: 'max(60vh, 520px)' }}
+                    className="relative min-h-[min(80svh,max(50vh,280px))] overflow-x-clip sm:min-h-[min(82svh,max(52vh,360px))] lg:min-h-[min(85svh,max(58vh,480px))]"
                   >
                     <PortfolioLivePreview industry={selectedIndustry} style={selectedStyle} />
                     </div>
                     
                   {/* CTA Footer */}
-                  <div className="p-5 border-t border-white/10 bg-background/90 backdrop-blur-sm">
+                  <div className="border-t border-white/10 bg-background/90 p-4 backdrop-blur-sm sm:p-5">
                     {hasBothSelected && (
               <motion.p 
                         initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                         className="text-sm text-accent mb-3 text-center font-medium"
               >
-                        Preview: {selectedIndustry.brandName || selectedIndustry.shortLabel} · {selectedStyle.name}
+                        {t('portfolioPreviewPrefix')} {selectedIndustry.brandName || selectedIndustry.shortLabel} ·{' '}
+                        {selectedStyle.name}
               </motion.p>
                     )}
               <motion.button
                       onClick={chooseConfiguration}
                       whileHover={{ scale: 1.02, boxShadow: '0 20px 50px rgba(0, 201, 255, 0.35)' }}
                         whileTap={{ scale: 0.98 }}
-                      className="w-full py-5 px-8 rounded-2xl font-bold text-xl bg-gradient-to-r from-accent to-purple text-background hover:from-accent/90 hover:to-purple/90 transition-all shadow-lg hover:shadow-glow-lg"
+                      className="w-full rounded-2xl bg-gradient-to-r from-accent to-purple px-6 py-4 text-lg font-bold text-background shadow-lg transition-all hover:from-accent/90 hover:to-purple/90 hover:shadow-glow-lg sm:px-8 sm:py-5 sm:text-xl"
                       >
-                      Start My Website
+                      {t('portfolioStartWebsiteCta')}
                       </motion.button>
                     <p className="text-xs text-secondary mt-3 text-center">
-                      We'll customize this design for your brand, content, and goals.
+                      {t('portfolioCustomizeNote')}
                     </p>
                   </div>
                           </div>
                     </div>
                   </motion.div>
           ) : (
-            <motion.div key="app" {...switchMotion} className="flex justify-center">
+            <motion.div
+              key="app"
+              {...switchMotion}
+              className="flex w-full min-w-0 items-start justify-center px-1 sm:px-0"
+            >
               <AppPhonePreview />
         </motion.div>
           )}

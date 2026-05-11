@@ -26,11 +26,10 @@ export const FAQ_ANSWER_MAX = 100
 export const PREVIEW_CONTAINER_HEIGHT = 'max(60vh, 520px)'
 export const HERO_MIN_HEIGHT = `calc(${PREVIEW_CONTAINER_HEIGHT} - 80px)`
 
-/** Scroll container used by the portfolio preview (Framer Motion `whileInView` root) */
+/** DOM root for in-preview nav (`scrollToSection`); not a nested scroll container (page scroll only). */
 export const PORTFOLIO_PREVIEW_SCROLL_CONTAINER_ID = 'portfolio-preview-scroll-container'
 
-export const getPortfolioPreviewScrollRoot = () =>
-  typeof document !== 'undefined' ? document.getElementById(PORTFOLIO_PREVIEW_SCROLL_CONTAINER_ID) : null
+export const getPortfolioPreviewScrollRoot = () => null
 
 /**
  * Framer Motion cannot interpolate `transparent` ↔ rgba; use rgba with explicit alpha instead.
@@ -78,33 +77,7 @@ export const NAV_LABEL_TO_ID = {
 
 export const scrollToSection = (label) => {
   const id = NAV_LABEL_TO_ID[label] || label.toLowerCase().replace(/\s+/g, '-')
-  
-  // Find the exact scroll container inside the preview
-  const scrollContainer = document.getElementById('portfolio-preview-scroll-container')
-  
-  if (scrollContainer) {
-    // Find the target element inside the preview scroll container
-    const element = scrollContainer.querySelector(`#${id}`)
-    
-    if (element) {
-      // Calculate offset for the sticky navbar inside the preview
-      let offset = 0
-      const nav = scrollContainer.querySelector('nav')
-      if (nav) {
-        offset = nav.offsetHeight || 0
-      }
-
-      const containerRect = scrollContainer.getBoundingClientRect()
-      const elementRect = element.getBoundingClientRect()
-      
-      // Target scroll top = current scroll + distance to element - navbar height
-      const targetScrollTop = scrollContainer.scrollTop + (elementRect.top - containerRect.top) - offset
-      
-      scrollContainer.scrollTo({ top: targetScrollTop, behavior: 'smooth' })
-      return
-    }
-  }
-  
-  // Fallback (should not be reached if clicked from inside preview)
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const root = document.getElementById(PORTFOLIO_PREVIEW_SCROLL_CONTAINER_ID)
+  const element = root?.querySelector(`#${id}`) ?? document.getElementById(id)
+  element?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }

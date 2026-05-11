@@ -10,6 +10,8 @@ const Hero = () => {
   const { t } = useLanguage()
 
   const typewriterTexts = t('typewriterTexts')
+  const chipsRaw = t('heroServiceChips')
+  const heroServiceChips = Array.isArray(chipsRaw) ? chipsRaw : []
 
   useEffect(() => {
     const currentFullText = typewriterTexts[currentIndex]
@@ -38,10 +40,6 @@ const Hero = () => {
       }
     }
   }, [currentText, currentIndex, isDeleting, typewriterTexts])
-
-  const scrollToContact = () => {
-    document.getElementById('site-contact')?.scrollIntoView({ behavior: 'smooth' })
-  }
 
   return (
     <section id="hero" className="main-hero min-h-screen flex items-center justify-center relative overflow-hidden pt-20 sm:pt-24 lg:pt-28">
@@ -154,14 +152,14 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 0.8 }}
           className="mb-14 sm:mb-20"
         >
-          <button
-            onClick={scrollToContact}
-            className="hero-cta-btn cta-button glow-effect bg-gradient-to-r from-accent to-purple text-background font-bold text-base sm:text-lg px-9 py-3 sm:px-12 sm:py-4 rounded-xl hover:from-accent/90 hover:to-purple/90 relative overflow-visible group transition-all duration-100 hover:scale-105 active:scale-95"
+          <a
+            href="tel:+491734160361"
+            className="hero-cta-btn cta-button glow-effect inline-flex bg-gradient-to-r from-accent to-purple text-background font-bold text-base sm:text-lg px-9 py-3 sm:px-12 sm:py-4 rounded-xl hover:from-accent/90 hover:to-purple/90 relative overflow-visible group transition-all duration-100 hover:scale-105 active:scale-95"
           >
             <span className="relative z-10">{t('letsWorkTogether')}</span>
             {/* Shine overlay on hover */}
             <div className="absolute inset-0 bg-gradient-to-r from-accent to-purple opacity-0 group-hover:opacity-25 rounded-xl transition-opacity duration-100" style={{ willChange: 'opacity' }}></div>
-          </button>
+          </a>
         </motion.div>
 
         {/* Services showcase */}
@@ -173,7 +171,7 @@ const Hero = () => {
         >
           <p className="text-secondary text-xs sm:text-sm mb-4 sm:mb-6">{t('ourCoreServices')}</p>
           <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 opacity-70">
-            {['Web Development', 'UI/UX Design', 'Mobile Apps', 'Branding', 'SEO'].map((service, index) => (
+            {heroServiceChips.map((service, index) => (
               <motion.div
                 key={service}
                 initial={{ opacity: 0, scale: 0.8 }}

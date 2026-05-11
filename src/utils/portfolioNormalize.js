@@ -72,9 +72,9 @@ export function normalizeIndustryForStyle(styleId, industry) {
       desc: clampText(s.desc, limits.serviceDesc) || 'A premium service description.',
       featureList: padTo(s.featureList, 3, (j) => ['High quality', 'Fast delivery', 'Clear results'][j] || 'Feature')
     })),
-    stats: padTo(stats, 4, (i) => ({ value: ['10+', '24/7', '98%', '5★'][i] || '—', label: ['Years', 'Support', 'Satisfaction', 'Rating'][i] || 'Metric' })).map((x) => ({
+    stats: padTo(stats, 4, (i) => ({ value: ['10+', '24/7', '98%', '5★'][i] || '-', label: ['Years', 'Support', 'Satisfaction', 'Rating'][i] || 'Metric' })).map((x) => ({
       ...x,
-      value: clampText(x.value, 8) || '—',
+      value: clampText(x.value, 8) || '-',
       label: clampText(x.label, 18) || 'Metric'
     })),
     team: padTo(team, 3, (i) => ({
@@ -100,7 +100,7 @@ export function normalizeIndustryForStyle(styleId, industry) {
     })),
     faq: padTo(faq, 4, (i) => ({
       question: ['How long does it take?', 'What’s included?', 'How do we start?', 'Can we customize it?'][i] || 'Question',
-      answer: 'Yes — we tailor the solution to your needs and goals.'
+      answer: 'Yes. We tailor the solution to your needs and goals.'
     })).map((q) => ({
       ...q,
       question: clampText(q.question, limits.faqQ) || 'Question',

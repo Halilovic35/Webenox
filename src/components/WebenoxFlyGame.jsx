@@ -1,4 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
 const clamp = (n, min, max) => Math.min(max, Math.max(min, n))
 
@@ -26,10 +27,13 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
   const [best, setBest] = useState(0)
   const [bgChoice, setBgChoice] = useState('Background9')
   const [volume, setVolume] = useState(70) // 0..100
+  const [volumePanelOpen, setVolumePanelOpen] = useState(false)
+  const volumePanelRef = useRef(null)
+
   const BG_OPTIONS = useMemo(
     () => [
       { id: 'Background1', label: 'Sunrise City' },
-      { id: 'Background2', label: 'Sky Breeze' },
+      { id: 'Background3', label: 'Evening City' },
       { id: 'Background6', label: 'Cloud Parade' },
       { id: 'Background9', label: 'Canyon Run' }
     ],
@@ -130,8 +134,9 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
       if (!parent) return
       const rect = parent.getBoundingClientRect()
       const dpr = Math.min(2, window.devicePixelRatio || 1)
-      const w = Math.max(1, Math.floor(rect.width))
-      const h = Math.max(1, Math.floor(rect.height))
+      // Ceil logical size so canvas never renders narrower than the flex box (avoids side “pillars”).
+      const w = Math.max(1, Math.ceil(rect.width))
+      const h = Math.max(1, Math.ceil(rect.height))
       canvas.width = Math.floor(w * dpr)
       canvas.height = Math.floor(h * dpr)
       canvas.style.width = `${w}px`
@@ -235,14 +240,22 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
 
     const drawBg = () => {
       ctx.clearRect(0, 0, state.w, state.h)
+      // clearRect is transparent; without an opaque base, phone shell (bg-black/30) shows through as dark bars.
+      ctx.fillStyle = '#1a1512'
+      ctx.fillRect(0, 0, state.w, state.h)
       if (imgs.bg) {
-        // tile background to fill
         const iw = imgs.bg.width
         const ih = imgs.bg.height
-        const scale = Math.max(state.w / iw, state.h / ih)
-        const dw = iw * scale
-        const dh = ih * scale
-        ctx.drawImage(imgs.bg, (state.w - dw) / 2, (state.h - dh) / 2, dw, dh)
+        // Slight overscan so cover never leaves transparent strips after DPR / rounding.
+        const scale = Math.max(state.w / iw, state.h / ih) * 1.03
+        const dw = Math.ceil(iw * scale) + 4
+        const dh = Math.ceil(ih * scale) + 4
+        const x0 = Math.floor((state.w - dw) / 2)
+        const y0 = Math.floor((state.h - dh) / 2)
+        const prevSmooth = ctx.imageSmoothingEnabled
+        ctx.imageSmoothingEnabled = true
+        ctx.drawImage(imgs.bg, x0, y0, dw, dh)
+        ctx.imageSmoothingEnabled = prevSmooth
       } else {
         const g = ctx.createLinearGradient(0, 0, 0, state.h)
         g.addColorStop(0, '#0b1220')
@@ -283,14 +296,14 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
     const drawGround = () => {
       const y = Math.round(state.h - state.groundH)
       if (imgs.ground) {
-        // Use integer alignment + tiny overlap to avoid hairline seams.
+        // Use integer alignment + overlap; extend past right edge so no gap on DPR rounding.
         const rawTileW = (imgs.ground.width / imgs.ground.height) * state.groundH
         const tileW = Math.max(1, Math.ceil(rawTileW))
-        const offset = state.groundOffset % tileW
+        const offset = ((state.groundOffset % tileW) + tileW) % tileW
         const startX = -offset - tileW
-        for (let x = startX; x < state.w + tileW; x += tileW) {
+        for (let x = startX; x < state.w + tileW * 3; x += tileW) {
           const xi = Math.round(x)
-          ctx.drawImage(imgs.ground, xi - 1, y, tileW + 2, state.groundH)
+          ctx.drawImage(imgs.ground, xi - 3, y, tileW + 6, state.groundH)
         }
       } else {
         ctx.fillStyle = 'rgba(0,0,0,0.35)'
@@ -398,6 +411,16 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
     window.addEventListener('keydown', onKeyDown, { passive: false })
     canvas.addEventListener('pointerdown', onPointerDown, { passive: false })
 
+    const parent = canvas.parentElement
+    const ro =
+      typeof ResizeObserver !== 'undefined' && parent
+        ? new ResizeObserver(() => {
+            resize()
+            draw()
+          })
+        : null
+    if (ro) ro.observe(parent)
+
     return () => {
       mounted = false
       runningRef.current = false
@@ -406,6 +429,7 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
       window.removeEventListener('keydown', onKeyDown)
       canvas.removeEventListener('pointerdown', onPointerDown)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
+      if (ro) ro.disconnect()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [assets])
@@ -414,6 +438,16 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
     if (phase !== 'gameover') return
     setBest((prev) => Math.max(prev, score))
   }, [phase, score])
+
+  useEffect(() => {
+    if (!volumePanelOpen) return
+    const onDocPointerDown = (e) => {
+      const el = volumePanelRef.current
+      if (el && !el.contains(e.target)) setVolumePanelOpen(false)
+    }
+    document.addEventListener('pointerdown', onDocPointerDown, true)
+    return () => document.removeEventListener('pointerdown', onDocPointerDown, true)
+  }, [volumePanelOpen])
 
   useImperativeHandle(
     ref,
@@ -432,37 +466,96 @@ const WebenoxFlyGame = forwardRef(function WebenoxFlyGame({ onExit }, ref) {
   )
 
   return (
-    <div className="h-full w-full min-h-0 flex flex-col overflow-hidden">
-      <div className="relative flex-1 min-h-0 rounded-none border-0 bg-black/30 overflow-hidden">
-          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full touch-none" />
+    <div className="flex h-full w-full min-h-0 min-w-0 flex-col overflow-hidden">
+      <div className="relative isolate flex-1 min-h-0 min-w-0 overflow-hidden rounded-none border-0 bg-[#141210]">
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 z-0 block h-full w-full max-w-none touch-none"
+          />
 
-          {/* sound control */}
-          <div className="absolute right-3 top-3 z-10 flex items-center gap-2 rounded-2xl border border-white/10 bg-black/30 backdrop-blur-sm px-3 py-2">
-            <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-white/75">
-              <path
-                d="M11 6 8.5 8.2H6a2 2 0 0 0-2 2v3.6a2 2 0 0 0 2 2h2.5L11 18V6Z"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinejoin="round"
-              />
-              {volume === 0 ? (
-                <path d="M14.5 9.5 19 14M19 9.5 14.5 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              ) : (
-                <path d="M14.5 9.2c1.2 1.2 1.2 4.4 0 5.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-              )}
-            </svg>
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={volume}
-              onChange={(e) => {
-                ensureAudio()
-                setVolume(Number(e.target.value))
+          {/* sound: compact icon → smooth spring panel with slider */}
+          <div ref={volumePanelRef} className="absolute right-3 top-3 z-10" onPointerDown={(e) => e.stopPropagation()}>
+            <motion.div
+              layout
+              className="flex items-center overflow-hidden rounded-2xl border border-white/14 bg-gradient-to-br from-black/60 via-black/45 to-[#0a1522]/70 p-1 backdrop-blur-md"
+              animate={{
+                boxShadow: volumePanelOpen
+                  ? '0 14px 44px -10px rgba(0,0,0,0.78), 0 0 32px -8px rgba(0,201,255,0.14)'
+                  : '0 12px 36px -10px rgba(0,0,0,0.72), inset 0 1px 0 rgba(255,255,255,0.06)'
               }}
-              className="w-24"
-            />
-            <div className="w-8 text-right text-[10px] text-white/70 tabular-nums">{volume}</div>
+              transition={{
+                layout: { type: 'spring', stiffness: 460, damping: 34, mass: 0.85 },
+                boxShadow: { duration: 0.35, ease: [0.22, 1, 0.36, 1] }
+              }}
+            >
+              <motion.button
+                layout
+                type="button"
+                aria-expanded={volumePanelOpen}
+                aria-label={volumePanelOpen ? 'Close volume' : 'Volume'}
+                className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white/90"
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.08)' }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+                onClick={() => {
+                  ensureAudio()
+                  setVolumePanelOpen((o) => !o)
+                }}
+              >
+                <motion.span
+                  className="pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400/15 to-purple-500/10"
+                  animate={{ opacity: volumePanelOpen ? 0.5 : 0 }}
+                  transition={{ duration: 0.28, ease: 'easeOut' }}
+                />
+                <svg viewBox="0 0 24 24" fill="none" className="relative h-5 w-5 drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)]">
+                  <path
+                    d="M11 6 8.5 8.2H6a2 2 0 0 0-2 2v3.6a2 2 0 0 0 2 2h2.5L11 18V6Z"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                  {volume === 0 ? (
+                    <path d="M14.5 9.5 19 14M19 9.5 14.5 14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  ) : (
+                    <path d="M14.5 9.2c1.2 1.2 1.2 4.4 0 5.6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                  )}
+                </svg>
+              </motion.button>
+
+              <AnimatePresence initial={false}>
+                {volumePanelOpen && (
+                  <motion.div
+                    key="vol-expand"
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: 156, opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+                    className="flex min-w-0 shrink-0 items-center gap-2 overflow-hidden pl-1 pr-1.5"
+                  >
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={volume}
+                      onChange={(e) => {
+                        ensureAudio()
+                        setVolume(Number(e.target.value))
+                      }}
+                      className="webenoxfly-volume-range shrink-0 cursor-pointer"
+                    />
+                    <motion.span
+                      className="min-w-[1.75rem] text-right text-[11px] font-bold tabular-nums text-white/85"
+                      initial={{ opacity: 0, x: 8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 6 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 28, delay: 0.04 }}
+                    >
+                      {volume}
+                    </motion.span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
 
           {phase === 'idle' && (

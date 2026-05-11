@@ -15,7 +15,7 @@ const STORAGE_ORDERS = 'webenoxshop_orders_v1'
 const STORAGE_ADDR = 'webenoxshop_address_v1'
 const STORAGE_SETTINGS = 'webenoxshop_settings_v1'
 
-/** Fixed media box heights for sneakers (side shots) — tweak in one place. */
+/** Fixed media box heights for sneakers (side shots); tweak in one place. */
 const SNEAKER_MEDIA = {
   shop: 'h-[8.25rem]',
   home: 'h-[8.25rem]',
@@ -88,7 +88,7 @@ function normalizeCartLines(raw) {
     }, [])
 }
 
-/** Navy / Sand PNGs: transparent edges read as dark pillars under `object-cover`; studio fill on `<img>` only (no `contain` — that caused top/bottom bars in 4:5 tiles). */
+/** Navy / Sand PNGs: transparent edges read as dark pillars under `object-cover`; studio fill on `<img>` only (no `contain`; that caused top/bottom bars in 4:5 tiles). */
 const SHORTS_LOOSE_FRAMING_IDS = new Set(['wbnx-core-shorts-navy', 'wbnx-core-shorts-sand'])
 const SHORTS_PACKSHOT_FILL = '#babec5'
 
@@ -105,7 +105,7 @@ function shortsPackshotImgStyle(productId) {
   return { backgroundColor: SHORTS_PACKSHOT_FILL, objectPosition: '50% 40%' }
 }
 
-/** Sneakers: compact media height + contained image — cards can be shorter than other categories. */
+/** Sneakers: compact media height + contained image; cards can be shorter than other categories. */
 function catalogMediaBoxClass(category, mode) {
   const sn = category === 'Sneakers'
   const bg = mode === 'home' || mode === 'fav' ? 'bg-black/40' : 'bg-black/50'
@@ -137,7 +137,7 @@ const btnGhost =
   'rounded-full border border-white/12 bg-white/5 px-4 py-3 text-xs font-extrabold text-white/85 transition-all duration-200 hover:bg-white/12 hover:border-white/20 active:scale-[0.98]'
 const card = 'rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-sm overflow-hidden shadow-[0_12px_40px_-20px_rgba(0,0,0,0.65)]'
 
-/** Glass chevron control — avoids generic “← Back” copy on every screen. */
+/** Glass chevron control; avoids generic “← Back” copy on every screen. */
 function ShopBackButton({ onClick, ariaLabel = 'Go back' }) {
   return (
     <button
@@ -1622,7 +1622,7 @@ function OutfitDetailScreen({ outfit, currency, onBack, onAddOutfit, onViewSepar
               >
                 <span className="min-w-0 flex-1 text-[11px] font-bold leading-snug text-white/90">{row.label}</span>
                 <span className="shrink-0 text-xs font-black text-accent">
-                  {row.product ? formatMoney(row.product.price, currency) : '—'}
+                  {row.product ? formatMoney(row.product.price, currency) : '-'}
                 </span>
               </button>
             </li>
@@ -1775,7 +1775,7 @@ function ProductDetailView({ product, favorites, onToggleFav, onBack, onAddLine,
               >
                 <ProductImage
                   src={t.src}
-                  alt={`${product.name} — ${t.label}`}
+                  alt={`${product.name}, ${t.label}`}
                   style={shortsPackshotImgStyle(product.id)}
                   className="absolute inset-0 h-full w-full object-cover object-center"
                 />
@@ -2059,10 +2059,10 @@ function SuccessView({ orderNumber, total, currency, onContinue }) {
         ✓
       </motion.div>
       <div className="text-lg font-extrabold">Order Confirmed</div>
-      <div className="mt-2 text-xs text-white/50">Thank you — your drop is secured.</div>
+      <div className="mt-2 text-xs text-white/50">Thank you. Your drop is secured.</div>
       {orderNumber ? <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-[11px] font-mono text-accent">{orderNumber}</div> : null}
       <div className="mt-2 text-[11px] text-white/45">
-        Total charged: {typeof total === 'number' ? formatMoney(total, currency) : '—'}
+        Total charged: {typeof total === 'number' ? formatMoney(total, currency) : '-'}
       </div>
       <button type="button" className={`${btnPrimary} mt-8 w-full max-w-xs`} onClick={onContinue}>
         Continue Shopping

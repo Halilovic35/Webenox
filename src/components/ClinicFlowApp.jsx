@@ -674,9 +674,9 @@ function derivePatientInsights(appointments, patientName) {
 
   const upcoming = mine.filter((a) => a.status === 'pending' || a.status === 'confirmed').slice(-1)[0] || null
   const pastCompleted = mine.filter((a) => a.status === 'completed')
-  const lastTreatment = pastCompleted.slice(-1)[0]?.title || '—'
+  const lastTreatment = pastCompleted.slice(-1)[0]?.title || '-'
 
-  const nextLabel = upcoming ? `${upcoming.date} · ${upcoming.time}` : '—'
+  const nextLabel = upcoming ? `${upcoming.date} · ${upcoming.time}` : '-'
 
   return { lastTreatment, nextLabel, history: mine.slice().reverse() }
 }
@@ -1650,7 +1650,7 @@ const ClinicFlowApp = forwardRef(function ClinicFlowApp(_props, ref) {
 
             <div className="rounded-3xl border border-white/10 bg-white/5 px-3 py-4">
               <div className="text-text font-extrabold text-sm">Notes</div>
-              <div className="text-secondary text-xs mt-2 leading-relaxed">{selected.notes || '—'}</div>
+              <div className="text-secondary text-xs mt-2 leading-relaxed">{selected.notes || '-'}</div>
             </div>
 
             <div className="rounded-3xl border border-white/10 bg-white/5 px-3 py-4">

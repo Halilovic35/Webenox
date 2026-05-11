@@ -784,7 +784,7 @@ export default function WebenoxPulseApp() {
                         scaling
                       </div>
                     </div>
-                    <div className="mt-1 text-[10px] text-white/55">“Premium Agency — Book a Call”</div>
+                    <div className="mt-1 text-[10px] text-white/55">{`"Premium Agency · Book a Call"`}</div>
                     <div className="mt-3">
                       <Sparkline points={data.series.map((v, i) => v + (i % 3 === 0 ? 6 : -2))} tone="purple" />
                     </div>

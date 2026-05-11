@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useLanguage } from '../context/LanguageContext'
 import AccentUnderline from './AccentUnderline'
 
@@ -10,7 +11,8 @@ const Services = () => {
 
   const TOOLTIP_WIDTH = 260
   const TOOLTIP_MARGIN = 16
-  const TOOLTIP_GAP = 20
+  /** Space between tooltip bottom and icon top (viewport px) */
+  const TOOLTIP_GAP = 14
 
   const services = [
       {
@@ -112,9 +114,9 @@ const Services = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            Our{' '}
+            {t('sectionServicesOur')}{' '}
             <AccentUnderline>
-              <span className="gradient-text">Services</span>
+              <span className="gradient-text">{t('sectionServicesServices')}</span>
             </AccentUnderline>
           </h2>
           <p className="section-description max-w-3xl mx-auto">{t('servicesSectionLead')}</p>
@@ -210,29 +212,33 @@ const Services = () => {
           })}
         </motion.div>
 
-        {activeTooltip && tooltipPos?.text && (
-          <motion.div
-            key={activeTooltip}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            style={{
-              position: 'fixed',
-              left: tooltipPos.left,
-              top: tooltipPos.top,
-              width: TOOLTIP_WIDTH,
-              transform: 'translateY(-100%)',
-              zIndex: 9999
-            }}
-            className="pointer-events-none rounded-lg border border-accent/20 bg-background px-4 py-2 text-left text-sm leading-snug text-text shadow-glow break-words"
-          >
-            {tooltipPos.text}
-            <div
-              style={{ left: tooltipPos.arrowLeft }}
-              className="absolute top-full h-0 w-0 -translate-x-1/2 transform border-l-4 border-r-4 border-t-4 border-transparent border-t-background"
-            />
-          </motion.div>
-        )}
+        {typeof document !== 'undefined' &&
+          activeTooltip &&
+          tooltipPos?.text &&
+          createPortal(
+            <motion.div
+              key={activeTooltip}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.15 }}
+              style={{
+                position: 'fixed',
+                left: tooltipPos.left,
+                top: tooltipPos.top,
+                width: TOOLTIP_WIDTH,
+                transform: 'translateY(calc(-100% - 4px))',
+                zIndex: 10000
+              }}
+              className="pointer-events-none rounded-lg border border-accent/25 bg-background/95 px-4 py-2.5 text-left text-sm leading-snug text-text shadow-glow backdrop-blur-sm break-words"
+            >
+              {tooltipPos.text}
+              <div
+                style={{ left: tooltipPos.arrowLeft }}
+                className="absolute top-full h-0 w-0 -translate-x-1/2 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent border-t-background/95"
+              />
+            </motion.div>,
+            document.body
+          )}
       </div>
     </section>
   )

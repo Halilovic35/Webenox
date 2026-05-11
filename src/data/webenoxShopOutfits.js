@@ -1,6 +1,6 @@
 import { SHOP_IMG } from './webenoxShopData'
 
-/** Home “Shop the Look” — four vertical zones (model / campaign frames). */
+/** Home “Shop the Look”: four vertical zones (model / campaign frames). */
 export const COMBO_QUAD = [
   { outfitId: 'skyline', image: SHOP_IMG('WBNX Model – Skyline.png'), label: 'Skyline' },
   { outfitId: 'street-stack', image: SHOP_IMG('WBNX Model – Street Contrast.png'), label: 'Street' },
@@ -9,7 +9,7 @@ export const COMBO_QUAD = [
 ]
 
 /**
- * Curated outfits — productIds must exist in SHOP_PRODUCTS.
+ * Curated outfits; productIds must exist in SHOP_PRODUCTS.
  * Prices / totals are derived live from catalog in the app.
  */
 export const OUTFITS = [

@@ -6,7 +6,7 @@ const cls = (...xs) => xs.filter(Boolean).join(' ')
 const welcomeChatMessage = () => ({
   id: `welcome_${Date.now()}`,
   role: 'ai',
-  text: 'Ask anything you want — welcome to WebenoxAI.'
+  text: 'Ask anything you want. Welcome to WebenoxAI.'
 })
 
 const Screen = ({ children }) => (
@@ -284,7 +284,7 @@ export default function WebenoxAIApp() {
   const scrollChatToEnd = (behavior = 'auto') => {
     const el = chatScrollRef.current
     if (!el) return
-    // IMPORTANT: don't use scrollIntoView here — it can scroll the whole page
+    // IMPORTANT: don't use scrollIntoView here; it can scroll the whole page
     // (and yank the user above the phone preview). Only scroll the chat container.
     const top = el.scrollHeight
     if (behavior === 'smooth') el.scrollTo({ top, behavior: 'smooth' })
@@ -829,7 +829,7 @@ export default function WebenoxAIApp() {
                             exit={{ opacity: 0, y: -8, filter: 'blur(6px)' }}
                             transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
                           >
-                            Open Chat and type below — answers stream in as you go.
+                            Open Chat and type below. Answers stream in as you go.
                           </motion.div>
                         )}
                         {introStep === 1 && (

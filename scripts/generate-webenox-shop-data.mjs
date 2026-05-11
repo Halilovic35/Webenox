@@ -159,7 +159,7 @@ rows.forEach((r, idx) => {
   const color = colorLabel(r.colorKey)
   const desc =
     r.cat === 'Campaign'
-      ? 'Editorial campaign frame — premium WBNX mood.'
+      ? 'Editorial campaign frame, premium WBNX mood.'
       : `Premium WBNX piece. ${color} edition.`
   const price = priceFor(r.cat) + (r.cat === 'Campaign' ? 0 : idx % 5) * 2
   const featured = r.cat !== 'Campaign' && idx < 12

@@ -19,7 +19,7 @@ export const SHOP_PRODUCTS = [
       front: SHOP_IMG("WBNX Campaign Model – Minimal Stone Edition.png"),
       back: SHOP_IMG("WBNX Campaign Model – Minimal Stone Edition.png")
     },
-    description: "Editorial campaign frame — premium WBNX mood.",
+    description: "Editorial campaign frame, premium WBNX mood.",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     featured: false,
     rating: 4.55,
@@ -35,7 +35,7 @@ export const SHOP_PRODUCTS = [
       front: SHOP_IMG("WBNX Model – Skyline.png"),
       back: SHOP_IMG("WBNX Model – Skyline.png")
     },
-    description: "Editorial campaign frame — premium WBNX mood.",
+    description: "Editorial campaign frame, premium WBNX mood.",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     featured: false,
     rating: 4.60,
@@ -51,7 +51,7 @@ export const SHOP_PRODUCTS = [
       front: SHOP_IMG("WBNX Model – Street Contrast.png"),
       back: SHOP_IMG("WBNX Model – Street Contrast.png")
     },
-    description: "Editorial campaign frame — premium WBNX mood.",
+    description: "Editorial campaign frame, premium WBNX mood.",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     featured: false,
     rating: 4.65,
@@ -67,7 +67,7 @@ export const SHOP_PRODUCTS = [
       front: SHOP_IMG("WBNX Model – Urban Minimal.png"),
       back: SHOP_IMG("WBNX Model – Urban Minimal.png")
     },
-    description: "Editorial campaign frame — premium WBNX mood.",
+    description: "Editorial campaign frame, premium WBNX mood.",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     featured: false,
     rating: 4.70,
@@ -115,7 +115,7 @@ export const SHOP_PRODUCTS = [
       front: SHOP_IMG("WBNX Core Hoodie – Washed Gray.png"),
       back: SHOP_IMG("WBNX Statement Hoodie – Washed Gray (Back Edition).png")
     },
-    description: "Premium WBNX piece. Washed Gray — core front, statement W graphic on back.",
+    description: "Premium WBNX piece. Washed Gray: core front, statement W graphic on back.",
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     featured: true,
     rating: 4.85,

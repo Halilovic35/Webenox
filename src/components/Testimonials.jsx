@@ -1,66 +1,48 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLanguage } from '../context/LanguageContext'
+
+const CLIENT_IMAGES = [
+  '/images/client1.jpg',
+  '/images/client2.jpg',
+  '/images/client3.jpg',
+  '/images/client4.jpg'
+]
 
 const Testimonials = () => {
+  const { t, language } = useLanguage()
   const [activeTestimonial, setActiveTestimonial] = useState(0)
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Mark Johnson",
-      position: "Owner",
-      company: "Pizza Palace",
-      image: "/images/client1.jpg",
-      video: "#",
-      rating: 5,
-      text: "Webenox created an amazing website for our restaurant! The online ordering system works perfectly and our customers love the easy-to-use interface. Sales increased by 200% in the first month!",
-      project: "Restaurant Website",
-      duration: "3 weeks"
-    },
-    {
-      id: 2,
-      name: "Sarah Chen",
-      position: "Founder",
-      company: "TechStart",
-      image: "/images/client2.jpg",
-      video: "#",
-      rating: 5,
-      text: "Working with Webenox was fantastic! They delivered our landing page on time and the design exceeded our expectations. The conversion rate optimization really helped us get more customers.",
-      project: "Startup Landing Page",
-      duration: "2 weeks"
-    },
-    {
-      id: 3,
-      name: "David Rodriguez",
-      position: "CEO",
-      company: "FashionStore",
-      image: "/images/client3.jpg",
-      video: "#",
-      rating: 5,
-      text: "Webenox built our e-commerce platform from scratch. The team was professional, responsive, and delivered exactly what we needed. Our online sales have never been better!",
-      project: "E-Commerce Platform",
-      duration: "6 weeks"
-    },
-    {
-      id: 4,
-      name: "Emma Wilson",
-      position: "Marketing Director",
-      company: "BusinessCorp",
-      image: "/images/client4.jpg",
-      video: "#",
-      rating: 5,
-      text: "The corporate website Webenox created for us is modern, professional, and perfectly represents our brand. The SEO optimization has significantly improved our online visibility.",
-      project: "Corporate Website",
-      duration: "5 weeks"
-    }
-  ]
+  useEffect(() => {
+    setActiveTestimonial(0)
+  }, [language])
 
-  const stats = [
-    { number: "100%", label: "Client Satisfaction" },
-    { number: "25+", label: "Projects Completed" },
-    { number: "20+", label: "Happy Clients" },
-    { number: "24/7", label: "Support Available" }
-  ]
+  const testimonials = useMemo(() => {
+    const items = t('testimonialsItems')
+    if (!Array.isArray(items)) return []
+    return items.map((row, i) => ({
+      id: i + 1,
+      name: row.name,
+      position: row.position,
+      company: row.company,
+      image: CLIENT_IMAGES[i] || '/images/client1.jpg',
+      video: '#',
+      rating: 5,
+      text: row.text,
+      project: row.project,
+      duration: row.duration
+    }))
+  }, [t])
+
+  const stats = useMemo(
+    () => [
+      { number: '100%', label: t('statClientSatisfaction') },
+      { number: '25+', label: t('statProjectsCompleted') },
+      { number: '20+', label: t('statHappyClients') },
+      { number: '24/7', label: t('statSupportAvailable') }
+    ],
+    [t]
+  )
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -130,11 +112,10 @@ const Testimonials = () => {
           className="section-header"
         >
           <h2 className="section-title luxury-heading">
-            What Our <span className="gradient-text">Clients Say</span>
+            {t('testimonialTitleWhat')}{' '}
+            <span className="gradient-text">{t('testimonialTitleClientsSay')}</span>
           </h2>
-          <p className="section-description">
-            Don't just take our word for it. Here's what our clients have to say about working with us.
-          </p>
+          <p className="section-description">{t('testimonialSectionLead')}</p>
         </motion.div>
 
         {/* Enhanced Stats Section */}
@@ -203,7 +184,7 @@ const Testimonials = () => {
                   </motion.button>
                 </div>
                 <div className="absolute bottom-4 left-4 bg-background/80 backdrop-blur-sm text-accent px-3 py-1 rounded-full text-xs font-bold">
-                  Video Testimonial
+                  {t('testimonialVideoBadge')}
                 </div>
               </div>
 
@@ -244,7 +225,8 @@ const Testimonials = () => {
                 </motion.div>
 
                 <div className="mt-4 text-xs text-secondary">
-                  Project: {testimonials[activeTestimonial].project} • Duration: {testimonials[activeTestimonial].duration}
+                  {t('testimonialProjectLabel')}: {testimonials[activeTestimonial].project} • {t('testimonialDurationLabel')}:{' '}
+                  {testimonials[activeTestimonial].duration}
                 </div>
               </div>
             </div>
@@ -317,7 +299,7 @@ const Testimonials = () => {
             transition={{ duration: 0.15 }}
             className="bg-gradient-to-r from-accent to-purple text-background font-bold px-8 py-4 rounded-xl hover:from-accent/90 hover:to-purple/90 transition-all duration-200 shadow-lg hover:shadow-glow-lg"
           >
-            Join Our Happy Clients
+            {t('testimonialJoinCta')}
           </motion.button>
         </motion.div>
       </div>

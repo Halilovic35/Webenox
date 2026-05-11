@@ -7,7 +7,7 @@ import WebenoxAIApp from './WebenoxAIApp'
 import WebenoxPulseApp from './WebenoxPulseApp'
 
 /**
- * HTML embedded SVG defaults to a viewport that clips paint to the viewBox — strokes
+ * HTML embedded SVG defaults to a viewport that clips paint to the viewBox; strokes
  * past the edge look “cut off”. Fix: overflow="visible" + padded viewBox so strokes
  * stay inside user space (still visible without relying on UA quirks).
  */
@@ -131,7 +131,7 @@ const PlaceholderApp = ({ title, items, cta }) => {
     <div className="h-full w-full min-h-0 flex flex-col overflow-hidden px-5 pt-4 pb-2">
       <div className="text-lg font-extrabold text-text">{title}</div>
       <div className="text-secondary text-xs mt-1">Concept preview</div>
-      <div className="mt-5 flex-1 min-h-0 overflow-auto space-y-3">
+      <div className="hide-scrollbar mt-5 flex-1 min-h-0 overflow-auto space-y-3">
         {items.map((line) => (
           <div key={line} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-secondary">
             {line}
@@ -368,8 +368,8 @@ const AppPhonePreview = () => {
 
   const renderActiveApp = () => {
     const shell = (child) => (
-      <div className="h-full w-full min-h-0 flex flex-col">
-        <div className="flex-1 min-h-0 overflow-hidden">{child}</div>
+      <div className="flex h-full max-h-full w-full min-h-0 min-w-0 flex-col overflow-clip">
+        <div className="min-h-0 min-w-0 flex-1 overflow-clip">{child}</div>
         <PhoneSystemNav onBack={handleOsBack} onHome={handleOsHome} onRecents={handleOsRecents} />
       </div>
     )
@@ -383,22 +383,26 @@ const AppPhonePreview = () => {
   }
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="relative w-[380px] sm:w-[420px]">
-        {/* soft glow */}
-        <div className="absolute -inset-10 bg-gradient-to-br from-accent/10 via-purple/10 to-transparent blur-3xl opacity-80 pointer-events-none" />
+    <div className="flex w-full min-w-0 max-w-full shrink-0 justify-center">
+      <div className="relative mx-auto w-[min(380px,calc(100vw-2rem))] max-w-full min-w-0 sm:w-[min(420px,calc(100vw-2.5rem))]">
+        {/* soft glow — extends below the frame so it can fade into the next section (not clipped by #portfolio) */}
+        <div className="pointer-events-none absolute -inset-x-12 -top-12 -bottom-36 bg-gradient-to-br from-accent/12 via-purple/11 to-transparent blur-[2.75rem] opacity-[0.72]" />
 
         {/* phone frame */}
-        <div className="relative rounded-[54px] border border-white/12 bg-gradient-to-b from-[#0b0f16] to-[#05070c] shadow-[0_36px_140px_-55px_rgba(0,0,0,0.88)] p-[12px]">
-          <div className="rounded-[44px] border border-white/8 bg-gradient-to-b from-[#0f1624] to-[#070a12] overflow-hidden relative">
-            <div className="flex h-[720px] flex-col">
+        <div className="webenox-phone-preview relative overscroll-contain rounded-[54px] border border-white/12 bg-gradient-to-b from-[#0b0f16] to-[#05070c] shadow-[0_36px_140px_-55px_rgba(0,0,0,0.88)] p-[12px]">
+            <div className="relative isolate overflow-clip rounded-[44px] border border-white/8 bg-gradient-to-b from-[#0f1624] to-[#070a12]">
+            <div className="flex h-[720px] flex-col overflow-clip">
               <PhoneStatusBar phoneTime={phoneTime} />
 
-              <div className="relative min-h-0 flex-1 overflow-hidden">
+              <div className="relative min-h-0 flex-1 overflow-clip">
               <AnimatePresence mode="wait" initial={false}>
                 {!activeApp ? (
-                  <motion.div key="home" {...screenMotion} className="h-full w-full">
-                    <div className="relative h-full w-full flex flex-col">
+                  <motion.div
+                    key="home"
+                    {...screenMotion}
+                    className="flex h-full max-h-full min-h-0 w-full flex-col overflow-clip"
+                  >
+                    <div className="relative flex h-full max-h-full min-h-0 w-full flex-col overflow-clip">
                       {/* Launcher wallpaper + scrim for legible chrome */}
                       <AnimatePresence mode="wait" initial={false}>
                         <motion.div
@@ -431,7 +435,7 @@ const AppPhonePreview = () => {
                       </div>
 
                       {/* grid: 3 + 2 app icons (5 total) */}
-                      <div className="px-7 flex-1 flex flex-col justify-center pb-4">
+                      <div className="flex min-h-0 flex-1 flex-col justify-center overflow-clip px-7 pb-4">
                         <div className="grid grid-cols-3 gap-5">
                           {apps.slice(0, 3).map((app) => {
                             const meta = APP_META[app.id]
@@ -640,7 +644,11 @@ const AppPhonePreview = () => {
                     </div>
                   </motion.div>
                 ) : (
-                  <motion.div key={activeApp} {...screenMotion} className="h-full w-full min-h-0">
+                  <motion.div
+                    key={activeApp}
+                    {...screenMotion}
+                    className="flex h-full max-h-full min-h-0 min-w-0 w-full flex-col overflow-clip"
+                  >
                     {renderActiveApp()}
                   </motion.div>
                 )}

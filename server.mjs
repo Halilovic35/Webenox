@@ -123,6 +123,19 @@ function previewCookieAttrs(req) {
   return `Path=/; HttpOnly; SameSite=Lax${secure}`
 }
 
+function normalizePathNoTrailingSlash(pathOnly) {
+  const p = pathOnly.split('?')[0] || '/'
+  if (p.length > 1 && p.endsWith('/')) return p.slice(0, -1)
+  return p
+}
+
+/** Legal pages must remain reachable even when preview password protection is enabled. */
+function isPublicLegalPagePath(pathOnly, method) {
+  if (method !== 'GET' && method !== 'HEAD') return false
+  const n = normalizePathNoTrailingSlash(pathOnly)
+  return n === '/impressum' || n === '/datenschutz' || n === '/imprint'
+}
+
 function isPublicStaticPath(pathOnly, method) {
   if (method !== 'GET') return false
   if (pathOnly === '/site.webmanifest' || pathOnly === '/manifest.json') return true
@@ -198,7 +211,7 @@ async function getOrCreateUserByAnonId(anonId) {
   return await prisma.user.create({ data: { anonId } })
 }
 
-/** Avoid dozens of threads all titled "hi" — use timestamp label for generic openers. */
+/** Avoid dozens of threads all titled "hi"; use timestamp label for generic openers. */
 function threadTitleFromFirstMessage(text) {
   const t = String(text || '')
     .trim()
@@ -577,7 +590,7 @@ const server = http.createServer((req, res) => {
     return sendSharePreview(res, req)
   }
 
-  if (!DISABLE_PREVIEW_AUTH && !isAuthed(req)) {
+  if (!DISABLE_PREVIEW_AUTH && !isAuthed(req) && !isPublicLegalPagePath(pathOnly, req.method || 'GET')) {
     return sendLockScreen(res)
   }
 
@@ -721,7 +734,7 @@ const server = http.createServer((req, res) => {
           })
 
           const system =
-            'You are WebenoxAI — a premium general-purpose AI assistant. ' +
+            'You are WebenoxAI, a premium general-purpose AI assistant. ' +
             'Answer any question (business, design, code, marketing, strategy, writing, learning, planning). ' +
             'Be concise, structured, and actionable. Use short sections, bullets, and next steps when helpful. No fluff.'
 
