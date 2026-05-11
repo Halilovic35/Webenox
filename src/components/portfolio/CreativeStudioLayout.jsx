@@ -5,9 +5,27 @@
  * Outfit + DM Sans, 4px radius (sharp, modern)
  * Bold typography, outline buttons, creative agency aesthetic
  */
-import React, { useMemo } from 'react'
+import React, { useMemo, useSyncExternalStore } from 'react'
 import { motion } from 'framer-motion'
 import { truncateText, SERVICE_DESC_MAX, ABOUT_PARA_MAX, HERO_MIN_HEIGHT, scrollToSection, getPortfolioPreviewScrollRoot, colorWithAlpha } from '../../utils/portfolioUtils'
+
+/** Match `max-sm` / common phone breakpoint; useSyncExternalStore avoids stale reads and odd HMR scope issues. */
+const NARROW_VIEWPORT_MQ = '(max-width: 639px)'
+
+function subscribeNarrowViewport(cb) {
+  if (typeof window === 'undefined') return () => {}
+  const mq = window.matchMedia(NARROW_VIEWPORT_MQ)
+  mq.addEventListener('change', cb)
+  return () => mq.removeEventListener('change', cb)
+}
+
+function getNarrowViewportSnapshot() {
+  return typeof window !== 'undefined' && window.matchMedia(NARROW_VIEWPORT_MQ).matches
+}
+
+function getNarrowViewportServerSnapshot() {
+  return false
+}
 
 const SERVICE_ICONS = {
   clinic: (
@@ -71,7 +89,7 @@ const CreativeStudioLayout = ({ industry, style }) => {
   const bodyFont = "'DM Sans', sans-serif"
 
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)')?.matches
-  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)')?.matches
+  const isPhone = useSyncExternalStore(subscribeNarrowViewport, getNarrowViewportSnapshot, getNarrowViewportServerSnapshot)
 
   const previewScrollRoot = useMemo(() => getPortfolioPreviewScrollRoot(), [])
   const sectionView = useMemo(

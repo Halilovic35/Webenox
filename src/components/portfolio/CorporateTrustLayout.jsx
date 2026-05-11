@@ -4,7 +4,7 @@
  * White bg #ffffff, blue #1d4ed8, #2563eb, Inter font, 8px radius (minimal rounding)
  * Clean, structured, trustworthy law firm / consulting aesthetic
  */
-import React, { useMemo } from 'react'
+import React, { useMemo, useSyncExternalStore } from 'react'
 import { motion } from 'framer-motion'
 import {
   truncateText,
@@ -15,10 +15,28 @@ import {
   TESTIMONIAL_QUOTE_MAX,
   FAQ_ANSWER_MAX,
   PREVIEW_CONTAINER_HEIGHT,
+  HERO_MIN_HEIGHT,
   scrollToSection,
   getPortfolioPreviewScrollRoot,
   colorWithAlpha
 } from '../../utils/portfolioUtils'
+
+const NARROW_VIEWPORT_MQ = '(max-width: 639px)'
+
+function subscribeNarrowViewport(cb) {
+  if (typeof window === 'undefined') return () => {}
+  const mq = window.matchMedia(NARROW_VIEWPORT_MQ)
+  mq.addEventListener('change', cb)
+  return () => mq.removeEventListener('change', cb)
+}
+
+function getNarrowViewportSnapshot() {
+  return typeof window !== 'undefined' && window.matchMedia(NARROW_VIEWPORT_MQ).matches
+}
+
+function getNarrowViewportServerSnapshot() {
+  return false
+}
 
 const SERVICE_ICONS = {
   legal: (
@@ -79,7 +97,7 @@ const CorporateTrustLayout = ({ industry, style }) => {
   const mission = industry?.mission || null
 
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)')?.matches
-  const isPhone = typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)')?.matches
+  const isPhone = useSyncExternalStore(subscribeNarrowViewport, getNarrowViewportSnapshot, getNarrowViewportServerSnapshot)
 
   const previewScrollRoot = useMemo(() => getPortfolioPreviewScrollRoot(), [])
   const sectionView = useMemo(
@@ -109,7 +127,7 @@ const CorporateTrustLayout = ({ industry, style }) => {
   const baseStyles = {
     fontFamily: "'Inter', sans-serif",
     color: p.text,
-    minHeight: '500px',
+    minHeight: `max(500px, ${HERO_MIN_HEIGHT})`,
     maxWidth: '100%',
     overflow: 'hidden'
   }
