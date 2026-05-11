@@ -308,7 +308,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'trustcareclinic.com',
     icon: 'clinic',
     navLabels: ['Services', 'Team', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=1200&q=80',
+    heroImage: '/images/clinic-hero.png',
     services: [
       { title: 'General Consultation', desc: 'Personalized care plans tailored to your needs.', icon: 'clinic', featureList: ['Same-day appointments', 'EHR', 'Specialist referrals'] },
       { title: 'Specialist Care', desc: 'Board-certified specialists and advanced diagnostics.', icon: 'specialist', featureList: ['Board-certified', 'Advanced equipment', 'Multi-disciplinary'] },
@@ -441,7 +441,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'lunabeautystudio.com',
     icon: 'beauty',
     navLabels: ['Services', 'Gallery', 'Book'],
-    heroImage: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80',
+    heroImage: '/images/beauty-hero.png',
     services: [
       { title: 'Hair Styling', desc: 'Cuts, color, balayage & more.', icon: 'hair', featureList: ['Cuts', 'Color', 'Keratin'] },
       { title: 'Skin Care', desc: 'Facials, peels & LED therapy.', icon: 'skin', featureList: ['Facials', 'Peels', 'LED therapy'] },
@@ -574,7 +574,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'bianchirestaurant.com',
     icon: 'restaurant',
     navLabels: ['Menu', 'Reservations', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
+    heroImage: '/images/restaurant-hero.png',
     services: [
       { title: 'Fine Dining', desc: 'Farm-to-table. James Beard chef.', icon: 'dining', featureList: ['Farm-to-table', 'Wine pairings', 'Tasting menu'] },
       { title: 'Private Events', desc: 'Celebrations & corporate dinners.', icon: 'events', featureList: ['Buyout', 'Custom menus', 'Event coordinator'] },
@@ -707,7 +707,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'workflowhq.com',
     icon: 'saas',
     navLabels: ['Product', 'Pricing', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80',
+    heroImage: '/images/saas-hero.png',
     services: [
       { title: 'Core Platform', desc: 'Unified dashboard. Deploy in minutes.', icon: 'platform', featureList: ['Dashboard', 'RBAC', 'Real-time'] },
       { title: 'Integrations', desc: '200+ integrations. REST API.', icon: 'integrations', featureList: ['200+ integrations', 'API', 'Zapier'] },
@@ -840,7 +840,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'peakperformance.fit',
     icon: 'fitness',
     navLabels: ['Programs', 'Pricing', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&q=80',
+    heroImage: '/images/gym-hero.png',
     services: [
       { title: 'Personal Training', desc: 'One-on-one sessions tailored specifically to your goals, whether you want to build strength, lose weight, or improve athletic performance. Your trainer designs custom workout programs, tracks your progress, and provides form correction and technique coaching. Every session is focused entirely on you and your results.', icon: 'training', featureList: ['Custom workout programs', 'Progress tracking', 'Form correction & technique'] },
       { title: 'Group Classes', desc: 'HIIT, yoga, spinning, strength, and more in an energizing group setting that keeps you motivated. With 40+ weekly classes, our experienced instructors lead sessions for all fitness levels. The community atmosphere pushes you further than you would go alone and makes workouts fun.', icon: 'classes', featureList: ['40+ weekly classes', 'Experienced instructors', 'All fitness levels welcome'] },
@@ -975,7 +975,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'codeworksacademy.com',
     icon: 'education',
     navLabels: ['Courses', 'Instructors', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80',
+    heroImage: '/images/education-hero.png',
     services: [
       { title: 'Online Courses', desc: 'Self-paced learning with expert-led video content that fits your schedule. Get lifetime access to course materials, downloadable resources, and a certificate of completion. Our instructors are practitioners from top companies who bring real-world experience. Learn at your own pace and revisit materials whenever you need them.', icon: 'courses', featureList: ['Lifetime access', 'Downloadable resources', 'Certificate of completion'] },
       { title: 'Live Workshops', desc: 'Interactive sessions with instructors and peers in real time. Ask questions, work through hands-on projects, and collaborate with fellow learners. Our workshops cover in-demand topics and are designed for practical application. Many students form lasting professional connections during these sessions.', icon: 'workshops', featureList: ['Real-time Q&A', 'Hands-on projects', 'Peer collaboration'] },
@@ -1110,7 +1110,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'walshandassociates.com',
     icon: 'realestate',
     navLabels: ['Properties', 'About', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80',
+    heroImage: '/images/real-estate-hero.png',
     services: [
       { title: 'Buy', desc: 'Find your dream home from our curated listings with personalized search alerts that match your criteria. We arrange virtual and in-person tours at your convenience and provide expert negotiation support from offer to close. Our buyer specialists know the market and help you make confident decisions.', icon: 'buy', featureList: ['Personalized search alerts', 'Virtual & in-person tours', 'Negotiation support'] },
       { title: 'Sell', desc: 'Expert marketing and strategy to get you the best price for your property. We provide professional photography, MLS listing and syndication to all major portals, and staging consultation. Our sellers often receive multiple offers and close above list price. We handle every detail.', icon: 'sell', featureList: ['Professional photography', 'MLS & syndication', 'Staging consultation'] },
@@ -1245,7 +1245,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'morrisonchen.com',
     icon: 'legal',
     navLabels: ['Practice Areas', 'Team', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80',
+    heroImage: '/images/legal-hero.png',
     services: [
       { title: 'Legal Advice', desc: 'Expert counsel across a range of practice areas with initial case assessment, strategic legal opinions, and thorough document review. Our attorneys take the time to understand your situation and provide clear, actionable guidance. We help you understand your options and make informed decisions about your legal matters.', icon: 'legal', featureList: ['Initial case assessment', 'Strategic legal opinions', 'Document review'] },
       { title: 'Consulting', desc: 'Strategic guidance for complex business decisions including risk assessment, compliance review, and contract drafting. We help organizations navigate regulatory requirements and mitigate legal exposure. Our consulting services are designed to prevent problems before they arise and position you for success.', icon: 'consulting', featureList: ['Risk assessment', 'Compliance review', 'Contract drafting'] },
@@ -1380,7 +1380,7 @@ const RAW_INDUSTRIES = [
     demoDomain: 'bradleyconstruction.com',
     icon: 'construction',
     navLabels: ['Services', 'Projects', 'Contact'],
-    heroImage: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1200&q=80',
+    heroImage: '/images/construction-hero.png',
     services: [
       { title: 'Construction', desc: 'Full-service building and renovation projects from concept to completion. We handle new construction, additions, and general contracting with full permit coordination. Our experienced team manages every phase foundation to finish with transparent timelines and budgets. Quality craftsmanship and clear communication define every project.', icon: 'build', featureList: ['New construction & additions', 'General contracting', 'Permit coordination'] },
       { title: 'Maintenance', desc: 'Ongoing care to protect your investment and extend the life of your property. We offer preventive maintenance plans, emergency repairs, and seasonal inspections. Catch small issues before they become expensive problems. Our maintenance team is reliable, responsive, and thorough.', icon: 'maintenance', featureList: ['Preventive maintenance plans', 'Emergency repairs', 'Seasonal inspections'] },
@@ -1520,8 +1520,16 @@ const sanitizeImagePath = (v) => {
 
 const sanitizeImageArray = (arr) => (Array.isArray(arr) ? arr.map(sanitizeImagePath).filter((x) => x && x.startsWith('/')) : [])
 
-const sanitizeTeam = (team) =>
-  Array.isArray(team) ? team.map((m) => ({ ...m, image: sanitizeImagePath(m?.image) })) : team
+const FALLBACK_TEAM_IMAGES = ['/images/team-person-1.png', '/images/team-person-2.png', '/images/team-person-3.png']
+
+const sanitizeTeam = (team) => {
+  if (!Array.isArray(team)) return team
+  const mapped = team.map((m, idx) => {
+    const img = sanitizeImagePath(m?.image)
+    return { ...m, image: img || FALLBACK_TEAM_IMAGES[idx % FALLBACK_TEAM_IMAGES.length] }
+  })
+  return mapped
+}
 
 const sanitizeIndustry = (ind) => ({
   ...ind,

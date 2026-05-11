@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HERO_MIN_HEIGHT, colorWithAlpha } from '../utils/portfolioUtils'
+import { normalizeIndustryForStyle } from '../utils/portfolioNormalize'
 import ClinicalCleanLayout from './portfolio/ClinicalCleanLayout'
 import LuxuryNoirLayout from './portfolio/LuxuryNoirLayout'
 import SoftPastelLayout from './portfolio/SoftPastelLayout'
@@ -159,6 +160,7 @@ const spacingMap = {
 }
 
 const PortfolioLivePreview = ({ industry, style }) => {
+  const normalizedIndustry = useMemo(() => normalizeIndustryForStyle(style?.id, industry), [style?.id, industry])
   const LayoutComponent = LAYOUT_MAP[style?.id]
   const swapMotion = useMemo(() => getLayoutSwapMotion(style?.id, industry?.id), [style?.id, industry?.id])
 
@@ -173,7 +175,7 @@ const PortfolioLivePreview = ({ industry, style }) => {
           transition={swapMotion.transition}
           style={{ minHeight: '100%' }}
         >
-          <LayoutComponent industry={industry} style={style} />
+          <LayoutComponent industry={normalizedIndustry} style={style} />
         </motion.div>
       </AnimatePresence>
     )

@@ -326,7 +326,9 @@ const EcoNaturalLayout = ({ industry, style }) => {
               backgroundImage: heroImage
                 ? `linear-gradient(135deg, ${p.primary}30 0%, ${p.accent || p.primary}20 100%), url(${heroImage})`
                 : `linear-gradient(135deg, ${p.primary}25 0%, ${p.secondary}20 50%, ${p.accent || p.primary}15 100%)`,
+              // Full bleed image inside the frame.
               backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center'
             }}
           />

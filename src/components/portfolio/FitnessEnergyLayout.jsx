@@ -509,12 +509,26 @@ const FitnessEnergyLayout = ({ industry, style }) => {
               <div style={{ display: 'grid', gap: '0.9rem' }}>
                 {team.length > 0 ? (
                   <div style={{ ...glassStyle, padding: '2rem', borderRadius: radius, border: `1px solid ${purple}25` }}>
-                    <div style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.14em', fontSize: '0.8rem', color: muted, marginBottom: '0.75rem' }}>Coaches</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.9rem' }}>
+                    <div style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.14em', fontSize: '0.8rem', color: muted, marginBottom: '0.75rem' }}>Team</div>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                        gap: '0.9rem'
+                      }}
+                    >
                       {team.slice(0, 3).map((member, i) => (
                         <motion.div
                           key={member.name || i}
-                          style={{ padding: '1.25rem', borderRadius: radius, border: `1px solid ${purple}25`, backgroundColor: `${surface}80`, textAlign: 'center' }}
+                          style={{
+                            minWidth: 0,
+                            padding: '1.25rem',
+                            borderRadius: radius,
+                            border: `1px solid ${purple}25`,
+                            backgroundColor: `${surface}80`,
+                            textAlign: 'center',
+                            overflow: 'hidden'
+                          }}
                           whileHover={!prefersReducedMotion ? { y: -6, boxShadow: glowPurple } : {}}
                           transition={{ duration: 0.25 }}
                         >
