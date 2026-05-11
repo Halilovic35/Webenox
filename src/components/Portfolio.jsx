@@ -1,3 +1,4 @@
+/* @refresh reset */
 import React, { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePortfolioConfig } from '../context/PortfolioConfigContext'
@@ -75,7 +76,9 @@ const TryOurDesigns = () => {
     []
   )
 
-  const cardBase = 'relative rounded-2xl border backdrop-blur-sm transition-all duration-300 cursor-pointer p-3 sm:p-4'
+  /** Grids: 320px wide, 2 cols, gap-8px (gap-2). On lg+ industry cards 54px tall, style cards 81px (p-4 = 16px). */
+  const cardBase =
+    'relative rounded-2xl border backdrop-blur-sm transition-all duration-300 cursor-pointer box-border p-4'
   const cardSelected = 'border-accent shadow-glow ring-2 ring-accent/30'
   const cardHover = 'hover:border-white/30 hover:-translate-y-0.5'
 
@@ -132,60 +135,68 @@ const TryOurDesigns = () => {
             <motion.div
               key="website"
               {...switchMotion}
-              className="grid min-w-0 max-lg:-mx-4 max-lg:w-[calc(100%+2rem)] sm:max-lg:-mx-6 sm:max-lg:w-[calc(100%+3rem)] lg:mx-0 lg:w-full lg:grid-cols-[minmax(240px,32%)_1fr] gap-4 sm:gap-6 lg:gap-8 items-start"
+              className="grid min-w-0 max-lg:-mx-4 max-lg:w-[calc(100%+2rem)] sm:max-lg:-mx-6 sm:max-lg:w-[calc(100%+3rem)] lg:mx-0 lg:w-full lg:grid-cols-[320px_minmax(0,1fr)] gap-4 sm:gap-6 lg:gap-14 xl:gap-16 items-start"
             >
-              {/* Left Panel - Controls */}
-              <div className="min-w-0 w-full space-y-5 sm:space-y-6 order-2 lg:order-1 lg:max-w-xs">
-                          <div>
-                  <h3 className="text-base font-semibold text-text mb-3">{t('portfolioStep1Industry')}</h3>
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+              {/* Left: DevTools layout — 320px, grid-cols-2 gap-2 (156+8+156); max-lg centered */}
+              <div className="order-2 min-w-0 w-full max-w-[320px] space-y-5 max-lg:mx-auto sm:space-y-6 lg:order-1 lg:mx-0 lg:max-w-none lg:w-80 lg:shrink-0 lg:justify-self-start lg:space-y-4">
+                <div className="w-full min-w-0">
+                  <h3 className="mb-3 text-base font-semibold text-text lg:mb-2">{t('portfolioStep1Industry')}</h3>
+                  <div className="grid w-full min-w-0 grid-cols-2 gap-2">
                     {industries.map((ind) => (
-                        <motion.button
+                      <motion.button
                         key={ind.id}
                         onClick={() => handleIndustryChange(ind.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`${cardBase} ${cardHover} flex min-w-0 items-center gap-2 sm:gap-3 ${
+                        className={`${cardBase} ${cardHover} flex min-h-0 min-w-0 w-full items-center gap-2 lg:h-[54px] lg:min-h-[54px] lg:max-h-[54px] lg:gap-2 ${
                           selectedIndustryId === ind.id ? `${cardSelected} shadow-accent/20` : 'border-white/10 bg-white/5'
                         }`}
                       >
-                        <span className="text-accent flex-shrink-0 [&>svg]:h-4 [&>svg]:w-4 sm:[&>svg]:h-5 sm:[&>svg]:w-5">{INDUSTRY_ICONS[ind.icon] || INDUSTRY_ICONS.clinic}</span>
-                        <span className="block min-w-0 text-left text-xs font-medium text-text sm:text-sm truncate">{ind.shortLabel}</span>
-                        </motion.button>
+                        <span className="flex-shrink-0 text-accent [&>svg]:h-4 [&>svg]:w-4 lg:[&>svg]:h-4 lg:[&>svg]:w-4">
+                          {INDUSTRY_ICONS[ind.icon] || INDUSTRY_ICONS.clinic}
+                        </span>
+                        <span className="block min-w-0 truncate text-left text-xs font-medium leading-tight text-text lg:text-xs">
+                          {ind.shortLabel}
+                        </span>
+                      </motion.button>
                     ))}
                   </div>
                 </div>
 
-                  <div>
-                  <h3 className="text-base font-semibold text-text mb-3">{t('portfolioStep2Style')}</h3>
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                <div className="w-full min-w-0">
+                  <h3 className="mb-3 text-base font-semibold text-text lg:mb-2">{t('portfolioStep2Style')}</h3>
+                  <div className="grid w-full min-w-0 grid-cols-2 gap-2">
                     {styles.map((sty) => (
-                  <motion.button 
+                      <motion.button
                         key={sty.id}
                         onClick={() => handleStyleChange(sty.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`${cardBase} ${cardHover} min-w-0 text-left ${
+                        className={`${cardBase} ${cardHover} w-full min-w-0 text-left lg:flex lg:h-[81px] lg:min-h-[81px] lg:max-h-[81px] lg:flex-col lg:justify-center lg:gap-0 lg:overflow-hidden ${
                           selectedStyleId === sty.id ? `${cardSelected} shadow-accent/20` : 'border-white/10 bg-white/5'
                         }`}
                       >
-                        <span className="block text-[11px] font-semibold text-text leading-tight sm:text-xs">{sty.name}</span>
-                        <span className="mt-0.5 block line-clamp-2 text-[9px] text-secondary sm:text-[10px]">{sty.tagline}</span>
+                        <span className="block text-[11px] font-semibold leading-tight text-text sm:text-xs lg:text-[11px]">
+                          {sty.name}
+                        </span>
+                        <span className="mt-0.5 block line-clamp-2 text-[9px] leading-snug text-secondary sm:text-[10px] lg:mt-0.5 lg:text-[9px]">
+                          {sty.tagline}
+                        </span>
                         {sty.colorStrip && (
-                          <div className="flex gap-0.5 mt-2">
+                          <div className="mt-2 flex gap-0.5 lg:mt-1">
                             {sty.colorStrip.map((c, i) => (
-                              <span key={i} className="flex-1 h-1.5 rounded-full" style={{ backgroundColor: c }} />
+                              <span key={i} className="h-1.5 flex-1 rounded-full lg:h-1" style={{ backgroundColor: c }} />
                             ))}
-                      </div>
-                    )}
+                          </div>
+                        )}
                       </motion.button>
-                ))}
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-        </div>
 
-              {/* Right Panel - Browser-style Preview (~68%) */}
-              <div className="order-1 min-w-0 w-full lg:order-2">
+              {/* Right Panel - Browser-style Preview (~68%); slight nudge right on desktop */}
+              <div className="order-1 min-w-0 w-full lg:order-2 lg:ml-3 xl:ml-5">
                 {/* Your Website Concept label */}
                 <p className="text-sm font-medium text-accent mb-3 flex items-center gap-2">
                   <span>{t('portfolioWebsiteConceptLabel')}</span>

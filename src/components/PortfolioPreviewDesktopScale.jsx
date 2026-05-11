@@ -1,15 +1,40 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 
-/** Layout width the portfolio previews are authored for; narrower viewports scale down (“zoom out”). */
+/** Layout width the portfolio previews are authored for when scaling narrow viewports */
 export const PORTFOLIO_PREVIEW_REFERENCE_WIDTH = 1120
 
 const supportsCssZoom = typeof CSS !== 'undefined' && CSS.supports?.('zoom', '1')
 
+function subscribeMaxLg(callback) {
+  const mq = window.matchMedia('(max-width: 1023px)')
+  mq.addEventListener('change', callback)
+  return () => mq.removeEventListener('change', callback)
+}
+
+function getMaxLgSnapshot() {
+  return window.matchMedia('(max-width: 1023px)').matches
+}
+
+function getServerSnapshot() {
+  return false
+}
+
 /**
- * Keeps the same desktop layout inside the mock browser, scaled to fit the column width.
- * Uses CSS `zoom` when supported (affects layout); otherwise `transform: scale` + measured height.
+ * On viewports below Tailwind `lg`, scales a fixed desktop-width canvas so the preview
+ * matches desktop layout (“zoomed out”). At `lg` and up, children render at natural column
+ * width so the mock window matches the original size/proportions (no zoom in a ~750px column).
  */
 const PortfolioPreviewDesktopScale = ({ children }) => {
+  const needsMobileZoom = useSyncExternalStore(subscribeMaxLg, getMaxLgSnapshot, getServerSnapshot)
+
+  if (!needsMobileZoom) {
+    return <>{children}</>
+  }
+
+  return <ScaledPreviewCanvas>{children}</ScaledPreviewCanvas>
+}
+
+function ScaledPreviewCanvas({ children }) {
   const measureRef = useRef(null)
   const canvasRef = useRef(null)
   const [scale, setScale] = useState(1)
