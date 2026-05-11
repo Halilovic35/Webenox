@@ -159,7 +159,7 @@ const ClinicalCleanLayout = ({ industry, style }) => {
             {industry?.brandName || 'Webenox'}
           </span>
         </div>
-        
+
         <div
           style={{
             display: 'flex',
@@ -187,7 +187,7 @@ const ClinicalCleanLayout = ({ industry, style }) => {
             </motion.span>
           ))}
         </div>
-        
+
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <motion.button
             style={{ ...btnPrimaryStyle, padding: '0.5rem 1rem', fontSize: '0.875rem' }}

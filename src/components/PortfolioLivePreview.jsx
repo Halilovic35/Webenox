@@ -173,7 +173,7 @@ const PortfolioLivePreview = ({ industry, style }) => {
           animate={swapMotion.animate}
           exit={swapMotion.exit}
           transition={swapMotion.transition}
-          style={{ minHeight: '100%' }}
+          style={{ minHeight: '100%', width: '100%', minWidth: 0 }}
         >
           <LayoutComponent industry={normalizedIndustry} style={style} />
         </motion.div>

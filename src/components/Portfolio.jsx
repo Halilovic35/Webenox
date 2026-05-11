@@ -4,6 +4,7 @@ import { usePortfolioConfig } from '../context/PortfolioConfigContext'
 import { useLanguage } from '../context/LanguageContext'
 import AccentUnderline from './AccentUnderline'
 import PortfolioLivePreview from './PortfolioLivePreview'
+import PortfolioPreviewDesktopScale from './PortfolioPreviewDesktopScale'
 import AppPhonePreview from './AppPhonePreview'
 
 const INDUSTRY_ICONS = {
@@ -79,7 +80,7 @@ const TryOurDesigns = () => {
   const cardHover = 'hover:border-white/30 hover:-translate-y-0.5'
 
   return (
-    <section id="portfolio" className="section-padding relative">
+    <section id="portfolio" className="section-padding relative overflow-x-clip">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[750px] bg-accent/3 rounded-full blur-[130px]" />
         <div className="absolute top-20 right-20 w-80 h-80 bg-purple/3 rounded-full blur-3xl" />
@@ -131,7 +132,7 @@ const TryOurDesigns = () => {
             <motion.div
               key="website"
               {...switchMotion}
-              className="grid min-w-0 lg:grid-cols-[minmax(240px,32%)_1fr] gap-4 sm:gap-6 lg:gap-8 items-start"
+              className="grid min-w-0 max-lg:-mx-4 max-lg:w-[calc(100%+2rem)] sm:max-lg:-mx-6 sm:max-lg:w-[calc(100%+3rem)] lg:mx-0 lg:w-full lg:grid-cols-[minmax(240px,32%)_1fr] gap-4 sm:gap-6 lg:gap-8 items-start"
             >
               {/* Left Panel - Controls */}
               <div className="min-w-0 w-full space-y-5 sm:space-y-6 order-2 lg:order-1 lg:max-w-xs">
@@ -197,8 +198,9 @@ const TryOurDesigns = () => {
                     boxShadow: '0 25px 80px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)'
                   }}
                 >
-                  {/* Fake Browser Bar */}
-                  <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-2 bg-white/5 px-3 py-2.5 border-b border-white/10 sm:gap-3 sm:px-4 sm:py-3">
+                <PortfolioPreviewDesktopScale>
+                  {/* Fake Browser Bar — single row like desktop, URL shrinks */}
+                  <div className="flex min-w-0 flex-nowrap items-center gap-x-2 bg-white/5 px-3 py-2.5 border-b border-white/10 sm:gap-3 sm:px-4 sm:py-3">
                     <div className="flex shrink-0 items-center gap-1.5 text-white/45 sm:gap-2">
                       <button
                         type="button"
@@ -220,7 +222,7 @@ const TryOurDesigns = () => {
                       </button>
             </div>
             
-                    <div className="flex min-w-0 flex-1 basis-[min(100%,14rem)] justify-center sm:basis-auto">
+                    <div className="flex min-w-0 flex-1 justify-center">
                       <div className="flex min-w-0 w-full max-w-md items-center gap-2 rounded-full border border-white/12 bg-black/25 px-3 py-1.5 text-[11px] text-white/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] sm:px-4 sm:py-2 sm:text-[12px]">
                         <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 text-emerald-300/80 shrink-0" aria-hidden>
                           <path d="M7.5 11V9a4.5 4.5 0 0 1 9 0v2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -230,7 +232,7 @@ const TryOurDesigns = () => {
             </div>
                     </div>
                     
-                    <div className="ml-auto flex shrink-0 items-center gap-2 text-white/45 sm:ml-0">
+                    <div className="ml-auto flex shrink-0 items-center gap-2 text-white/45">
                       <button
                         type="button"
                         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 transition-colors hover:bg-white/10"
@@ -243,15 +245,16 @@ const TryOurDesigns = () => {
                       </button>
                       </div>
                     </div>
-                    
-                  {/* Preview Content with loading overlay */}
+
+                  {/* Preview Content — scroll root stays here for in-preview nav */}
                   <div
                     id="portfolio-preview-scroll-container"
-                    className="relative min-h-[min(80svh,max(50vh,280px))] overflow-x-clip sm:min-h-[min(82svh,max(52vh,360px))] lg:min-h-[min(85svh,max(58vh,480px))]"
+                    className="hide-scrollbar relative overflow-x-clip overflow-y-auto max-md:h-[min(72svh,max(52vh,300px))] h-[min(80svh,max(50vh,280px))] sm:h-[min(82svh,max(52vh,360px))] lg:h-[min(85svh,max(58vh,480px))]"
                   >
                     <PortfolioLivePreview industry={selectedIndustry} style={selectedStyle} />
-                    </div>
-                    
+                  </div>
+                </PortfolioPreviewDesktopScale>
+
                   {/* CTA Footer */}
                   <div className="border-t border-white/10 bg-background/90 p-4 backdrop-blur-sm sm:p-5">
                     {hasBothSelected && (
@@ -283,7 +286,7 @@ const TryOurDesigns = () => {
             <motion.div
               key="app"
               {...switchMotion}
-              className="flex w-full min-w-0 items-start justify-center px-1 sm:px-0"
+              className="flex w-full min-w-0 justify-center px-1 sm:px-0"
             >
               <AppPhonePreview />
         </motion.div>
