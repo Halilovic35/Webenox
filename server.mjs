@@ -507,6 +507,27 @@ const server = http.createServer((req, res) => {
   const urlPath = req.url || '/'
   const pathOnly = urlPath.split('?')[0] || '/'
 
+  const host = String(req.headers?.host || '')
+    .split(',')[0]
+    .trim()
+    .toLowerCase()
+  const https = isHttpsRequest(req)
+
+  // Security headers (best-effort; safe with our app).
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  res.setHeader('Content-Security-Policy', 'upgrade-insecure-requests; block-all-mixed-content')
+  if (https) res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains')
+
+  // Force HTTPS for production domains (prevents "Not secure" via HTTP entrypoints).
+  if (!https && host && (host.endsWith('webenox.de') || host.endsWith('webenox-production.up.railway.app'))) {
+    res.statusCode = 301
+    res.setHeader('Location', `https://${host}${urlPath}`)
+    res.end()
+    return
+  }
+
   // Healthcheck
   if (urlPath === '/health' || urlPath === '/healthz') {
     res.statusCode = 200
