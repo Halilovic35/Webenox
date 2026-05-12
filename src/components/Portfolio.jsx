@@ -85,7 +85,7 @@ const TryOurDesigns = () => {
     []
   )
 
-  /** Grids: 320px wide, 2 cols, gap-8px (gap-2). On lg+ industry cards 54px tall, style cards 81px (p-4 = 16px). */
+  /** Grids: 320px wide, 2 cols, gap-8px (gap-2). On lg+ industry cards 54px tall; style cards min-h ~96px so 2-line tagline is not clipped. */
   const cardBase =
     'relative rounded-2xl border backdrop-blur-sm transition-all duration-300 cursor-pointer box-border p-4'
   const cardSelected = 'border-accent shadow-glow ring-2 ring-accent/30'
@@ -181,7 +181,7 @@ const TryOurDesigns = () => {
                         onClick={() => handleStyleChange(sty.id)}
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        className={`${cardBase} ${cardHover} w-full min-w-0 text-left lg:flex lg:h-[81px] lg:min-h-[81px] lg:max-h-[81px] lg:flex-col lg:justify-center lg:gap-0 lg:overflow-hidden ${
+                        className={`${cardBase} ${cardHover} w-full min-w-0 text-left lg:flex lg:min-h-[96px] lg:flex-col lg:justify-center lg:gap-0 ${
                           selectedStyleId === sty.id ? `${cardSelected} shadow-accent/20` : 'border-white/10 bg-white/5'
                         }`}
                       >
