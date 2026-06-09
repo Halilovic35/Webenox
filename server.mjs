@@ -13,6 +13,56 @@ const distDir = path.join(__dirname, 'dist')
 const port = Number(process.env.PORT || 4173)
 /** Canonical production host (apex, no www). */
 const CANONICAL_HOST = 'webenox.de'
+/** Only redirect www -> apex after apex DNS points at Railway (set FORCE_APEX_REDIRECT=1). */
+const FORCE_APEX_REDIRECT =
+  process.env.FORCE_APEX_REDIRECT === '1' || process.env.FORCE_APEX_REDIRECT === 'true'
+
+const ROBOTS_TXT = `# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+Sitemap: https://webenox.de/sitemap.xml
+`
+
+const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://webenox.de/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://webenox.de/#about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://webenox.de/#services</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://webenox.de/#portfolio</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://webenox.de/#site-contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://webenox.de/impressum</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://webenox.de/datenschutz</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
+`
 const PREVIEW_COOKIE = 'webenox_preview=1'
 /** Password gate is off by default. Set PREVIEW_AUTH_ENABLED=1 and PREVIEW_PASSWORD to require login again. */
 const PREVIEW_AUTH_ENABLED =
@@ -60,7 +110,9 @@ const MIME = {
   '.woff': 'font/woff',
   '.woff2': 'font/woff2',
   '.ttf': 'font/ttf',
-  '.map': 'application/json; charset=utf-8'
+  '.map': 'application/json; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8'
 }
 
 function safeJoin(base, urlPath) {
@@ -560,9 +612,15 @@ const server = http.createServer((req, res) => {
   res.setHeader('Content-Security-Policy', 'upgrade-insecure-requests; block-all-mixed-content')
   if (https) res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains')
 
-  // Force HTTPS + apex host for webenox.de (http/www -> https://webenox.de).
+  // HTTPS only on webenox.de hosts. www -> apex redirect is OFF by default until apex DNS hits Railway.
   const isWebenoxProd = host === CANONICAL_HOST || host === `www.${CANONICAL_HOST}`
-  if (isWebenoxProd && (!https || host !== CANONICAL_HOST)) {
+  if (isWebenoxProd && !https) {
+    res.statusCode = 301
+    res.setHeader('Location', `https://${host}${urlPath}`)
+    res.end()
+    return
+  }
+  if (FORCE_APEX_REDIRECT && https && host === `www.${CANONICAL_HOST}`) {
     res.statusCode = 301
     res.setHeader('Location', `https://${CANONICAL_HOST}${urlPath}`)
     res.end()
@@ -582,6 +640,25 @@ const server = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'text/plain; charset=utf-8')
     res.end('ok')
     return
+  }
+
+  const reqMethod = req.method || 'GET'
+  // SEO files: always public, correct MIME, no auth — also works if dist copy is missing.
+  if (reqMethod === 'GET' || reqMethod === 'HEAD') {
+    if (pathOnly === '/robots.txt') {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8')
+      res.setHeader('Cache-Control', 'public, max-age=3600')
+      if (reqMethod === 'HEAD') return res.end()
+      return res.end(ROBOTS_TXT)
+    }
+    if (pathOnly === '/sitemap.xml') {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8')
+      res.setHeader('Cache-Control', 'public, max-age=3600')
+      if (reqMethod === 'HEAD') return res.end()
+      return res.end(SITEMAP_XML)
+    }
   }
 
   // Password gate: allow login/logout endpoints without auth
