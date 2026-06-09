@@ -1,13 +1,20 @@
 import LegalDocumentLayout from './LegalDocumentLayout'
+import SeoHead from './SeoHead'
 
 const block = 'rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8'
 
 export default function Datenschutz() {
   return (
-    <LegalDocumentLayout
-      title="Datenschutzerklärung"
-      subtitle="Informationen zur Verarbeitung personenbezogener Daten gemäß Art. 13 DSGVO"
-    >
+    <>
+      <SeoHead
+        title="Datenschutz | Webenox"
+        description="Privacy policy for Webenox: how we process personal data on webenox.de in accordance with GDPR."
+        path="/datenschutz"
+      />
+      <LegalDocumentLayout
+        title="Datenschutzerklärung"
+        subtitle="Informationen zur Verarbeitung personenbezogener Daten gemäß Art. 13 DSGVO"
+      >
       <section className={block} aria-labelledby="ds-controller">
         <h2 id="ds-controller" className="text-lg font-semibold text-text mb-4">
           Verantwortlicher
@@ -26,8 +33,8 @@ Deutschland`}
         </p>
         <p className="mt-2">
           <strong className="text-text">Website:</strong>{' '}
-          <a href="https://www.webenox.de" target="_blank" rel="noopener noreferrer">
-            https://www.webenox.de
+          <a href="https://webenox.de" target="_blank" rel="noopener noreferrer">
+            https://webenox.de
           </a>
         </p>
       </section>
@@ -167,5 +174,6 @@ Deutschland`}
         </p>
       </section>
     </LegalDocumentLayout>
+    </>
   )
 }

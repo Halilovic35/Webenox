@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.webenox.de/sitemap.xml
+Sitemap: https://webenox.de/sitemap.xml

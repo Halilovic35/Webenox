@@ -11,6 +11,8 @@ const __dirname = path.dirname(__filename)
 
 const distDir = path.join(__dirname, 'dist')
 const port = Number(process.env.PORT || 4173)
+/** Canonical production host (apex, no www). */
+const CANONICAL_HOST = 'webenox.de'
 const PREVIEW_COOKIE = 'webenox_preview=1'
 /** Password gate is off by default. Set PREVIEW_AUTH_ENABLED=1 and PREVIEW_PASSWORD to require login again. */
 const PREVIEW_AUTH_ENABLED =
@@ -76,13 +78,17 @@ function safeJoin(base, urlPath) {
   return full
 }
 
-function sendFile(res, absPath) {
+function sendFile(res, absPath, method = 'GET') {
   const ext = path.extname(absPath).toLowerCase()
   res.statusCode = 200
   res.setHeader('Content-Type', MIME[ext] || 'application/octet-stream')
   // Cache assets aggressively; keep HTML short-lived.
   if (ext === '.html') res.setHeader('Cache-Control', 'no-cache')
   else res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+  if (method === 'HEAD') {
+    res.end()
+    return
+  }
   createReadStream(absPath).pipe(res)
 }
 
@@ -109,9 +115,24 @@ function isSocialCrawler(req) {
     ua.includes('whatsapp') ||
     ua.includes('telegrambot') ||
     ua.includes('skypeuripreview') ||
-    ua.includes('pinterest') ||
+    ua.includes('pinterest')
+  )
+}
+
+/** Search crawlers must receive indexable SPA HTML, not preview gates or noindex stubs. */
+function isSearchEngineCrawler(req) {
+  const ua = String(req.headers?.['user-agent'] || '').toLowerCase()
+  if (!ua) return false
+  return (
     ua.includes('googlebot') ||
-    ua.includes('bingbot')
+    ua.includes('bingbot') ||
+    ua.includes('yandexbot') ||
+    ua.includes('duckduckbot') ||
+    ua.includes('slurp') ||
+    ua.includes('baiduspider') ||
+    ua.includes('applebot') ||
+    ua.includes('semrushbot') ||
+    ua.includes('ahrefsbot')
   )
 }
 
@@ -142,7 +163,7 @@ function isPublicLegalPagePath(pathOnly, method) {
 }
 
 function isPublicStaticPath(pathOnly, method) {
-  if (method !== 'GET') return false
+  if (method !== 'GET' && method !== 'HEAD') return false
   if (pathOnly === '/site.webmanifest' || pathOnly === '/manifest.json') return true
   if (pathOnly === '/favicon.ico' || pathOnly === '/robots.txt' || pathOnly === '/sitemap.xml') return true
   if (pathOnly.startsWith('/assets/') || pathOnly.startsWith('/images/')) return true
@@ -150,10 +171,11 @@ function isPublicStaticPath(pathOnly, method) {
 }
 
 function tryServePublicDist(req, res, pathOnly) {
-  if (!isPublicStaticPath(pathOnly, req.method || 'GET')) return false
+  const method = req.method || 'GET'
+  if (!isPublicStaticPath(pathOnly, method)) return false
   const candidate = safeJoin(distDir, pathOnly)
   if (candidate && existsSync(candidate) && statSync(candidate).isFile()) {
-    sendFile(res, candidate)
+    sendFile(res, candidate, method)
     return true
   }
   return false
@@ -432,26 +454,26 @@ function sendLockScreen(res, opts = {}) {
     <meta name="robots" content="noindex, nofollow" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.webenox.de/" />
+    <meta property="og:url" content="https://webenox.de/" />
     <meta property="og:title" content="Webenox - Premium Digital Agency" />
     <meta
       property="og:description"
       content="Transform your ideas into exceptional digital experiences. Web development, mobile apps, UI/UX design, and branding services."
     />
-    <meta property="og:image" content="https://www.webenox.de/images/og-image.png" />
-    <meta property="og:image:secure_url" content="https://www.webenox.de/images/og-image.png" />
+    <meta property="og:image" content="https://webenox.de/images/og-image.png" />
+    <meta property="og:image:secure_url" content="https://webenox.de/images/og-image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://www.webenox.de/" />
+    <meta property="twitter:url" content="https://webenox.de/" />
     <meta property="twitter:title" content="Webenox - Premium Digital Agency" />
     <meta
       property="twitter:description"
       content="Transform your ideas into exceptional digital experiences. Web development, mobile apps, UI/UX design, and branding services."
     />
-    <meta property="twitter:image" content="https://www.webenox.de/images/og-image.png" />
+    <meta property="twitter:image" content="https://webenox.de/images/og-image.png" />
     <style>
       :root { color-scheme: dark; }
       body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: radial-gradient(1200px 700px at 20% 15%, rgba(0,201,255,0.18), transparent 55%), radial-gradient(1000px 600px at 85% 85%, rgba(146,95,226,0.14), transparent 55%), #05070c; color: rgba(255,255,255,0.92); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
@@ -538,8 +560,16 @@ const server = http.createServer((req, res) => {
   res.setHeader('Content-Security-Policy', 'upgrade-insecure-requests; block-all-mixed-content')
   if (https) res.setHeader('Strict-Transport-Security', 'max-age=15552000; includeSubDomains')
 
-  // Force HTTPS for production domains (prevents "Not secure" via HTTP entrypoints).
-  if (!https && host && (host.endsWith('webenox.de') || host.endsWith('webenox-production.up.railway.app'))) {
+  // Force HTTPS + apex host for webenox.de (http/www -> https://webenox.de).
+  const isWebenoxProd = host === CANONICAL_HOST || host === `www.${CANONICAL_HOST}`
+  if (isWebenoxProd && (!https || host !== CANONICAL_HOST)) {
+    res.statusCode = 301
+    res.setHeader('Location', `https://${CANONICAL_HOST}${urlPath}`)
+    res.end()
+    return
+  }
+
+  if (!https && host && host.endsWith('webenox-production.up.railway.app')) {
     res.statusCode = 301
     res.setHeader('Location', `https://${host}${urlPath}`)
     res.end()
@@ -601,7 +631,14 @@ const server = http.createServer((req, res) => {
     return sendSharePreview(res, req)
   }
 
-  if (!DISABLE_PREVIEW_AUTH && !isAuthed(req) && !isPublicLegalPagePath(pathOnly, req.method || 'GET')) {
+  const method = req.method || 'GET'
+  const searchCrawler = isSearchEngineCrawler(req)
+  if (
+    !DISABLE_PREVIEW_AUTH &&
+    !isAuthed(req) &&
+    !searchCrawler &&
+    !isPublicLegalPagePath(pathOnly, method)
+  ) {
     return sendLockScreen(res)
   }
 

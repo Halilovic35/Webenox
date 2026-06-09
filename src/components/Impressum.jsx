@@ -1,10 +1,17 @@
 import LegalDocumentLayout from './LegalDocumentLayout'
+import SeoHead from './SeoHead'
 
 const block = 'rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8'
 
 export default function Impressum() {
   return (
-    <LegalDocumentLayout title="Impressum" subtitle="Angaben gemäß § 5 DDG">
+    <>
+      <SeoHead
+        title="Impressum | Webenox"
+        description="Legal notice and provider information for Webenox, Frankfurt am Main, Germany."
+        path="/impressum"
+      />
+      <LegalDocumentLayout title="Impressum" subtitle="Angaben gemäß § 5 DDG">
       <section className={block} aria-labelledby="impressum-provider">
         <h2 id="impressum-provider" className="text-lg font-semibold text-text mb-4">
           Angaben gemäß § 5 DDG
@@ -31,8 +38,8 @@ Deutschland`}
         </p>
         <p className="mt-2">
           <strong className="text-text">Website:</strong>{' '}
-          <a href="https://www.webenox.de" target="_blank" rel="noopener noreferrer">
-            https://www.webenox.de
+          <a href="https://webenox.de" target="_blank" rel="noopener noreferrer">
+            https://webenox.de
           </a>
         </p>
       </section>
@@ -63,5 +70,6 @@ Deutschland`}
         <p className="text-secondary">Nicht vorhanden.</p>
       </section>
     </LegalDocumentLayout>
+    </>
   )
 }
